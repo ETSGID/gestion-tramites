@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const estadosTitulo = require('../enums').estadosTitulo
 
 const smtpConfig = {
-    host: process.env.EMAIL_PORT,
+    host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
     secure: false, 
     auth: {
