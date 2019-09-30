@@ -1,0 +1,14 @@
+[
+        {
+	    "id": null,
+            "planCodigo":"09AQ",
+            "estadoPeticion":5,
+            "fecha": "22/5/2019"
+        },
+        {
+	    "id": null,
+            "planCodigo":"09TT",
+            "estadoPeticion":2
+        }
+
+]

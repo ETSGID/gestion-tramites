@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de títulos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--BOOTSTRAP 4-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <style>
+        .open-6659b527b8d152af596e174303b316a7{
+            position: fixed !important;
+        }      
+  </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <div id="buttonMenuPortales123" style="position:fixed; z-index:4; text-align: right"></div>
+    <script type="text/javascript" src="<%=context%>/js/bundle_<%=session.portal%>.js"></script>
+    <script src="https://portal.etsit.upm.es/<%=session.portal%>/static-button"></script>
+    <script>
+        let context = '<%-context%>';
+        document.addEventListener('DOMContentLoaded', dibujarmenulateral("buttonMenuPortales123", context+"/logout", '<%=session.user.mail%>', '<%=session.user.cn%>'));
+    </script>
+</body>
+
+</html>

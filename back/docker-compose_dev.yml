@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  dbTitulos:
+    image: postgres:9.6
+    restart: always
+    volumes:
+      - dbdataTitulos:/var/lib/postgres
+  
+  gestionTitulos:
+    depends_on:
+      - dbTitulos
+
+volumes:
+  dbdataTitulos:
+
+
+
+    

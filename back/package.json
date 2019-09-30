@@ -1,0 +1,29 @@
+{
+  "name": "gestion-titulos",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./code/bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.18.1",
+    "cas-authentication": "git+https://github.com/javicond3/cas-authentication.git",
+    "connect-session-sequelize": "^6.0.0",
+    "cookie-parser": "~1.4.3",
+    "dotenv": "^8.1.0",
+    "ejs": "~2.5.7",
+    "express": "~4.16.0",
+    "express-session": "^1.15.6",
+    "http-errors": "~1.6.2",
+    "moment": "^2.22.2",
+    "morgan": "^1.9.1",
+    "nodemailer": "^6.3.0",
+    "normalize-path": "^3.0.0",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^4.44.3"
+  },
+  "devDependencies": {
+    "depcheck": "^0.8.3"
+  }
+}
