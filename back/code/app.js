@@ -4,7 +4,7 @@ let path = require('path');
 let cookieParser = require('cookie-parser');
 let morgan = require('morgan');
 let session = require('express-session');
-let SequelizeStore = require('connect-session-sequelize')(session.Store);
+const MemoryStore = require('memorystore')(session);
 
 //dos contextos uno para pas y otro para alumnos
 const contextPath1 = normalize(process.env.CONTEXT1);
@@ -56,22 +56,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-
-
-// Configuracion de la session para almacenarla en BBDD usando Sequelize.
-let sessionStore = new SequelizeStore({
-  db: models.sequelizeSession,
-  table: 'Session',
-  checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds. (15 minutes)
-  expiration: 1 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session. (6 hours)
-});
+// Set up an Express session with MemoryStore to avoid memory leaks.
 app.use(session({
+  cookie: { maxAge: 6 * 60 * 60 * 1000 }, //6h
+  store: new MemoryStore({
+    checkPeriod: 6 * 60 * 60 * 1000, // prune expired entries every 6h
+  }),
   secret: process.env.SESSION_SECRET,
-  store: sessionStore,
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
 }));
-
 
 
 // autologout
@@ -85,11 +79,31 @@ app.get(path.join(contextPath2, 'logout'), cas.logout);
  * Este es para añadir a las variables req parametros necesarios en posteriores middlewares
  * 
  */
-app.use(cas.bounce, function (req, res, next) {
-  // Hacer visible req.session en las vistas
-  res.locals.session = req.session;
-  next();
-});
+if (process.env.DEV == 'true') {
+  app.use(function (req, res, next) {
+    req.session.user = {}
+    req.session.user.employeetype = "FA"
+    req.session.user.irispersonaluniqueid ="123456789D"
+    req.session.user.sn = "FERNANDEZ FERNANDEZ"
+    req.session.user.cn = "FERNANDO"
+    res.locals.session = req.session;
+    next();
+  })
+} else {
+  app.use(cas.bounce, function (req, res, next) {
+    // Hacer visible req.session en las vistas
+    //modelo de pruebas
+    if (process.env.PRUEBAS == 'true'){
+      req.session.user.employeetype = "FA"
+      req.session.user.irispersonaluniqueid ="123456789D"
+      req.session.user.sn = "FERNANDEZ FERNANDEZ"
+      req.session.user.cn = "FERNANDO"
+    }
+    res.locals.session = req.session;
+    next();
+  });
+}
+
 
 //static
 app.use(contextPath1, express.static(path.join(__dirname, 'public')));

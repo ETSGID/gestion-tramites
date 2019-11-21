@@ -2,18 +2,18 @@ version: '3'
 
 services:
 
-  dbTitulos:
+  dbtitulos:
     image: postgres:9.6
     restart: always
     volumes:
-      - dbdataTitulos:/var/lib/postgres
+      - dbdatatitulos:/var/lib/postgres
   
-  gestionTitulos:
+  gestiontitulos:
     depends_on:
-      - dbTitulos
+      - dbtitulos
 
 volumes:
-  dbdataTitulos:
+  dbdatatitulos:
 
 
 

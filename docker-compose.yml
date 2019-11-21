@@ -1,13 +1,7 @@
 version: '3'
 
 services: 
-
-  dbsession:
-    image: postgres:9.6
-    volumes:
-      - dbdata2:/var/lib/postgres
-    restart: always
-    
+   
   gestiontitulos:
     build: 
       context: .
@@ -16,9 +10,6 @@ services:
       - gestiontitulos:/storage/gestionTitulos/
     ports: 
       - "3006:3000"
-    depends_on:
-      - dbsession
 
 volumes:
-  dbdata2:
   gestiontitulos:

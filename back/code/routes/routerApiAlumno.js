@@ -8,6 +8,6 @@ router.all('*', permisoController.comprobarRolYAlumno);
 
 router.get('/peticiones', peticionController.getInfoAlumno)
 
-router.post('/crearPeticion', peticionController.createPeticion)
+router.post('/peticionCambioEstado', peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
 
 module.exports = router;

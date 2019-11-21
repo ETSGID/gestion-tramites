@@ -8,6 +8,6 @@ router.all('*', permisoController.comprobarRolYPas);
 
 router.get('/peticiones', peticionController.getInfoAllPas)
 
-router.post('/peticionCambioEstado', peticionController.updatePeticion)
+router.post('/peticionCambioEstado', peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
 
 module.exports = router;

@@ -3,12 +3,15 @@
 module.exports = function (sequelize, DataTypes) {
     let Peticion = sequelize.define('Peticion',
         {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true
+            irispersonaluniqueid: {
+                type: DataTypes.STRING,
+                primaryKey : true
             },
-            dni: {
+            planCodigo: {
+                type: DataTypes.STRING,
+                primaryKey : true
+            },
+            planNombre: {
                 type: DataTypes.STRING
             },
             email: {
@@ -21,8 +24,11 @@ module.exports = function (sequelize, DataTypes) {
             apellido: {
                 type: DataTypes.STRING
             },
-            planCodigo: {
-                type: DataTypes.STRING
+            descuento:{
+                type : DataTypes.INTEGER
+            },
+            formaPago:{
+                type : DataTypes.INTEGER
             },
             estadoPeticion: {
                 type : DataTypes.INTEGER
@@ -30,9 +36,17 @@ module.exports = function (sequelize, DataTypes) {
             fecha: {
                 type: DataTypes.DATEONLY
             },
-            comentario: {
+            //si no lo recoge el titular
+            receptor: {
+                type: DataTypes.TEXT
+            },
+            localizacionFisica:{
+                type: DataTypes.STRING 
+            },
+            textCancel:{
                 type: DataTypes.TEXT
             }
+            
         },
         {
             timestamps: false

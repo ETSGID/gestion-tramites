@@ -4,9 +4,6 @@ exports.comprobarRolYPas = function (req, res, next) {
     if (role && typeof role === "string" && (role.includes("F") || role.includes("L"))) {
         req.session.portal = 'pas'
         next();
-    }else if(req.session.user.mail === "javier.conde.diaz@alumnos.upm.es"){
-        req.session.portal='pas' 
-        next()
     }
     else {
         res.render('noPermitido');

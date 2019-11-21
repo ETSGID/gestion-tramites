@@ -1,23 +1,27 @@
 
 import React from 'react';
+import axios from 'axios';
 import { Navbar } from 'react-bootstrap';
 import Titulos from './Titulos.jsx'
-import PlantillaPas from './../../jsons/pas.json'
 import './../../assets/scss/main.scss';
-import axios from 'axios'
-const apiBaseUrl =  process.env.NODE_ENV === "development" ?  "http://localhost:3000/pas/gestion-titulos/" : window.location.href
+const apiBaseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000/pas/gestion-titulos/" : window.location.href
+
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      peticiones: PlantillaPas || []
+      peticiones: [],
+      selected: null,
+      cancel: null,
+      info: null
     };
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
+    this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
   }
   componentDidMount() {
-    axios.get((apiBaseUrl +  "api/peticiones"))
+    axios.get((apiBaseUrl + "api/peticiones"))
       .then((response) => {
         this.setState({
           peticiones: response.data,
@@ -28,42 +32,49 @@ export default class App extends React.Component {
       })
   }
 
-
-  cambioEstadoClick(index) {
+  cambioEstadoClick(index, paramsToUpdate) {
     let peticionesNuevas = this.state.peticiones.slice()
-    /*
-    switch (peticionesNuevas[index].estadoPeticion) {
-      case 3:
-        peticionesNuevas[index].estadoPeticion++;
-        break;
-      case 4:
-        peticionesNuevas[index].estadoPeticion++;
-        break;
-      case 5:
-        peticionesNuevas[index].estadoPeticion++;
-        break;
-      case 6:
-        peticionesNuevas[index].estadoPeticion++;
-        break;
-      default:
-        break;
+    //para mandar el archivo hace falta crear un FormData
+    let formData = new FormData();
+    //sino había file se queda a null
+    if(paramsToUpdate.file){
+      formData.append("file", paramsToUpdate.file);
     }
-    */
-    axios.post((apiBaseUrl +  "api/peticionCambioEstado"),{
-        peticion : peticionesNuevas[index]      
+    formData.append("body", JSON.stringify({peticion:peticionesNuevas[index], paramsToUpdate: paramsToUpdate, cancel: this.state.cancel}))
+    axios.post((apiBaseUrl + "api/peticionCambioEstado"), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
-    .then((response) => {
-      peticionesNuevas[index].estadoPeticion = response.data[1][0].estadoPeticion
-      peticionesNuevas[index].fecha = response.data[1][0].fecha
-      this.setState({
-        peticiones: peticionesNuevas,
+      .then((response) => {
+        peticionesNuevas[index].descuento = response.data[1][0].descuento
+        peticionesNuevas[index].formaPago = response.data[1][0].formaPago
+        peticionesNuevas[index].estadoPeticion = response.data[1][0].estadoPeticion
+        peticionesNuevas[index].fecha = response.data[1][0].fecha
+        peticionesNuevas[index].receptor = response.data[1][0].receptor
+        peticionesNuevas[index].localizacionFisica = response.data[1][0].localizacionFisica
+        peticionesNuevas[index].textCancel = response.data[1][0].textCancel
+
+        this.setState({
+          peticiones: peticionesNuevas,
+          selected: null,
+          cancel: null,
+          info: null
+        })
       })
-    })
-    .catch(function (error) {
-      alert("Error en la conexión con el servidor")
-    })
-    
+      .catch(function (error) {
+        alert("Error en la conexión con el servidor")
+      })
   }
+
+  cambioSelectedClick(index, cancel, info) {
+    this.setState({
+      selected: index,
+      cancel: cancel,
+      info: info
+    })
+  }
+
   render() {
     return (
       <div>
@@ -75,7 +86,15 @@ export default class App extends React.Component {
         </Navbar>
         <div className="cuerpo">
           <h2>Peticiones de alumnos</h2>
-          <Titulos peticiones={this.state.peticiones} cambioEstadoClick={this.cambioEstadoClick}></Titulos>
+          <Titulos
+          selected={this.state.selected} 
+          cancel = {this.state.cancel}
+          info = {this.state.info}
+          peticiones={this.state.peticiones}
+          cambioEstadoClick={this.cambioEstadoClick}
+          cambioSelectedClick={this.cambioSelectedClick}
+          >
+          </Titulos>
         </div>
       </div>
 
