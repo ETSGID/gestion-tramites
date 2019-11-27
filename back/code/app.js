@@ -79,21 +79,10 @@ app.get(path.join(contextPath2, 'logout'), cas.logout);
  * Este es para añadir a las variables req parametros necesarios en posteriores middlewares
  * 
  */
-if (process.env.DEV == 'true') {
-  app.use(function (req, res, next) {
-    req.session.user = {}
-    req.session.user.employeetype = "FA"
-    req.session.user.irispersonaluniqueid ="123456789D"
-    req.session.user.sn = "FERNANDEZ FERNANDEZ"
-    req.session.user.cn = "FERNANDO"
-    res.locals.session = req.session;
-    next();
-  })
-} else {
   app.use(cas.bounce, function (req, res, next) {
     // Hacer visible req.session en las vistas
     //modelo de pruebas
-    if (process.env.PRUEBAS == 'true'){
+    if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true'){
       req.session.user.employeetype = "FA"
       req.session.user.irispersonaluniqueid ="123456789D"
       req.session.user.sn = "FERNANDEZ FERNANDEZ"
@@ -102,7 +91,7 @@ if (process.env.DEV == 'true') {
     res.locals.session = req.session;
     next();
   });
-}
+
 
 
 //static

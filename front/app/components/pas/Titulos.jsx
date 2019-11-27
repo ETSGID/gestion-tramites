@@ -109,7 +109,7 @@ export default class Titulos extends React.Component {
                     case estadosTitulo.TITULO_DISPONIBLE:
                         return (<span>No acción asociada</span>)
                     case estadosTitulo.TITULO_RECOGIDO:
-                            return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar prueba</Button>)
+                            return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
