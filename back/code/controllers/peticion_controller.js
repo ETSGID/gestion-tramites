@@ -93,16 +93,15 @@ exports.getInfoAlumno = async function (req, res, next) {
     try {
         let peticiones = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
         let titulosAlumno;
-        if(process.env.PRUEBAS == 'true' || process.env.DEV == 'true'){
-            titulosAlumno = ["09TT", "09TT", "09AQ"]
+        if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
+            titulosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
+        } else {
+            let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
+            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + firstCall.data.token)
+            titulosAlumno = secondCall.data
         }
-        else{
-            //llamada api
-        }
-        //merge titulos pedidos y los que puede repetir
-        titulosAlumno.forEach(plan => {
-            !peticiones.find(p => p.planCodigo === plan) ? peticiones.push({ planCodigo: plan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null
-        })
+        //merge titulos pedidos y los que puede repetir 
+        titulosAlumno.forEach(plan => { !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
         res.json(peticiones)
     } catch (error) {
         console.log(error)
@@ -154,9 +153,9 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 
     });
     //recibe aqui los parametros en en multi-part form data por eso se parsean a body
-    busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+    busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
         req.body = JSON.parse(val);
-      });
+    });
     busboy.on('finish', function () {
         next()
     });
@@ -215,13 +214,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
-        if(process.env.PRUEBAS == 'true' || process.env.DEV == 'true'){
+        if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
             toAlumno = req.session.user.mail; //siempre se le manda el amail al que hace la prueba
-            toPAS = req.session.user.mail; 
+            toPAS = req.session.user.mail;
         }
         let mailInfoFromPas = await mail.sendEmail(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.fileBuffer, req.session)
         //solo se envia cuand el alumno tiene algo que enviar
-        if(req.fileBuffer){
+        if (req.fileBuffer) {
             let mailInfoFromAlumno = await mail.sendEmailAlumno(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.fileBuffer, req.session)
         }
         let respuesta;
