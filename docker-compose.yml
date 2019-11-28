@@ -4,10 +4,5 @@ services:
    
   gestiontitulos:
     restart: always
-    volumes:
-      - gestiontitulos:/storage/gestionTitulos/
     ports: 
       - "3006:3000"
-
-volumes:
-  gestiontitulos:
