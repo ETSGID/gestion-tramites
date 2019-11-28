@@ -3,8 +3,6 @@ version: '3'
 services: 
    
   gestiontitulos:
-    build: 
-      context: .
     restart: always
     volumes:
       - gestiontitulos:/storage/gestionTitulos/

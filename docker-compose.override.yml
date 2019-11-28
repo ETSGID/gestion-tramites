@@ -9,6 +9,8 @@ services:
       - dbdatatitulos:/var/lib/postgres
   
   gestiontitulos:
+    build: 
+      context: .
     depends_on:
       - dbtitulos
 
