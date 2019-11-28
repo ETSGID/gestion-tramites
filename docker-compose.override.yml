@@ -1,18 +1,20 @@
 version: '3'
 
 services:
-
   dbtitulos:
     image: postgres:9.6
     restart: always
     volumes:
       - dbdatatitulos:/var/lib/postgres
-  
+    env_file:
+      - ./gestion-titulos-db.env
   gestiontitulos:
     build: 
       context: .
     depends_on:
       - dbtitulos
+    env_file:
+      - ./gestion-titulos.env
 
 volumes:
   dbdatatitulos:
