@@ -18,7 +18,7 @@
     <div id="root"></div>
     <div id="buttonMenuPortales123" style="position:fixed; z-index:4; text-align: right"></div>
     <script type="text/javascript" src="<%=context%>/js/bundle_<%=session.portal%>.js"></script>
-    <script src="https://pruebas.etsit.upm.es/<%=session.portal%>/static-button"></script>
+    <script src="https://portal.etsit.upm.es/<%=session.portal%>/static-button"></script>
     <script>
         let context = '<%-context%>';
         document.addEventListener('DOMContentLoaded', dibujarmenulateral("buttonMenuPortales123", context+"/logout", '<%=session.user.mail%>', '<%=session.user.cn%>'));
