@@ -1,23 +1,23 @@
 version: '3'
 
 services:
-  dbtitulos:
+  dbtramites:
     image: postgres:9.6
     restart: always
     volumes:
-      - dbdatatitulos:/var/lib/postgres
+      - dbdatatramites:/var/lib/postgres
     env_file:
-      - ./gestion-titulos-db.env
-  gestiontitulos:
+      - ../config/gestion-tramites/gestion-tramites-db.env
+  gestiontramites:
     build: 
       context: .
     depends_on:
-      - dbtitulos
+      - dbtramites
     env_file:
-      - ./gestion-titulos.env
+      - ../config/gestion-tramites/gestion-tramites.env
 
 volumes:
-  dbdatatitulos:
+  dbdatatramites:
 
 
 

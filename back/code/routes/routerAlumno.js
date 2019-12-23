@@ -1,13 +1,15 @@
 let express = require('express');
 let router = express.Router();
-let peticionController = require('../controllers/peticion_controller');
+const enums = require('../enums');
 let permisoController = require('../controllers/permiso_controller');
+const routerGestionTitulos = require('./gestion-titulos/routerAlumno');
 
-//Se comprueba que sea alumno
 router.all('*', permisoController.comprobarRolYAlumno);
-//router.all('*', peticionController.getInfoAlumno);
-router.get('/', function (req, res) {
-    res.render('index');
-  });
+
+router.use(`/${enums.tramites.gestionTitulos}`, function(req,res,next){
+    req.session.tramite = enums.tramites.gestionTitulos;
+    next();
+}, routerGestionTitulos);
+
 
 module.exports = router;

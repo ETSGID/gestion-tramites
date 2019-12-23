@@ -21,3 +21,8 @@ exports.formaPago = {
     "ONLINE": 1,
     "CARTA_PAGO": 2
 }
+
+
+exports.tramites = {
+    "gestionTitulos": "gestion-titulos"
+}

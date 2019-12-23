@@ -1,0 +1,20 @@
+.barraInicio {
+  background-color: #4564a3 !important;
+  width: 100%;
+  color: white !important;
+  border-radius: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 1px;
+}
+
+/*sobrescribir la clase del menú lateral*/
+.sidenav-2-d9f2c5a7e3da2e5fa5423cc19ea5a8b5 a {
+  color: #FFFFFF !important;
+}
+/*sobrescribir la clase del botón del menú lateral*/
+.open-6659b527b8d152af596e174303b316a7 {
+  position: fixed !important;
+}

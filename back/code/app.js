@@ -37,9 +37,7 @@ let cas = new CASAuthentication({
 let app = express();
 //rutas requeridas
 let routerPas = require('./routes/routerPas');
-let routerApiPas = require('./routes/routerApiPas');
 let routerAlumno = require('./routes/routerAlumno');
-let routerApiAlumno = require('./routes/routerApiAlumno');
 let models = require('./models');
 
 
@@ -79,19 +77,61 @@ app.get(path.join(contextPath2, 'logout'), cas.logout);
  * Este es para añadir a las variables req parametros necesarios en posteriores middlewares
  * 
  */
+if (process.env.DEV == 'true') {
+  /**
+   * modelo dev. Se debe configurar en fichero .env el email y password particular
+   * Será ese mail el sender y el receiver.
+   * Sólo entorno dev, no usar en producción ni en pruebas
+   * No usa la api nodos de finalización ni el servidor de mailing 
+   * Usa datos inventados
+   * Está preparado para usar el servidor de desarrollo de react
+  */
+  app.use(function (req, res, next) {
+    req.session.user = {}
+    req.session.user.employeetype = "FA"
+    req.session.user.irispersonaluniqueid = "123456789D"
+    req.session.user.sn = "FERNANDEZ FERNANDEZ"
+    req.session.user.cn = "FERNANDO"
+    //se debe sobrescribir con el texto correspondiente en el router del trámite
+    res.locals.barraInicioText="TRÁMITE";
+    res.locals.session = req.session;
+    //se envía y se recibe en el propio mail del usuario de pruebas
+    req.session.user.mail = process.env.EMAIL_USER;
+    next();
+  })
+} else {
+  //obliga a pasar por el cas. Tambien en pruebas pq estará en el host27
   app.use(cas.bounce, function (req, res, next) {
-    // Hacer visible req.session en las vistas
-    //modelo de pruebas
-    if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true'){
+    /**
+     * Si no es pruebas. Se debe configurar en fichero .env el servidor mailing de la aplicación
+     * y la api de nodos de finalización (habilitados por ip)
+     * Será ese mail el sender
+     * El receiver será el correspondiente en cada caso (pas/alumno)
+     * Usa la api nodos de finalización 
+     * Datos reales
+     * Debe usar el bundle.js
+    */
+    if (process.env.PRUEBAS == 'true') {
+      /**
+     * modelo pruebas. Se debe configurar en fichero .env el servidor mailing de la aplicación (habilitados por ip)
+     * Será ese mail el sender
+     * El receiver será en todos los casos el usuario autenticado
+     * No usa la api nodos de finalización 
+     * Usa datos inventados
+     * Debe usar el bundle.js
+    */
       req.session.user.employeetype = "FA"
-      req.session.user.irispersonaluniqueid ="123456789D"
+      req.session.user.irispersonaluniqueid = "123456789D"
       req.session.user.sn = "FERNANDEZ FERNANDEZ"
-      req.session.user.cn = "FERNANDO"
+      req.session.user.cn = "FERNANDO" 
     }
+       // Hacer visible req.session en las vistas
+    //se debe sobrescribir con el texto correspondiente en el router del trámite
+    res.locals.barraInicioText="TRÁMITE";
     res.locals.session = req.session;
     next();
   });
-
+}
 
 
 //static
@@ -109,14 +149,10 @@ app.use(contextPath2, function (req, res, next) {
   next();
 })
 
-// Rutas que no empiezan por /api/
-app.use(path.join(contextPath1, 'api'), routerApiPas);
-// Rutas que no empiezan por /api/
-app.use(path.join(contextPath2, 'api'), routerApiAlumno);
 
-// Rutas que no empiezan por /api/
+// Rutas para cada contextPath
 app.use(contextPath1, routerPas);
-// Rutas que no empiezan por /api/
+// Rutas para cada contextPath
 app.use(contextPath2, routerAlumno);
 
 
