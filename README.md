@@ -36,7 +36,54 @@ El proyecto se separa en dos partes:
 ### Local (sin Docker)
 #### Back
 ##### Variables de entorno
+Se deben copiar las variables presentes en el fichero  `back/code/file.env` en el siguiente fichero `back/code/local.env`. En este fichero se deben configurar las variables de entorno con contraseñas, ya que se encuentra en el `.gitignore`. Las variables de entorno son las siguientes:
+```shell
+POSTGRES_DB=gestion_tramites #(nombre de DB)
+DB_USERNAME=postgres #(nombre de usuario de DB)
+DB_PASSWORD=1234#(password de DB)
+DB_HOST=localhost
+SERVICE=http://localhost:3000
+CAS=https://repo.etsit.upm.es/cas-upm
+SESSION_SECRET=Secreto_para_las_sesiones
+CONTEXT1=/pas/gestion-titulos/
+CONTEXT2=/estudiantes/gestion-titulos/
+PORT=3000
+DEV=true#(entorno de desarrollo)
+PRUEBAS=false#(entrono de pruebas host26 o 27)
+DOCKER=false
+EMAIL_HOST=smtp.etsit.upm.es
+EMAIL_PORT=587
+EMAIL_USER=xxxx@alumnos.upm.es#(usario de correo upm)
+EMAIL_PASS=XXXX#(contraseña de correo upm)
+EMAIL_SENDER=xxxx@alumnos.upm.es#(usario de correo upm)
+EMAIL_SECRETARIA=xxxx@alumnos.upm.es#(usario de correo upm)
+```
+- Consideraciones:
+	- En local no se pueden utilizar las apis externas, por lo que se usan maquetas de datos **(DEV=true)**
+	- **(DEV=true)** no  pasa por el cas y crea un** usario inventado** (Fernando Fernández Fernández) con los roles (**FA**): PAS y Alumno 
+	- En local no se puede usar la cuenta de correo, pero sí se puede usar el correo de tipo @upm.es o @alumnos.upm.es.
+	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
+	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD)
+##### Comandos necesarios
+```shell
+cd code/back
+npm install #instala los paquetes
+npm start
+```
 #### Front
+Si se quiere probar el front de un trámite realizado con **React.js**,  se puede usar la parte de back pero antes debes iniciarla como se indica en el apartado anterior.
+Arrancar el servidor de front:
+```shell
+cd front/[tramite]
+npm install #instalar los paquetes para front
+npm run start1 #ver en el package.json del trámite de front los comandos asociados este es un ejemplo
+```
+Una vez se quiere generar el **.js** con todo el código de la SPA (*Single Page Applicaton*) ver en el package.json del trámite el comando correspondiente. A modo de ejemplo puede ser algo similar a lo siguiente:
+```shell
+npm run build1
+```
+El comando generará el .js correspondiente en la carpeta `build` del trámite. Si todo se ha realizado correctamente y se desea guardar en el servidor, deberá moverse el **.js** a `back/code/public/js/[tramite]/`
+
 ### Producción o pruebas (con Docker)
 #### Back
 ##### Variables de entorno
