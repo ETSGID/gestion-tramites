@@ -70,6 +70,9 @@ cd code/back
 npm install #instala los paquetes
 npm start
 ```
+#### BBDD
+Debe instalar **PostgreSQL** y crear la base de datos con el mismo password, username y nombre de la base de datos que se configuró en el local.env
+Se recomienda instalar **pgAdmin**, una interfaz gráfica que permite manipular fácilmente la base de datos.
 #### Front
 Si se quiere probar el front de un trámite realizado con **React.js**,  se puede usar la parte de back pero antes debes iniciarla como se indica en el apartado anterior.
 Arrancar el servidor de front:
