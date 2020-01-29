@@ -6,6 +6,16 @@ const routerGestionTitulos = require('./gestion-titulos/routerPas');
 
 router.all('*', permisoController.comprobarRolYPas);
 
+router.get(`/`, function(req,res,next){
+    req.session.tramite = null;
+    res.render("pagina-principal",{
+        barraInicioText: "LISTA DE TRÁMITES DISPONIBLES ONLINE",
+        tramites: enums.tramites
+    })
+
+
+});
+
 router.use(`/${enums.tramites.gestionTitulos}`, function (req, res, next) {
     req.session.tramite = enums.tramites.gestionTitulos;
     next();
