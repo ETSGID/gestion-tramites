@@ -16,8 +16,8 @@ router.get(`/`, function(req,res,next){
 
 });
 
-router.use(`/${enums.tramites.gestionTitulos}`, function (req, res, next) {
-    req.session.tramite = enums.tramites.gestionTitulos;
+router.use(`/${enums.tramites.gestionTitulos[0]}`, function (req, res, next) {
+    req.session.tramite = enums.tramites.gestionTitulos[0];
     next();
 }, routerGestionTitulos);
 
