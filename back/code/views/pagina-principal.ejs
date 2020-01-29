@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LISTA DE TRÁMITES DISPONIBLES ONLINE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--BOOTSTRAP 4-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel='stylesheet' type="text/css" href='<%=context%>/stylesheets/index.css' />
+</head>
+
+<body>
+    <nav class="barraInicio navbar navbar-expand-md navbar-dark">
+        <span class="navbar-brand"><%=barraInicioText%></span>
+    </nav>
+
+    <div>
+        <ul>
+        <%Object.values(tramites).forEach(tramite =>{ %>
+        <a href="<%=context%>/<%=tramite[0]%>/"><b><i><li><%=tramite[1]%></li></i></b></a>
+        <% }) %>
+        </ul>
+    </div>
+
+
+</body>
+
+</html>
