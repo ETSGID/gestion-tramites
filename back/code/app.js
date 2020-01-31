@@ -95,6 +95,7 @@ if (process.env.DEV == 'true') {
     //se debe sobrescribir con el texto correspondiente en el router del trámite
     res.locals.barraInicioText="TRÁMITE";
     res.locals.session = req.session;
+    res.locals.portalName='portal'
     //se envía y se recibe en el propio mail del usuario de pruebas
     req.session.user.mail = process.env.EMAIL_USER;
     next();
@@ -124,6 +125,9 @@ if (process.env.DEV == 'true') {
       req.session.user.irispersonaluniqueid = "123456789D"
       req.session.user.sn = "FERNANDEZ FERNANDEZ"
       req.session.user.cn = "FERNANDO" 
+      res.locals.portalName='pruebas';
+    } else {
+      res.locals.portalName='portal';
     }
        // Hacer visible req.session en las vistas
     //se debe sobrescribir con el texto correspondiente en el router del trámite

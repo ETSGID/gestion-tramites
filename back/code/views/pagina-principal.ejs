@@ -11,6 +11,12 @@
 </head>
 
 <body>
+    <div id="buttonMenuPortales123" style="position:fixed; z-index:4; text-align: right"></div>
+    <script src="https://<%=portalName%>.etsit.upm.es/<%=session.portal%>/static-button"></script>
+    <script>
+        let context = '<%-context%>';
+        document.addEventListener('DOMContentLoaded', dibujarmenulateral("buttonMenuPortales123", context+"/logout", '<%=session.user.mail%>', '<%=session.user.cn%>'));
+    </script>
     <nav class="barraInicio navbar navbar-expand-md navbar-dark">
         <span class="navbar-brand"><%=barraInicioText%></span>
     </nav>

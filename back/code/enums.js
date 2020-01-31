@@ -26,6 +26,7 @@ exports.formaPago = {
 
 exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
+    /*
     "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
     "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
     "anulacionMatriculas": ["anulacion-matricula","Anulación de Matrícula"],
@@ -36,4 +37,5 @@ exports.tramites = {
     "finEstudios":["fin-estudios", "Declaración Finalización de estudios. Acceso al Máster"],
     "recogidaDocumentos":["recogida-documentos", "Autorización de Recogida de Documentos"],
     "instanciaGeneral":["instancia-general", "Instancia General"]
+    */
 }
