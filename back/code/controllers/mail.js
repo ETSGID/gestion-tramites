@@ -12,7 +12,7 @@ const smtpConfig = {
     debug: false
 };
 
-exports.sendEmailHelper = async function (from, to, subject, text, filename, contentBuffer) {
+exports.sendEmailHelper = async function (from, to, subject, text, filesname, filesContentBuffer) {
     try {
         let config = {
             from: process.env.EMAIL_SENDER,
@@ -21,11 +21,14 @@ exports.sendEmailHelper = async function (from, to, subject, text, filename, con
             text: text, // plain text body
         }
         //solo cuando hay algo para enviar se envia
-        if (contentBuffer && filename) {
-            config.attachments = [{
-                filename: filename,
-                content: contentBuffer
-            }]
+        if (filesContentBuffer.length>0 && filesname.length>0) {
+            config.attachments = [];
+            for (let i = 0; i<filesContentBuffer.length; i++){
+                config.attachments.push({
+                    filename: filesname[i],
+                    content: filesContentBuffer[i]
+                })
+            } 
         }
 
         let transporter = nodemailer.createTransport(smtpConfig)

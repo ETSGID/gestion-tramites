@@ -125,10 +125,11 @@ exports.getInfoAllPas = async function (req, res, next) {
 
 //gestiona los parametros que llegan del multipart-form data
 exports.configureMultiPartFormData = async function (req, res, next) {
+    req.filesBuffer = [];
     var busboy = new Busboy({
         headers: req.headers,
         limits: {
-            files: 1, //limite 1 file
+            files: 2, //limite 2 files
             fileSize: 1024 * 1000 //limite 1MB
         }
     });
@@ -146,7 +147,8 @@ exports.configureMultiPartFormData = async function (req, res, next) {
                 if (file.truncated) {
                     res.status(500).json({ error: "Como máximo archivos de 1MB" });
                 } else {
-                    req.fileBuffer = Buffer.concat(chunks);
+                    req.filesBuffer.push(Buffer.concat(chunks));
+                    //console.log(req.filesBuffer)
                     //si no se mandó fichero no entra aqui
                 }
             });
@@ -166,6 +168,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 //update or create estado peticion
 exports.updateOrCreatePeticion = async function (req, res, next) {
     try {
+        if (!req.body.peticion.irispersonaluniqueid) req.body.peticion.irispersonaluniqueid = null;
         let peticion = await getPeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo)
         if (!peticion) peticion = { estadoPeticion: estadosTitulo.NO_PEDIDO }
         let paramsToUpdate = {};
@@ -219,10 +222,10 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = req.session.user.mail; //siempre se le manda el amail al que hace la prueba
             toPAS = req.session.user.mail;
         }
-        let mailInfoFromPas = await mail.sendEmail(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.fileBuffer, req.session)
-        //solo se envia cuand el alumno tiene algo que enviar
-        if (req.fileBuffer) {
-            let mailInfoFromAlumno = await mail.sendEmailAlumno(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.fileBuffer, req.session)
+        let mailInfoFromPas = await mail.sendEmail(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+        //solo se envia cuando el alumno tiene algo que enviar
+        if (req.filesBuffer) {
+            let mailInfoFromAlumno = await mail.sendEmailAlumno(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         }
         let respuesta;
         if (estadoNuevo === estadosTitulo.PEDIDO && peticion.estadoPeticion !== estadosTitulo.PETICION_CANCELADA) {

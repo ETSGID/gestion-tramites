@@ -3,12 +3,12 @@ const estadosTitulo = require('../../enums').estadosTitulo
 
 
 //email que recibe el alumno
-exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdicional, contentBuffer, session) {
+exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
     let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}`
     let text = `Su solicitud de título ${planCodigo} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
-    let filename;
+    let filesname = [];
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
             send = true;
@@ -29,7 +29,7 @@ exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdi
         case estadosTitulo.ESPERA_TITULO:
             send = true;
             text += `Se adjunta un resguardo del título solicitado. Hasta que no llegue el título sirve como documento oficial de que usted ha completado los estudios del título ${planCodigo}. Se le avisará cuando su título esté disponible para recoger, recuerde que puede tardar hasta un año en llegar.`
-            filename = `resguardo_titulo.pdf`
+            filesname.push(`resguardo_titulo.pdf`);
             break;
         case estadosTitulo.TITULO_DISPONIBLE:
             send = true;
@@ -46,7 +46,7 @@ exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdi
     }
     if (send) {
         try {
-            let info = await mail.sendEmailHelper(from, to, subject, text, filename, contentBuffer)
+            let info = await mail.sendEmailHelper(from, to, subject, text, filesname, filesContentBuffer)
             return info
         } catch (error) {
             //se propaga el error, se captura en el middleware
@@ -58,29 +58,28 @@ exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdi
 }
 
 //email que manda el alumno cuando tiene que enviar alguna cosa
-exports.sendEmailAlumno = async function (estadoActual, from, to, planCodigo, textoAdicional, contentBuffer, session) {
+exports.sendEmailAlumno = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
-    let subject;
+    let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn} ${session.user.sn}`
     let text;
-    let filename;
+    let filesname = [];
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
             send = true;
-            subject = `Información descuentos de ${session.user.cn} ${session.user.sn}`
-            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}`
-            filename = `informacion_descuentos.pdf`
+            text += `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}`
+            filesname.push(`dni_alumno.pdf`);
+            filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosTitulo.PAGO_REALIZADO:
             send = true;
-            subject = `Carta de pago de ${session.user.cn} ${session.user.sn}`
             text = `Se adjunta la carta de pago de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}`
-            filename = `carta_pago.pdf`
+            filesname.push(`carta_pago.pdf`)
             break;
     }
     if (send) {
         try {
-            let info = await mail.sendEmailHelper(from, to, subject, text, filename, contentBuffer)
+            let info = await mail.sendEmailHelper(from, to, subject, text, filesname, filesContentBuffer)
             return info
         } catch (error) {
             //se propaga el error, se captura en el middleware
