@@ -23,6 +23,17 @@ exports.formaPago = {
 }
 
 
+
 exports.tramites = {
-    "gestionTitulos": "gestion-titulos"
+    "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
+    "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
+    "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
+    "anulacionMatriculas": ["anulacion-matricula","Anulación de Matrícula"],
+    "cancelacionAsignaturas":["cancelacion-asignaturas", "Cancelación de Asignaturas"],
+    "devolucionTasas":["devolucion-tasas", "Devolución de Tasas"],
+    "seguroMovilidadNacional":["seguro-movilidad", "Seguro de Movilidad Nacional"],
+    "suplementoEuropeo":["suplemento-europeo", "Suplemento Europeo al Título"],
+    "finEstudios":["fin-estudios", "Declaración Finalización de estudios. Acceso al Máster"],
+    "recogidaDocumentos":["recogida-documentos", "Autorización de Recogida de Documentos"],
+    "instanciaGeneral":["instancia-general", "Instancia General"]
 }
