@@ -6,7 +6,8 @@ export default class FormPeticion extends React.Component {
   constructor(props) {
     super(props);
     this.state = { checkDescuento: descuento.NO, disabledFile: "disabled" }
-    this.fileInput = React.createRef();
+    this.fileInputDescuento = React.createRef();
+    this.fileInputDNI = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeDescuentos = this.handleChangeDescuentos.bind(this);
   }
@@ -20,14 +21,18 @@ export default class FormPeticion extends React.Component {
     let paramsToUpdate = {
       descuento: this.state.checkDescuento
     }
-    if (!this.fileInput.current.files[0] && this.state.checkDescuento != descuento.NO) {
+    if (!this.fileInputDNI.current.files[0]) {
+      alert("Debe adjuntar su documento oficial de identidad (DNI/NIF/NIE)")
+    }
+    else if (!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) {
       alert("Debe adjuntar la acreditación de familia numerosa");
     } else {
+      paramsToUpdate.file = this.fileInputDNI.current.files[0]
       //solo se pasa en este caso
-      if(this.state.checkDescuento != descuento.NO){
-        paramsToUpdate.file = this.fileInput.current.files[0]
+      if (this.state.checkDescuento != descuento.NO) {
+        paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
-      if (confirm(`¿Está seguro que quiere pedir el título ${this.props.peticion.planCodigo}?`)){
+      if (confirm(`¿Está seguro que quiere pedir el título ${this.props.peticion.planCodigo}?`)) {
         this.props.cambioEstadoClick(paramsToUpdate)
       }
     }
@@ -39,6 +44,12 @@ export default class FormPeticion extends React.Component {
         <Modal.Body>
           Usted va a solicitar el título {this.props.peticion.planCodigo}
           <Form onSubmit={this.handleSubmit}>
+            <Form.Group>
+              <Form.Label as="legend">
+                Adjunte su documento oficial de identidad (DNI/NIF/NIE) (NIF/DNI) escaneado
+              </Form.Label>
+              <input type="file" ref={this.fileInputDNI} />
+            </Form.Group>
             <Form.Group>
               <Form.Label as="legend">
                 <b>Descuentos aplicables</b>
@@ -66,9 +77,9 @@ export default class FormPeticion extends React.Component {
                 onChange={this.handleChangeDescuentos}
               />
               <Form.Label as="legend">
-                Adjunte acreditación familia numerosa
-          </Form.Label>
-              <input type="file" disabled={this.state.disabledFile} ref={this.fileInput} />
+                Adjunte acreditación familia numerosa:
+              </Form.Label>
+              <input type="file" disabled={this.state.disabledFile} ref={this.fileInputDescuento} />
             </Form.Group>
           </Form >
         </Modal.Body>

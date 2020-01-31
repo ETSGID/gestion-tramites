@@ -22,7 +22,7 @@
     "normalize-path": "^3.0.0",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^4.44.3"
+    "sequelize": "^5.21.3"
   },
   "devDependencies": {
     "depcheck": "^0.8.3"

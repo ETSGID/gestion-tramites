@@ -42,7 +42,7 @@ export default class App extends React.Component {
       formData.append("file", paramsToUpdate.file);
     }
     formData.append("body", JSON.stringify({peticion:peticionesNuevas[index], paramsToUpdate: paramsToUpdate, cancel: this.state.cancel}))
-    axios.post(urljoin(apiBaseUrl + "api/peticionCambioEstado"), formData, {
+    axios.post(urljoin(apiBaseUrl , "api/peticionCambioEstado"), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

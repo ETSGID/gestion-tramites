@@ -1,4 +1,3 @@
-
 import React from 'react';
 import axios from 'axios';
 import Titulos from './Titulos.jsx'
@@ -22,7 +21,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(urljoin(apiBaseUrl + "api/peticiones"))
+    axios.get(urljoin(apiBaseUrl , "api/peticiones"))
       .then((response) => {
         this.setState({
           peticiones: response.data
@@ -41,8 +40,11 @@ export default class App extends React.Component {
     if(paramsToUpdate.file){
       formData.append("file", paramsToUpdate.file);
     }
+    if (paramsToUpdate.file2){
+      formData.append("file2", paramsToUpdate.file2)
+    }
     formData.append("body", JSON.stringify({peticion:peticionesNuevas[index], paramsToUpdate: paramsToUpdate}))
-    axios.post(urljoin(apiBaseUrl + "api/peticionCambioEstado"), formData, {
+    axios.post(urljoin(apiBaseUrl , "api/peticionCambioEstado"), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
