@@ -33,6 +33,40 @@ El proyecto se separa en dos partes:
 		- Webpack
 
 ## Puesta en marcha
+### Producción
+##### Variables de entorno
+```shell
+POSTGRES_DB=gestion_tramites #(nombre de DB)
+DB_USERNAME=postgres #(nombre de usuario de DB)
+DB_PASSWORD=1234#(password de DB)
+DB_HOST=localhost
+SERVICE=#url servicio sin contexto ejemplo:https://pruebas.etsit.upm.es 
+CAS=#url servidor cas: ejemplo:https://repo.etsit.upm.es/cas-upm
+SESSION_SECRET=Secreto_para_las_sesiones
+CONTEXT1=/pas/gestion-tramites/
+CONTEXT2=/estudiantes/gestion-tramites/
+PORT=3000#(puerto interno)
+DEV=false#(entorno de desarrollo)
+PRUEBAS=false#(entrono de pruebas host26 o 27)
+DOCKER=true
+EMAIL_HOST=smtp.etsit.upm.es
+EMAIL_PORT=587
+EMAIL_USER=zz.mailer.sys2
+EMAIL_PASS=XXXX#(contraseña de correo upm)
+EMAIL_SENDER=Solicitud trámites <noreply@etsit.upm.es>
+EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es#(usario de correo upm)
+```
+##### Comandos necesarios
+- Imagen:
+```shell
+git.etsit.upm.es:4567/grupointegraciondigital/gestion-tramites:stable
+```
+- Configuración de docker-compose.override.yml
+- Ejecución:
+```shell
+docker-compose up
+```
+
 ### Local (sin Docker)
 #### Back
 ##### Variables de entorno
@@ -87,7 +121,7 @@ npm run build1
 ```
 El comando generará el .js correspondiente en la carpeta `build` del trámite. Si todo se ha realizado correctamente y se desea guardar en el servidor, deberá moverse el **.js** a `back/code/public/js/[tramite]/`
 
-### Producción o pruebas (con Docker)
+### Pruebas (con Docker)
 #### Back
 ##### Variables de entorno
 #### Front
