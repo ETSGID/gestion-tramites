@@ -101,6 +101,7 @@ exports.getInfoAlumno = async function (req, res, next) {
             let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + firstCall.data.token)
             titulosAlumno = secondCall.data
         }
+        if (!Array.isArray(titulosAlumno)) titulosAlumno = [];
         //merge titulos pedidos y los que puede repetir 
         titulosAlumno.forEach(plan => { !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
         res.json(peticiones)
