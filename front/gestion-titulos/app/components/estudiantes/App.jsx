@@ -4,7 +4,7 @@ import Titulos from './Titulos.jsx'
 import './../../assets/scss/main.scss';
 const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos;
 let urljoin = require('url-join');
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin("http://localhost:3000/estudiantes/gestion-titulos", tramite) : window.location.href
+const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin("http://localhost:3000/estudiantes/gestion-titulos", tramite[0]) : window.location.href
 
 
 export default class App extends React.Component {
@@ -28,7 +28,7 @@ export default class App extends React.Component {
         })
       })
       .catch(function (error) {
-        alert("Error en la conexión con el servidor")
+        alert("Error en la conexión con el servidor. Los ficheros adjuntos deben ser pdf y deben pesar menos de 1MB cada uno")
       })
   }
 
@@ -59,7 +59,7 @@ export default class App extends React.Component {
         })
       })
       .catch(function (error) {
-        alert("Error en la conexión con el servidor")
+        alert("Error en la conexión con el servidor. Los ficheros adjuntos deben ser pdf y deben pesar menos de 1MB cada uno")
       })
   }
 
