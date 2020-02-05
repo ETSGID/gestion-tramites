@@ -139,6 +139,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         //se mete en un buffer para pasarlo al correo
         let chunks = []
         if (mimetype !== 'application/pdf') {
+            file.resume()
             error = "Sólo se adminte ficheros formato pdf";
         } else {
             file.on('data', function (data) {
