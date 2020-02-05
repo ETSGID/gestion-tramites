@@ -127,6 +127,7 @@ exports.getInfoAllPas = async function (req, res, next) {
 //gestiona los parametros que llegan del multipart-form data
 exports.configureMultiPartFormData = async function (req, res, next) {
     req.filesBuffer = [];
+    error = false;
     var busboy = new Busboy({
         headers: req.headers,
         limits: {
@@ -138,7 +139,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         //se mete en un buffer para pasarlo al correo
         let chunks = []
         if (mimetype !== 'application/pdf') {
-            res.status(500).json({ error: "Sólo se adminte ficheros formato pdf" });
+            error = "Sólo se adminte ficheros formato pdf";
         } else {
             file.on('data', function (data) {
                 chunks.push(data);
@@ -146,7 +147,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
             file.on('end', function () {
                 //comprueba si supero el tamaño el archivo
                 if (file.truncated) {
-                    res.status(500).json({ error: "Como máximo archivos de 1MB" });
+                    error= "Como máximo archivos de 1MB";
                 } else {
                     req.filesBuffer.push(Buffer.concat(chunks));
                     //console.log(req.filesBuffer)
@@ -161,7 +162,12 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         req.body = JSON.parse(val);
     });
     busboy.on('finish', function () {
-        next()
+        if(error){
+            res.status(500).json({ error: error });
+        }
+        else{
+            next()
+        }
     });
     req.pipe(busboy);
 }
