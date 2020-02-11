@@ -128,6 +128,7 @@ if (process.env.DEV == 'true') {
       res.locals.portalName='pruebas';
     } else {
       res.locals.portalName='portal';
+      req.session.user.irispersonaluniqueid = req.session.user.edupersonuniqueid || null
     }
        // Hacer visible req.session en las vistas
     //se debe sobrescribir con el texto correspondiente en el router del trámite
