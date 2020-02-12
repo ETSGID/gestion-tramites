@@ -3,6 +3,7 @@ let mail = require('./mail')
 const estadosTitulo = require('../../enums').estadosTitulo
 var Busboy = require('busboy');
 const axios = require('axios');
+const base64 = require('../../lib/base64')
 var inspect = require('util').inspect;
 
 //devuelve todas las peticiones de un alumno
@@ -98,7 +99,7 @@ exports.getInfoAlumno = async function (req, res, next) {
             titulosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
         } else {
             let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
-            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + firstCall.data.token)
+            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
             titulosAlumno = secondCall.data
         }
         if (!Array.isArray(titulosAlumno)) titulosAlumno = [];
