@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import Titulos from './Titulos.jsx'
+import Titulos from './Titulos.jsx';
+import LoadingOverlay from 'react-loading-overlay';
 import './../../assets/scss/main.scss';
 const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos;
 let urljoin = require('url-join');
@@ -14,20 +15,28 @@ export default class App extends React.Component {
     this.state = {
       peticiones: [],
       selected: null,
-      info: null
+      info: null,
+      loading: null
     };
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
   }
 
   componentDidMount() {
-    axios.get(urljoin(apiBaseUrl , "api/peticiones"))
+    this.setState({
+      loading: true
+    })
+    axios.get(urljoin(apiBaseUrl, "api/peticiones"))
       .then((response) => {
         this.setState({
-          peticiones: response.data
+          peticiones: response.data,
+          loading: null
         })
       })
-      .catch(function (error) {
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
         alert("Error en la conexión con el servidor. Los ficheros adjuntos deben ser pdf y deben pesar menos de 1MB cada uno")
       })
   }
@@ -37,14 +46,18 @@ export default class App extends React.Component {
     //para mandar el archivo hace falta crear un FormData
     let formData = new FormData();
     //sino había file se queda a null
-    if(paramsToUpdate.file){
+    if (paramsToUpdate.file) {
       formData.append("file", paramsToUpdate.file);
     }
-    if (paramsToUpdate.file2){
+    if (paramsToUpdate.file2) {
       formData.append("file2", paramsToUpdate.file2)
     }
-    formData.append("body", JSON.stringify({peticion:peticionesNuevas[index], paramsToUpdate: paramsToUpdate}))
-    axios.post(urljoin(apiBaseUrl , "api/peticionCambioEstado"), formData, {
+    this.setState({
+      loading: true,
+      selected: null
+    })
+    formData.append("body", JSON.stringify({ peticion: peticionesNuevas[index], paramsToUpdate: paramsToUpdate }))
+    axios.post(urljoin(apiBaseUrl, "api/peticionCambioEstado"), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -55,10 +68,14 @@ export default class App extends React.Component {
         this.setState({
           peticiones: peticionesNuevas,
           selected: null,
-          info: null
+          info: null,
+          loading: null
         })
       })
-      .catch(function (error) {
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
         alert("Error en la conexión con el servidor. Los ficheros adjuntos deben ser pdf y deben pesar menos de 1MB cada uno")
       })
   }
@@ -76,14 +93,20 @@ export default class App extends React.Component {
         <div className="cuerpo">
           <h2>Titulaciones</h2>
           <p>A continuación se presentan las titulaciones que tiene finalizadas o en las que está matriculado. Recuerde que sólo puede pedir una titulación si la ha finalizado por completo</p>
-          <Titulos
-            selected={this.state.selected}
-            info={this.state.info}
-            peticiones={this.state.peticiones}
-            cambioEstadoClick={this.cambioEstadoClick}
-            cambioSelectedClick={this.cambioSelectedClick}
+          <LoadingOverlay
+            active={this.state.loading}
+            spinner
+            text='Cargando'
           >
-          </Titulos>
+            <Titulos
+              selected={this.state.selected}
+              info={this.state.info}
+              peticiones={this.state.peticiones}
+              cambioEstadoClick={this.cambioEstadoClick}
+              cambioSelectedClick={this.cambioSelectedClick}
+            >
+            </Titulos>
+          </LoadingOverlay>
         </div>
       </div>
 
