@@ -1,9 +1,10 @@
 let models = require('../../models');
-let mail = require('./mail')
-const estadosTitulo = require('../../enums').estadosTitulo
+let mail = require('./mail');
+const estadosTitulo = require('../../enums').estadosTitulo;
 var Busboy = require('busboy');
 const axios = require('axios');
-const base64 = require('../../lib/base64')
+const base64 = require('../../lib/base64');
+const dni = require('../../lib/dni');
 var inspect = require('util').inspect;
 
 //devuelve todas las peticiones de un alumno
@@ -96,15 +97,24 @@ exports.getInfoAlumno = async function (req, res, next) {
         let peticiones = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
         let titulosAlumno;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            titulosAlumno = [{ "idplan": "09TT"}, { "idplan": "09TT"}, { "idplan": "09AQ"}]
+            titulosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
         } else {
             let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
             let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
             titulosAlumno = secondCall.data
+            if (!Array.isArray(titulosAlumno) && typeof req.session.user.irispersonaluniqueid === 'string' ) {
+                let firstCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + dni.sanetizeDni(req.session.user.irispersonaluniqueid));
+                let secondCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall2.data.token))
+                titulosAlumno = secondCall2.data
+            }
         }
-        if (!Array.isArray(titulosAlumno)) titulosAlumno = [];
-        //merge titulos pedidos y los que puede repetir 
-        titulosAlumno.forEach(plan => {!peticiones.find(p => {p.planCodigo === plan.idplan }) ? peticiones.push({planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO}) : null})        
+        if (!Array.isArray(titulosAlumno)){
+            titulosAlumno = [];
+            console.log(req.session.user.irispersonaluniqueid)
+        } 
+        
+        //merge titulos pedidos y los que puede repetir
+        titulosAlumno.forEach(plan => { return !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
         res.json(peticiones)
     } catch (error) {
         console.log(error)
@@ -149,7 +159,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
             file.on('end', function () {
                 //comprueba si supero el tamaño el archivo
                 if (file.truncated) {
-                    error= "Como máximo archivos de 1MB";
+                    error = "Como máximo archivos de 1MB";
                 } else {
                     req.filesBuffer.push(Buffer.concat(chunks));
                     //console.log(req.filesBuffer)
@@ -164,10 +174,10 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         req.body = JSON.parse(val);
     });
     busboy.on('finish', function () {
-        if(error){
+        if (error) {
             res.status(500).json({ error: error });
         }
-        else{
+        else {
             next()
         }
     });
