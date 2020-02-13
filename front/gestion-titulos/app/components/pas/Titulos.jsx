@@ -142,6 +142,7 @@ export default class Titulos extends React.Component {
             <div>
                 <BootstrapTable
                     bootstrap4
+                    wrapperClasses="table-responsive"
                     keyField="idTabla"
                     data={peticiones}
                     columns={columns}
