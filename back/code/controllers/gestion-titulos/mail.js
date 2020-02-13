@@ -67,7 +67,7 @@ exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, tex
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
             send = true;
-            text += `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
             filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
