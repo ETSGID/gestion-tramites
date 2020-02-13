@@ -87,6 +87,16 @@ export default class ModalStructure extends React.Component {
           >
           </FormTituloRecoger>
           break;
+        case estadosTitulo.TITULO_RECOGIDO:
+          form = <FormTituloRecoger
+            peticion={this.props.peticion}
+            handleClose={this.handleClose}
+            cambioEstadoClick={this.cambioEstadoClick}
+          >
+          </FormTituloRecoger>
+          break;
+        default:
+          break;
       }
     }
     return (

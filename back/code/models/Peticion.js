@@ -12,7 +12,8 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey : true
             },
             planNombre: {
-                type: DataTypes.STRING
+                type: DataTypes.STRING,
+                primaryKey: true,
             },
             email: {
                 type: DataTypes.STRING,

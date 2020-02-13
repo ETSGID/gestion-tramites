@@ -1,5 +1,7 @@
 import React from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Modal, Button, Form, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 const descuento = require('../../../../../back/code/enums').descuento
 
 export default class FormPeticion extends React.Component {
@@ -49,7 +51,15 @@ export default class FormPeticion extends React.Component {
                 Adjunte su documento oficial de identidad (DNI/NIF/NIE) (NIF/DNI) escaneado
               </Form.Label>
               <input type="file" ref={this.fileInputDNI} />
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+              </Tooltip>}>
+              <span className="d-inline-block">
+              <FontAwesomeIcon icon={faInfoCircle}/>
+              </span>
+            </OverlayTrigger>
             </Form.Group>
+
             <Form.Group>
               <Form.Label as="legend">
                 <b>Descuentos aplicables</b>
@@ -80,6 +90,13 @@ export default class FormPeticion extends React.Component {
                 Adjunte acreditación familia numerosa:
               </Form.Label>
               <input type="file" disabled={this.state.disabledFile} ref={this.fileInputDescuento} />
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+              </Tooltip>}>
+              <span className="d-inline-block">
+              <FontAwesomeIcon icon={faInfoCircle}/>
+              </span>
+            </OverlayTrigger>
             </Form.Group>
           </Form >
         </Modal.Body>

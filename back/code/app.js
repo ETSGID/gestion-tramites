@@ -27,7 +27,12 @@ let cas = new CASAuthentication({
   //local o despliegue
   service_url: service,
   cas_version: '3.0',
-  session_info: 'user',
+  renew: false,
+  is_dev_mode: true,
+  dev_mode_user: '',
+  dev_mode_info: {},
+  session_name: 'cas_user',
+  session_info: 'cas_userinfo',
   destroy_session: true//me borra la sesión al hacer el logout
 });
 

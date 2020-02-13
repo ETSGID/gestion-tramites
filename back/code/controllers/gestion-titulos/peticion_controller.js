@@ -95,14 +95,14 @@ exports.getInfoAlumno = async function (req, res, next) {
         let peticiones = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
         let titulosAlumno;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            titulosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
+            titulosAlumno = [{ "idplan": "09TT"}, { "idplan": "09TT"}, { "idplan": "09AQ"}]
         } else {
             let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
             let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + firstCall.data.token)
             titulosAlumno = secondCall.data
         }
         //merge titulos pedidos y los que puede repetir 
-        titulosAlumno.forEach(plan => { !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
+        titulosAlumno.forEach(plan => {!peticiones.find(p => {p.planCodigo === plan.idplan }) ? peticiones.push({planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO}) : null})        
         res.json(peticiones)
     } catch (error) {
         console.log(error)
@@ -219,13 +219,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mail; //siempre se le manda el amail al que hace la prueba
+            toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
             toPAS = req.session.user.mail;
         }
-        let mailInfoFromPas = await mail.sendEmail(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         //solo se envia cuando el alumno tiene algo que enviar
         if (req.filesBuffer) {
-            let mailInfoFromAlumno = await mail.sendEmailAlumno(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         }
         let respuesta;
         if (estadoNuevo === estadosTitulo.PEDIDO && peticion.estadoPeticion !== estadosTitulo.PETICION_CANCELADA) {

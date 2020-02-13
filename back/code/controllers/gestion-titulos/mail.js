@@ -3,11 +3,11 @@ const estadosTitulo = require('../../enums').estadosTitulo
 
 
 //email que recibe el alumno
-exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
+exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
     let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}`
-    let text = `Su solicitud de título ${planCodigo} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
+    let text = `Su solicitud de título del plan ${planCodigo} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
     let filesname = [];
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
@@ -58,7 +58,7 @@ exports.sendEmail = async function (estadoActual, from, to, planCodigo, textoAdi
 }
 
 //email que manda el alumno cuando tiene que enviar alguna cosa
-exports.sendEmailAlumno = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
+exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
     let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn} ${session.user.sn}`
@@ -67,13 +67,13 @@ exports.sendEmailAlumno = async function (estadoActual, from, to, planCodigo, te
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
             send = true;
-            text += `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}`
+            text += `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
             filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosTitulo.PAGO_REALIZADO:
             send = true;
-            text = `Se adjunta la carta de pago de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}`
+            text = `Se adjunta la carta de pago de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
             filesname.push(`carta_pago.pdf`)
             break;
     }

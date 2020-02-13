@@ -75,7 +75,7 @@ export default class Titulos extends React.Component {
             text: 'Info',
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
-                return (<Button variant="secondary" onClick={() => this.cambioSelectedClick(row.idTabla, true)}><FontAwesomeIcon icon={faInfoCircle} /></Button>)
+                return (<Button variant="secondary" onClick={() => this.cambioSelectedClick(row.idTabla, true)}><FontAwesomeIcon icon={faInfoCircle}/></Button>)
             }
 
         }

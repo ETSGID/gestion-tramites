@@ -7,6 +7,8 @@ export default class Formcancel extends React.Component {
         this.state = { textCancel: "" }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeTextCancel = this.handleChangeTextCancel.bind(this);
+        this.handleCheckBox = this.handleCheckBox.bind(this);
+
     }
 
     handleChangeTextCancel(e) {
@@ -23,6 +25,9 @@ export default class Formcancel extends React.Component {
             this.props.cambioEstadoClick(paramsToUpdate)
         }
     }
+    handleCheckBox(){
+        this.setState({textCancel: "Su título ha sido recogido previamente."})
+    }
     render() {
         return (
             <div>
@@ -32,6 +37,7 @@ export default class Formcancel extends React.Component {
                     <br />
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Group>
+                            <Form.Check type="checkbox" label="Título recogido previamente" onClick={this.handleCheckBox}/>
                             <Form.Label>Indique motivo de cancelación de la petición</Form.Label>
                             <Form.Control onChange={this.handleChangeTextCancel} as="textarea" rows="3" />
                         </Form.Group>

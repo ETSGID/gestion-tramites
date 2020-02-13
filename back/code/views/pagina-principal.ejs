@@ -22,7 +22,16 @@
     </nav>
 
     <div>
-        <ul>
+        <p class="textoInicio">
+            En esta página se dispone el acceso a los trámites de secretaría que pueden realizarse de forma online.
+            <br>
+            Para acceder a la normativa de los mismos <a href=" http://www.etsit.upm.es/escuela/secretaria-de-alumnos/tramites-de-secretaria.html">pinche aquí</a>
+            <br>
+        </p>
+    </div>
+
+    <div>
+        <ul class="listaTramites">
         <%Object.values(tramites).forEach(tramite =>{ %>
         <a href="<%=context%>/<%=tramite[0]%>/"><b><i><li><%=tramite[1]%></li></i></b></a>
         <% }) %>

@@ -3,12 +3,12 @@ import React from 'react';
 import axios from 'axios';
 import Titulos from './Titulos.jsx'
 import './../../assets/scss/main.scss';
-const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos;
+const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos[0];
 let urljoin = require('url-join');
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin("http://localhost:3000/pas/gestion-titulos", tramite) : window.location.href
 
 
-export default class App extends React.Component {
+export default class App extends React.Component {  
 
   constructor(props) {
     super(props)

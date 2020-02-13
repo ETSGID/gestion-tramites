@@ -1,5 +1,7 @@
 import React from 'react';
-import { Modal, Button, Form} from 'react-bootstrap';
+import { Modal, Button, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const formaPago = require('../../../../../back/code/enums').formaPago
 
 export default class FormPago extends React.Component {
@@ -62,6 +64,13 @@ export default class FormPago extends React.Component {
                 Adjunte carta de pago
           </Form.Label>
               <input type="file" disabled={this.state.disabledFile} ref={this.fileInput} />
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+              </Tooltip>}>
+              <span className="d-inline-block">
+              <FontAwesomeIcon icon={faInfoCircle}/>
+              </span>
+            </OverlayTrigger>
             </Form.Group>
           </Form >
         </Modal.Body>

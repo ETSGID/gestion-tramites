@@ -1,5 +1,7 @@
 import React from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { Modal, Button, Form, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default class FormPeticion extends React.Component {
   constructor(props) {
@@ -32,6 +34,13 @@ export default class FormPeticion extends React.Component {
               Adjunte resguardo del título
             </Form.Label>
             <input type="file" ref={this.fileInput} />
+            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+              </Tooltip>}>
+              <span className="d-inline-block">
+              <FontAwesomeIcon icon={faInfoCircle}/>
+              </span>
+            </OverlayTrigger>
           </Form >
         </Modal.Body>
         <Modal.Footer>

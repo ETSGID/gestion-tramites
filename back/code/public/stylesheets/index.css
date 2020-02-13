@@ -17,4 +17,17 @@
 /*sobrescribir la clase del botón del menú lateral*/
 .open-6659b527b8d152af596e174303b316a7 {
   position: fixed !important;
+  color: #FFFFFF;
+}
+
+.textoInicio{
+  position: relative;
+  left: 70px;
+  top: 20px;
+}
+
+.listaTramites{
+  position: relative;
+  left: 60px;
+  top: 20px;
 }
