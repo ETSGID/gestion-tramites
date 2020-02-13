@@ -48,7 +48,7 @@ export default class FormPeticion extends React.Component {
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">
-                Adjunte su documento oficial de identidad (DNI/NIF/NIE) (NIF/DNI) escaneado
+                Adjunte su documento oficial de identidad (DNI/NIF/NIE) (NIF/DNI) escaneado por ambas caras
               </Form.Label>
               <input type="file" ref={this.fileInputDNI} />
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">

@@ -92,7 +92,8 @@ export default class App extends React.Component {
       <div>
         <div className="cuerpo">
           <h2>Titulaciones</h2>
-          <p>A continuación se presentan las titulaciones que tiene finalizadas o en las que está matriculado. Recuerde que sólo puede pedir una titulación si la ha finalizado por completo</p>
+          <p>A continuación se presentan las titulaciones que tiene finalizadas. Recuerde que sólo puede pedir una titulación si la ha finalizado por completo</p>
+          <p><b>Se le enviarán notificaciones a través de su correo @alumnos.upm.es</b></p>
           <LoadingOverlay
             active={this.state.loading}
             spinner
