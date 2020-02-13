@@ -16,7 +16,7 @@ export default class InfoPeticion extends React.Component {
         let formaPagoText;
         let descuentoText;
         if (estadosTitulo.TITULO_RECOGIDO == this.props.peticion.estadoPeticion) {
-            receptor = this.props.peticion.receptor ? <li>Receptor: Recogido por el titular</li> : <li>Receptor: {this.props.peticion.receptor}</li>
+            receptor = this.props.peticion.receptor ? <li>Receptor: {this.props.peticion.receptor}</li> : <li>Receptor: Recogido por el titular</li>
         }
         if (estadosTitulo.PETICION_CANCELADA == this.props.peticion.estadoPeticion) {
             cancelado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>

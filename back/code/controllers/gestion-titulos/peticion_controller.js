@@ -3,6 +3,7 @@ let mail = require('./mail')
 const estadosTitulo = require('../../enums').estadosTitulo
 var Busboy = require('busboy');
 const axios = require('axios');
+const base64 = require('../../lib/base64')
 var inspect = require('util').inspect;
 
 //devuelve todas las peticiones de un alumno
@@ -98,9 +99,10 @@ exports.getInfoAlumno = async function (req, res, next) {
             titulosAlumno = [{ "idplan": "09TT"}, { "idplan": "09TT"}, { "idplan": "09AQ"}]
         } else {
             let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
-            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + firstCall.data.token)
+            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
             titulosAlumno = secondCall.data
         }
+        if (!Array.isArray(titulosAlumno)) titulosAlumno = [];
         //merge titulos pedidos y los que puede repetir 
         titulosAlumno.forEach(plan => {!peticiones.find(p => {p.planCodigo === plan.idplan }) ? peticiones.push({planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO}) : null})        
         res.json(peticiones)
@@ -126,6 +128,7 @@ exports.getInfoAllPas = async function (req, res, next) {
 //gestiona los parametros que llegan del multipart-form data
 exports.configureMultiPartFormData = async function (req, res, next) {
     req.filesBuffer = [];
+    error = false;
     var busboy = new Busboy({
         headers: req.headers,
         limits: {
@@ -137,7 +140,8 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         //se mete en un buffer para pasarlo al correo
         let chunks = []
         if (mimetype !== 'application/pdf') {
-            res.status(500).json({ error: "Sólo se adminte ficheros formato pdf" });
+            file.resume()
+            error = "Sólo se adminte ficheros formato pdf";
         } else {
             file.on('data', function (data) {
                 chunks.push(data);
@@ -145,7 +149,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
             file.on('end', function () {
                 //comprueba si supero el tamaño el archivo
                 if (file.truncated) {
-                    res.status(500).json({ error: "Como máximo archivos de 1MB" });
+                    error= "Como máximo archivos de 1MB";
                 } else {
                     req.filesBuffer.push(Buffer.concat(chunks));
                     //console.log(req.filesBuffer)
@@ -160,7 +164,12 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         req.body = JSON.parse(val);
     });
     busboy.on('finish', function () {
-        next()
+        if(error){
+            res.status(500).json({ error: error });
+        }
+        else{
+            next()
+        }
     });
     req.pipe(busboy);
 }

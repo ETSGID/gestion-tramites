@@ -16,7 +16,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
             break;
         case estadosTitulo.ESPERA_PAGO:
             send = true;
-            text += `Debe abonar el pago del título. Puede encontrar la información en el gestor de recibos de la politécnica virtual: Politécnica Virtual > Mis datos > 04. Precios públicos > Gestión de recibos . Una vez haya realizado el pago debe confirmarlo en la aplicación de gestión de títulos.`
+            text += `Debe abonar el pago del título. Puede encontrar la información en el gestor de recibos de la politécnica virtual: Desde Politécnica Virtual > Mis datos > 04. Precios públicos > Gestión de recibos > Acceder > Automatrícula > Introducir cuenta UPM > Entrar en gestión de recibos (Pinchar sobre la opción deseada, pago de recibos de matrícula u otros pagos). Para poder realizar el pago online, no pinchar en número de referencia, ir directamente a formas de pago, clicar directamente en el símbolo $, pinchar en pago con tarjeta on-line. Si se abre por referencia, ya no se puede pagar por tarjeta on-line y se tendría que pagar por banco (recibo bancario).`
             break;
         case estadosTitulo.PAGO_REALIZADO:
             send = true;
@@ -33,7 +33,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
             break;
         case estadosTitulo.TITULO_DISPONIBLE:
             send = true;
-            text += `Su título ya está disponible, puede pasarse por secretaría para recogerlo. La recogida del título es de forma presencial por el interesado, acreditando su identidad mediante la presentación del DNI o pasaporte en vigor o mediante poder notarial a un tercero autorizado. Conforme la legislación vigente La legislación vigente (https://www.boe.es/buscar/doc.php?id=BOE-A-1988-17542)`
+            text += `Su título ya está disponible, puede pasarse por secretaría para recogerlo. La recogida del título es de forma presencial por el interesado, acreditando su identidad mediante la presentación del DNI o pasaporte en vigor o mediante poder notarial a un tercero autorizado. Conforme la legislación vigente (https://www.boe.es/buscar/doc.php?id=BOE-A-1988-17542)`
             break;
         case estadosTitulo.TITULO_RECOGIDO:
             send = true;

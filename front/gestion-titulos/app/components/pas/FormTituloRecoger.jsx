@@ -35,7 +35,7 @@ export default class FormTituloRecoger extends React.Component {
         let paramsToUpdate = {
           localizacionFisica: this.state.textRegistro.trim()
         }
-        paramsToUpdate.receptor = this.state.checkReceptor == 1 ? null : this.state.checkReceptor.trim();
+        paramsToUpdate.receptor = this.state.checkReceptor == 1 ? null : this.state.textReceptor.trim();
         this.props.cambioEstadoClick(paramsToUpdate)
       }
     }
