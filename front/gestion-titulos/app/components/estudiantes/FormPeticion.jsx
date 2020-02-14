@@ -24,7 +24,7 @@ export default class FormPeticion extends React.Component {
       descuento: this.state.checkDescuento
     }
     if (!this.fileInputDNI.current.files[0]) {
-      alert("Debe adjuntar su documento oficial de identidad (DNI/NIF/NIE)")
+      alert("Debe adjuntar su documento oficial de identidad (DNI/PASAPORTE), no se admite NIE")
     }
     else if (!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) {
       alert("Debe adjuntar la acreditación de familia numerosa");
@@ -48,7 +48,7 @@ export default class FormPeticion extends React.Component {
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">
-                Adjunte su documento oficial de identidad (DNI/NIF/NIE) (NIF/DNI) escaneado por <b>ambas caras</b>
+                Adjunte su documento oficial de identidad (DNI/PASAPORTE), no se admite NIE, escaneado por <b>ambas caras</b>
               </Form.Label>
               <input type="file" ref={this.fileInputDNI} />
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
