@@ -5,7 +5,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import './../../assets/scss/main.scss';
 const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos;
 let urljoin = require('url-join');
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin("http://localhost:3000/estudiantes/gestion-titulos", tramite[0]) : window.location.href
+const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin("http://localhost:3000/estudiantes/gestion-tramites", tramite[0]) : window.location.href
 
 
 export default class App extends React.Component {
