@@ -11,7 +11,7 @@ services:
   gestiontramites:
     build: 
       context: .
-#    image: git.etsit.upm.es:4567/grupointegraciondigital/gestion-tramites:latest
+#    image: git.etsit.upm.es:4567/grupointegraciondigital/gestion-tramites:stable
     depends_on:
       - dbtramites
     env_file:
