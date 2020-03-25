@@ -5,12 +5,13 @@ services:
     image: postgres:9.6
     restart: always
     volumes:
-      - dbdatatramites:/var/lib/postgres
+      - dbdatatramites:/var/lib/postgresql/data
     env_file:
       - ../config/gestion-tramites/gestion-tramites-db.env
   gestiontramites:
     build: 
       context: .
+#    image: git.etsit.upm.es:4567/grupointegraciondigital/gestion-tramites:latest
     depends_on:
       - dbtramites
     env_file:
