@@ -193,21 +193,24 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let paramsToUpdate = {};
         let estadoNuevo;
         let textoAdicional;
+
         if (req.body.cancel) {
-            estadoNuevo = estadosTitulo.PETICION_CANCELADA;
+            estadoNuevo = req.body.paramsToUpdate.cancelNewState || estadosTitulo.PETICION_CANCELADA;
             paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel
             textoAdicional = req.body.paramsToUpdate.textCancel
             paramsToUpdate.formaPago = null;
             paramsToUpdate.descuento = null;
             paramsToUpdate.receptor = null;
             paramsToUpdate.localizacionFisica = null;
+
         } else {
             if (peticion.estadoPeticion !== estadosTitulo[req.body.peticion.estadoPeticionTexto]) throw "Intenta cambiar un estado que no puede";
+            
             switch (peticion.estadoPeticion) {
                 case estadosTitulo.NO_PEDIDO:
                 case estadosTitulo.PETICION_CANCELADA:
                     estadoNuevo = estadosTitulo.PEDIDO;
-                    paramsToUpdate.descuento = req.body.paramsToUpdate.descuento
+                    paramsToUpdate.descuento = req.body.paramsToUpdate.descuento;
                     paramsToUpdate.textCancel = null;
                     break;
                 case estadosTitulo.PEDIDO:
@@ -222,14 +225,20 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     break;
                 case estadosTitulo.PAGO_CONFIRMADO:
                     estadoNuevo = estadosTitulo.ESPERA_TITULO;
+                    paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel;
+                    textoAdicional = req.body.paramsToUpdate.textCancel;
                     break;
                 case estadosTitulo.ESPERA_TITULO:
                     estadoNuevo = estadosTitulo.TITULO_DISPONIBLE;
+                    paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel;
+                    textoAdicional = req.body.paramsToUpdate.textCancel;
                     break;
                 case estadosTitulo.TITULO_DISPONIBLE:
                     estadoNuevo = estadosTitulo.TITULO_RECOGIDO;
                     paramsToUpdate.receptor = req.body.paramsToUpdate.receptor;
                     paramsToUpdate.localizacionFisica = req.body.paramsToUpdate.localizacionFisica;
+                    paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel
+                    textoAdicional = req.body.paramsToUpdate.textCancel
                     break;
             }
         }

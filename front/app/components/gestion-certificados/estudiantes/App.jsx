@@ -91,7 +91,7 @@ export default class App extends React.Component {
     return (
       <div>
         <div className="cuerpo">
-          <h2>Certidicados Académicos</h2>
+          <h2>Certificados Académicos</h2>
           <p>A continuación se presentan los certificados académicos que tenga solicitados. En caso de no tener solicitado ninguno, puede pedirlo haciendo click en el botón "Solicitar"</p>
           <p><b>Se le enviarán notificaciones a través de su correo @alumnos.upm.es</b></p>
           <LoadingOverlay
