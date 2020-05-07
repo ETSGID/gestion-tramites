@@ -8,7 +8,7 @@ const dni = require('../../lib/dni');
 var inspect = require('util').inspect;
 
 //devuelve todas las peticiones de un alumno
-getAllPeticionAlumno = async function (irispersonaluniqueid) {
+const getAllPeticionAlumno = async function (irispersonaluniqueid) {
     try {
         let peticiones = await models.Peticion.findAll({
             where: {
@@ -23,8 +23,9 @@ getAllPeticionAlumno = async function (irispersonaluniqueid) {
 
 }
 
+
 //devuelve todas las peticiones de un alumno
-getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
+const getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
     try {
         let peticion = await models.Peticion.findOne({
             where: {
@@ -40,7 +41,7 @@ getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
 
 }
 
-updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, paramsToUpdate) {
+const updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, paramsToUpdate) {
     try {
         let peticion = await models.Peticion.update(paramsToUpdate, {
             where: {
@@ -56,7 +57,7 @@ updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, paramsT
     }
 }
 
-createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre, apellido, planCodigo, descuento) {
+const createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre, apellido, planCodigo, descuento) {
     try {
         let peticion = await models.Peticion.create({
             irispersonaluniqueid: irispersonaluniqueid,
@@ -77,7 +78,7 @@ createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre, apell
 
 
 //devuelve toda las peticiones de todos los alumnos
-getAllPeticionPas = async function () {
+const getAllPeticionPas = async function () {
     try {
         let peticiones = await models.Peticion.findAll();
         return peticiones || [];

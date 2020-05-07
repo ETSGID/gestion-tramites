@@ -40,6 +40,9 @@ let routerPas = require('./routes/routerPas');
 let routerAlumno = require('./routes/routerAlumno');
 let models = require('./models');
 
+// cron activities
+require('./lib/cron');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

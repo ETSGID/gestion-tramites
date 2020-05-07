@@ -3,11 +3,11 @@ const estadosTitulo = require('../../enums').estadosTitulo
 
 
 //email que recibe el alumno
-exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
+exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, planNombre, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
     let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}`
-    let text = `Su solicitud de título del plan ${planCodigo} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
+    let text = `Su solicitud de título del plan ${planNombre} (${planCodigo}) ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
     let filesname = [];
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
@@ -29,7 +29,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
         case estadosTitulo.ESPERA_TITULO:
             send = true;
             if (!textoAdicional){
-                text += `Se adjunta un resguardo del título solicitado. Hasta que no llegue el título sirve como documento oficial de que usted ha completado los estudios del título ${planCodigo}.  `
+                text += `Se adjunta un resguardo del título solicitado. Hasta que no llegue el título sirve como documento oficial de que usted ha completado los estudios del título ${planNombre} (${planCodigo}).  `
             }
             text+= `Se le avisará cuando su título esté disponible para recoger, recuerde que puede tardar hasta un año en llegar. \n${textoAdicional || ""}`
 
@@ -66,7 +66,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
 }
 
 //email que manda el alumno cuando tiene que enviar alguna cosa
-exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
+exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, planNombre, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
     let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn} ${session.user.sn}`
@@ -84,6 +84,8 @@ exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, tex
             text = `Se adjunta la carta de pago de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
             filesname.push(`carta_pago.pdf`)
             break;
+        default:
+            send = false;
     }
     if (send) {
         try {

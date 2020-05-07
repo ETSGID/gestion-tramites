@@ -15,6 +15,7 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 
 let Peticion = sequelize.import(path.join(__dirname, 'Peticion'));
 let Permiso = sequelize.import(path.join(__dirname, 'Permiso'));
+let Plan = sequelize.import(path.join(__dirname, 'Plan'))
 
 
 
@@ -27,4 +28,6 @@ sequelize.sync();
 
 exports.Peticion = Peticion;
 exports.Permiso = Permiso;
+exports.Plan = Plan;
+
 exports.sequelize = sequelize;

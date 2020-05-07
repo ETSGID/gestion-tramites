@@ -13,6 +13,6 @@ router.get('/', function (req, res) {
 
 router.get('/api/peticiones', peticionController.getInfoAllPas)
 
-router.post('/api/peticionCambioEstado', peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
+router.post('/api/peticionCambioEstado', peticionController.configureMultiPartFormData, peticionController.updatePeticionFromPas)
 
 module.exports = router;
