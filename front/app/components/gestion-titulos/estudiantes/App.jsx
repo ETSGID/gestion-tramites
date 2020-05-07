@@ -94,13 +94,12 @@ export default class App extends React.Component {
       <div>
         <div className="cuerpo">
           <h2>Titulaciones</h2>
-          <p>A continuación se presentan las titulaciones que tiene finalizadas. Recuerde que sólo puede pedir una titulación si la ha finalizado por completo</p>
+          <p>A continuación se presentan las titulaciones que tiene finalizadas.</p>
           <p><b>Se le enviarán notificaciones a través de su correo @alumnos.upm.es</b></p>
           
           <Alert variant="info">
             <p>
-              Para poder solicitar un título se requieren tener todos los ECTs completados. 
-              Una vez conseguidos los todos ECTs, la aplicación puede tardar hasta 72h en actualizar la información.
+            Recuerde que tras superar todos los ECTS de la titulación, la solicitud de título estará disponible dos días después de la defensa del TFT
             </p>
           </Alert>
 
