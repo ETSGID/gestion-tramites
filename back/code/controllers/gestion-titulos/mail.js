@@ -28,16 +28,24 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
             break;
         case estadosTitulo.ESPERA_TITULO:
             send = true;
-            text += `Se adjunta un resguardo del título solicitado. Hasta que no llegue el título sirve como documento oficial de que usted ha completado los estudios del título ${planCodigo}. Se le avisará cuando su título esté disponible para recoger, recuerde que puede tardar hasta un año en llegar.`
+            if (!textoAdicional){
+                text += `Se adjunta un resguardo del título solicitado. Hasta que no llegue el título sirve como documento oficial de que usted ha completado los estudios del título ${planCodigo}.  `
+            }
+            text+= `Se le avisará cuando su título esté disponible para recoger, recuerde que puede tardar hasta un año en llegar. \n${textoAdicional || ""}`
+
             filesname.push(`resguardo_titulo.pdf`);
             break;
         case estadosTitulo.TITULO_DISPONIBLE:
             send = true;
-            text += `Su título ya está disponible, puede pasarse por secretaría para recogerlo. La recogida del título es de forma presencial por el interesado, acreditando su identidad mediante la presentación del DNI o pasaporte en vigor o mediante poder notarial a un tercero autorizado. Conforme la legislación vigente (https://www.boe.es/buscar/doc.php?id=BOE-A-1988-17542)`
+            text += `Su título ya está disponible, puede pasarse por secretaría para recogerlo. La recogida del título es de forma presencial por el interesado, acreditando su identidad mediante la presentación del DNI o pasaporte en vigor o mediante poder notarial a un tercero autorizado. Conforme la legislación vigente (https://www.boe.es/buscar/doc.php?id=BOE-A-1988-17542). \n ${textoAdicional || ""}`
             break;
         case estadosTitulo.TITULO_RECOGIDO:
             send = true;
-            text += `Su título ha sido recogido, si se trata de un error comuníquese con Secretaría.`
+            if(!textoAdicional){
+                text += `Su título ha sido recogido, si se trata de un error comuníquese con Secretaría.`
+            }else{
+                text += `${textoAdicional}`
+            }
             break;
         case estadosTitulo.PETICION_CANCELADA:
             send = true;
