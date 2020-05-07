@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 //IMPORT BOOTSTRAP//
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //IMPORT REACT-BOOTSTRAP-TABLE//
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import App from '../components/gestion-titulos/pas/App';
+import '../../node_modules/react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+let App = require('../components');
+const tramite = process.env.TRAMITE || 'gestionTitulos';
 
 const render = (Component) => {
   ReactDOM.render(
@@ -17,11 +18,11 @@ const render = (Component) => {
   );
 };
 
-render(App);
+render(App[tramite].pas);
 
 if (module.hot) {
-  module.hot.accept(App, () => {
-    const newApp = require(App).default;
+  module.hot.accept(App[tramite].pas, () => {
+    const newApp = require(App[tramite].pas).default;
     render(newApp);
   });
 }

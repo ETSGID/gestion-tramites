@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start1": "webpack-dev-server --open --mode development",
-    "build1": "webpack --mode production",
-    "start2": "webpack-dev-server --open --mode development --config webpack.config2.js",
-    "build2": "webpack --mode production --config webpack.config2.js"
+    "startPas": "webpack-dev-server --open  --env.type=pas --mode development",
+    "buildPas": "webpack --mode production --env.production --env.type=pas",
+    "startEstudiantes": "webpack-dev-server --open --env.type=estudiantes --mode development",
+    "buildEstudiantes": "webpack --mode production --env.production --env.type=estudiantes"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,8 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
+    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^1.7.0",
     "react-loading-overlay": "^1.0.1",
     "url-join": "^4.0.1"
   },
