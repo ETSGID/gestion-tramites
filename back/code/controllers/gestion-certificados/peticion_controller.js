@@ -148,7 +148,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
         let chunks = []
         if (mimetype !== 'application/pdf') {
             file.resume()
-            error = "Sólo se adminte ficheros formato pdf";
+            error = "Sólo se adminten ficheros formato pdf.";
         } else {
             file.on('data', function (data) {
                 chunks.push(data);
@@ -156,7 +156,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
             file.on('end', function () {
                 //comprueba si supero el tamaño el archivo
                 if (file.truncated) {
-                    error = "Como máximo archivos de 1MB";
+                    error = "Como máximo archivos de 1MB.";
                 } else {
                     req.filesBuffer.push(Buffer.concat(chunks));
                     //console.log(req.filesBuffer)

@@ -39,7 +39,8 @@ export default class App extends React.Component {
         this.setState({
           loading: null
         })
-        alert("Error en la conexión con el servidor.")
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+           error.response.data.error || '': ''}`)
       })
   }
 
@@ -78,7 +79,8 @@ export default class App extends React.Component {
         this.setState({
           loading: null
         })
-        alert("Error en la conexión con el servidor.")
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '': ''}`)
       })
   }
 
