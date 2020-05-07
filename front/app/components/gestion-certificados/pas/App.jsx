@@ -6,7 +6,8 @@ import './../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
 const tramite = require('../../../../../back/code/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin("http://localhost:3000/pas/gestion-tramites", tramite[0]) : window.location.href
+const service = process.env.SERVICE || 'http://localhost:3000';
+const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service,"/pas/gestion-tramites", tramite[0]) : window.location.href
 
 
 export default class App extends React.Component {  
@@ -38,7 +39,7 @@ export default class App extends React.Component {
         this.setState({
           loading: null
         })
-        alert("Error en la conexión con el servidor. Los ficheros adjuntos deben ser pdf y deben pesar menos de 1MB cada uno")
+        alert("Error en la conexión con el servidor.")
       })
   }
 
@@ -81,7 +82,7 @@ export default class App extends React.Component {
         this.setState({
           loading: null
         })
-        alert("Error en la conexión con el servidor. Los ficheros adjuntos deben ser pdf y deben pesar menos de 1MB cada uno")
+        alert("Error en la conexión con el servidor.")
       })
   }
 

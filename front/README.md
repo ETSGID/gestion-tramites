@@ -4,11 +4,11 @@
 
 Cada trámite tiene dos bundles (`bundle_estudiantes.js` y `bundle_pas.js`), que se sirven desde el back-end. Existe un único fichero de ``webpack.config.js`` que funciona de la siguiente forma:
 
-- `npm run startPas`: Abre un servidor de desarrollo en el puerto 4000 con el trámite configurado en el fichero `.env` y el perfil pas.
+- `npm run startPas`: Abre un servidor de desarrollo en el puerto 4000 con el trámite configurado en el fichero `.env` y el perfil pas. Está preparado para conectarse con el servidor en el service configurado en `.env`
 
 - `npm run buildPas`: Genera el bundle en la carpeta `front/build/[nombre-trámite]/bundle_pas.js` con el procediento configurado en el fichero `.env`
 
-- `npm run startEstudiantes`: Abre un servidor de desarrollo en el puerto 4001 con el trámite configurado en el fichero `.env` y el perfil estudiantes.
+- `npm run startEstudiantes`: Abre un servidor de desarrollo en el puerto 4001 con el trámite configurado en el fichero `.env` y el perfil estudiantes. Está preparado para conectarse con el servidor en el service configurado en `.env`
 
 - `npm run buildEstudiantes`: Genera el bundle en la carpeta `front/build/[nombre-trámite]/bundle_estudiantes.js` con el procediento configurado en el fichero `.env`.
 
@@ -24,6 +24,7 @@ exports.tramites = {
 ## Ejemplo fichero .env
 La siguiente configuración sirve para cuando se quiera trabajar con gestionTitulos.
 ```shell
+SERVICE=http://localhost:3000
 TRAMITE=gestionTitulos
 #TRAMITE=gestionCertificados
 ```
