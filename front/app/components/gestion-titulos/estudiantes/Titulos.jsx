@@ -36,6 +36,10 @@ export default class Titulos extends React.Component {
             text: 'Plan'
         },
         {
+            dataField: 'planNombre',
+            text: 'Plan'
+        },
+        {
             dataField: 'estadoPeticionTexto',
             text: 'Estado petición',
             //formatter se usa para poder actualizar la tabla en el render

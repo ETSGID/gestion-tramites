@@ -103,7 +103,7 @@ export default class ModalStructure extends React.Component {
       <Modal show={true} onHide={this.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {this.props.peticion.nombre} {this.props.peticion.apellido} - {this.props.peticion.planCodigo}
+            {this.props.peticion.nombre} {this.props.peticion.apellido} - {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})
           </Modal.Title>
         </Modal.Header>
         {form}

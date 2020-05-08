@@ -34,7 +34,7 @@ export default class FormPeticion extends React.Component {
       if (this.state.checkDescuento != descuento.NO) {
         paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
-      if (confirm(`¿Está seguro que quiere pedir el título ${this.props.peticion.planCodigo}?`)) {
+      if (confirm(`¿Está seguro que quiere pedir el título ${this.props.peticion.planNombre} ({this.props.peticion.planCodigo})?`)) {
         this.props.cambioEstadoClick(paramsToUpdate)
       }
     }
@@ -44,7 +44,7 @@ export default class FormPeticion extends React.Component {
     return (
       <div>
         <Modal.Body>
-          Usted va a solicitar el título {this.props.peticion.planCodigo}
+          Usted va a solicitar el título {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">

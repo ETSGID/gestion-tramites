@@ -65,7 +65,7 @@ export default class Formcancel extends React.Component {
         return (
             <div>
                 <Modal.Body>
-                    Va a cancelar la petición del título del plan {this.props.peticion.planCodigo} por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
+                    Va a cancelar la petición del título del plan {this.props.peticion.planNombre} ({this.props.peticion.planCodigo}) por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
                     <br />
                     <br />
                     <Form onSubmit={this.handleSubmit}>

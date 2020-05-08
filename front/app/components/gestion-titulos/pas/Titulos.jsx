@@ -52,6 +52,12 @@ export default class Titulos extends React.Component {
             sort: true
         },
         {
+            dataField: 'planNombre',
+            text: 'Plan',
+            filter: textFilter(),
+            sort: true
+        },
+        {
             dataField: 'estadoPeticionTexto',
             text: 'Estado petición',
             sort: true,
@@ -109,7 +115,12 @@ export default class Titulos extends React.Component {
                     case estadosTitulo.TITULO_DISPONIBLE:
                         return (<span>No acción asociada</span>)
                     case estadosTitulo.TITULO_RECOGIDO:
+                        if (process.env.NODE_ENV === "development") {
                             return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
+                        }else{
+                            return (<span>No acción asociada</span>)
+                        }
+
                     default:
                         return (<span>No acción asociada</span>)
                 }
