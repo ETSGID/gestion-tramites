@@ -13,7 +13,7 @@ export default class FormPeticion extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     if (!this.fileInput.current.files[0]) {
-      alert(`Debe adjuntar el resguardo del título de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}) referente al título ${this.props.peticion.planNombre} ({this.props.peticion.planCodigo}).`);
+      alert(`Debe adjuntar el resguardo del título de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}) referente al título ${this.props.peticion.planNombre} (${this.props.peticion.planCodigo}).`);
     } else {
       if (confirm(`Asegurese de que manda el resguardo correspondiente.`)) {
         let paramsToUpdate = {}

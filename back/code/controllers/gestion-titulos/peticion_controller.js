@@ -255,7 +255,7 @@ exports.updateOrCreatePeticionFromAlumno = async function (req, res, next) {
             let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, req.body.peticion.planNombre, textoAdicional, req.filesBuffer, req.session)
         }
         let respuesta;
-        if (estadoNuevo === estadosTitulo.PEDIDO) {
+        if (estadoNuevo === estadosTitulo.PEDIDO && peticion.estadoPeticion !== estadosTitulo.PETICION_CANCELADA) {
             respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo, paramsToUpdate)

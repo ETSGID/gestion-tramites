@@ -31,7 +31,7 @@ export default class FormTituloRecoger extends React.Component {
     } else if (this.state.textRegistro.trim() == "") {
       alert("Debe indicar la localización física del registro");
     }else {
-      if (confirm(`Confirmar la recogida del título del plan ${this.props.peticion.planNombre} ({this.props.peticion.planCodigo}) por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}).`)) {
+      if (confirm(`Confirmar la recogida del título del plan ${this.props.peticion.planNombre} (${this.props.peticion.planCodigo}) por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}).`)) {
         let paramsToUpdate = {
           localizacionFisica: this.state.textRegistro.trim()
         }
