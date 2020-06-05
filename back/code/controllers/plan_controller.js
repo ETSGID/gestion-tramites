@@ -34,7 +34,11 @@ async function getPlansApiUpm() {
 
 async function findAllPlans(){
     try{
-        return await models.Plan.findAll();
+        return await models.Plan.findAll({
+            order: [
+                ['nombre', 'ASC'],
+            ],
+        });
     } catch (error){
         console.log(error);
         return [];
