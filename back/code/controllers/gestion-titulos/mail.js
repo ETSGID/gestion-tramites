@@ -75,13 +75,13 @@ exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, pla
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
             send = true;
-            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `Se adjunta el dni y la infromación de descuentos aplicables (en el caso de que haya alguno) de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
             filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosTitulo.PAGO_REALIZADO:
             send = true;
-            text = `Se adjunta la carta de pago de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `El alumno ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}) informa de que ha realizado el pago del título. Se adjunta la carta de pago en caso de que no se haya pagado online. La dirección de contacto del alumno es ${session.user.mail}.`
             filesname.push(`carta_pago.pdf`)
             break;
         default:
