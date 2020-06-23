@@ -9,7 +9,6 @@ module.exports = function (sequelize, DataTypes) {
             },
             planCodigo: {
                 type: DataTypes.STRING,
-                primaryKey : true
             },
             planNombre: {
                 type: DataTypes.STRING
@@ -45,6 +44,19 @@ module.exports = function (sequelize, DataTypes) {
             },
             textCancel:{
                 type: DataTypes.TEXT
+            },
+            asignaturaNombre:{
+                type: DataTypes.STRING 
+            },
+            asignaturaCodigo:{
+                type: DataTypes.STRING,
+                primaryKey : true
+            },
+            tipo:{
+                type: DataTypes.STRING
+            },
+            justificacion:{
+                type: DataTypes.STRING
             }
             
         },

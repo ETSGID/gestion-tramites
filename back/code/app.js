@@ -39,6 +39,7 @@ let app = express();
 let routerPas = require('./routes/routerPas');
 let routerAlumno = require('./routes/routerAlumno');
 let models = require('./models');
+let models_externa = require('./models/evaluacion-curricular');
 
 // cron activities
 require('./lib/cron');
@@ -107,7 +108,8 @@ if (process.env.DEV == 'true') {
     res.locals.portalName = 'portal'
     res.locals.pruebasBoolean = false;
     //se envía y se recibe en el propio mail del usuario de pruebas
-    req.session.user.mail = process.env.EMAIL_USER;
+    //req.session.user.mail = process.env.EMAIL_USER;
+    req.session.user.mail= "jose.fernandez@upm.es";
     next();
   })
 } else {
