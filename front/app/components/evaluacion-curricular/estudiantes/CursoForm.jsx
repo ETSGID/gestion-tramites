@@ -100,7 +100,7 @@ export default class CursoForm extends React.Component {
               </Form.Group>
               <Form.Group>
                 <Button variant="primary" type="submit" style={{ marginRight: 10 }} onClick={this.handleSubmit}>Solicitar</Button>
-                <Button variant="primary" onClick={this.volverClick}>Volver</Button>
+                <Button variant="primary" onClick={this.volverClick}>Cancelar</Button>
               </Form.Group>
             </Form>
           </Grid>

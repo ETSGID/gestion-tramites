@@ -51,7 +51,6 @@ export default class TitulacionForm extends React.Component {
       paramsToUpdate.justificacion = this.texto.value;
       paramsToUpdate.tipo = "titulacion";
       if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
-        console.log("confirmado", paramsToUpdate);
         this.props.cambioEstadoClick(null,paramsToUpdate); // index null porque no existe en la tabla, nueva peticion
       }
     }
@@ -100,7 +99,7 @@ export default class TitulacionForm extends React.Component {
               </Form.Group>
               <Form.Group>
                 <Button variant="primary" type="submit" style={{ marginRight: 10 }} onClick={this.handleSubmit}>Solicitar</Button>
-                <Button variant="primary" onClick={this.volverClick}>Volver</Button>
+                <Button variant="primary" onClick={this.volverClick}>Cancelar</Button>
               </Form.Group>
             </Form>
           </Grid>

@@ -35,13 +35,13 @@ export default class App extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+    this.getPeticiones = this.getPeticiones.bind(this);
   }
 
   componentDidMount() {
     this.setState({
       loading: true
     })
-
     axios.get(urljoin(apiBaseUrl, "/api/asignaturas/titulacion"))
       .then((response) => {
         this.setState({
@@ -70,12 +70,18 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
+    this.getPeticiones();
+
+  }
+
+  getPeticiones() {
     axios.get(urljoin(apiBaseUrl, "api/peticiones"))
       .then((response) => {
         this.setState({
           peticiones: response.data,
           loading: null
         })
+        
         if (this.state.peticiones.length > 0) {
           this.setState({
             disableConsulta: false
@@ -89,7 +95,6 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
-
   }
 
   handleClick(servicio) {
@@ -97,13 +102,15 @@ export default class App extends React.Component {
       case 'titulacion':
         this.setState({
           showTitulacion: true,
-          showInicio: false
+          showInicio: false,
+          disableTitulacion: true
         });
         break;
       case 'curso':
         this.setState({
           showCurso: true,
-          showInicio: false
+          showInicio: false,
+          disableCurso: true
         });
         break;
       case 'consulta':
@@ -113,6 +120,7 @@ export default class App extends React.Component {
         });
         break;
       case 'volver':
+        this.getPeticiones();
         this.setState({
           showCurso: false,
           showTitulacion: false,
@@ -126,40 +134,48 @@ export default class App extends React.Component {
   }
 
   cambioEstadoClick(index, paramsToUpdate) {
-    // index es null si viene de titualcionForm (nueva peticion)
-    let peticionesNuevas = this.state.peticiones.slice()
+    // index es null si es nueva peticion
+    let peticionesNuevas = this.state.peticiones.slice();
     let formData = new FormData();
     this.setState({
       loading: true,
     });
     let peticion = {};
-    if (index) {
-      peticion = peticionesNuevas[index]; // la peticion de la tabla que se corresponde a esa asignatura, ese index de "selected"
-    }
+    var aux = index ? index : peticionesNuevas.length;
     paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
-    console.log("counter:", paramsToUpdate.contadorPeticiones);
     formData.append("body", JSON.stringify({ peticion: peticion, paramsToUpdate: paramsToUpdate }));
-    console.log(formData);
     axios.post(urljoin(apiBaseUrl, "api/peticionCambioEstado"), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
       .then((response) => {
-        peticionesNuevas[index].estadoPeticion = response.data.estadoPeticion || response.data[1][0].estadoPeticion
-        peticionesNuevas[index].fecha = response.data.fecha || response.data[1][0].fecha
+        let res = response.data;
+        peticionesNuevas.push(res);
+        peticionesNuevas[aux].estadoPeticion = response.data.estadoPeticion || response.data[1][0].estadoPeticion;
+        peticionesNuevas[aux].fecha = response.data.fecha || response.data[1][0].fecha;
         this.setState({
           peticiones: peticionesNuevas,
-          loading: null
+          loading: null,
+          showCurso: false,
+          showTitulacion: false,
+          showConsulta: false,
+          showInicio: true
         })
+        if (this.state.peticiones.length > 0) {
+          this.setState({
+            disableConsulta: false
+          })
+        }
       })
       .catch((error) => {
         this.setState({
           loading: null
-        })
-        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '' : ''}`)
+        });
+        alert(`Error en la conexión con el servidor. ${error}`);
+        console.log(error);
       })
+
   }
 
 
