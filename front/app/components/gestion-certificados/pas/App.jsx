@@ -1,8 +1,8 @@
 
 import React from 'react';
 import axios from 'axios';
-import Titulos from './Titulos'
-import './../../assets/scss/main.scss';
+import Certificados from './Certificados'
+import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
 const tramite = require('../../../../../back/code/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
@@ -106,7 +106,7 @@ export default class App extends React.Component {
             spinner
             text='Cargando'
           >
-            <Titulos
+            <Certificados
               selected={this.state.selected}
               cancel={this.state.cancel}
               info={this.state.info}
@@ -114,7 +114,7 @@ export default class App extends React.Component {
               cambioEstadoClick={this.cambioEstadoClick}
               cambioSelectedClick={this.cambioSelectedClick}
             >
-            </Titulos>
+            </Certificados>
           </LoadingOverlay>
         </div>
       </div>

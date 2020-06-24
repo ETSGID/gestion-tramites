@@ -73,11 +73,9 @@ export default class Titulos extends React.Component {
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Pago confirmado</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Enviar resguardo</Button>)
-                    case estadosCertificado.ESPERA_CERTIFICADO:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado académico listo</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado A. listo</Button>)
                     case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado académico recogido</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado A. recogido</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }

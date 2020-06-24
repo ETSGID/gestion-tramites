@@ -19,18 +19,15 @@ router.get(`/`, function(req,res,next){
 });
 
 
-router.use(`/${enums.tramites.gestionTitulos[0]}`, function(req,res,next){
+/*router.use(`/${enums.tramites.gestionTitulos[0]}`, function(req,res,next){
     req.session.tramite = enums.tramites.gestionTitulos[0];
     next();
 }, routerGestionTitulos);
+*/
 
-/*
 router.use(`/${enums.tramites.gestionCertificados[0]}`, function(req,res,next){
     req.session.tramite = enums.tramites.gestionCertificados[0];
     next();
 }, routerGestionCertificados);
-*/
-
-
 
 module.exports = router;

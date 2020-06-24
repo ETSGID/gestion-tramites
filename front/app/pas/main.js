@@ -7,7 +7,9 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //IMPORT REACT-BOOTSTRAP-TABLE//
 import '../../node_modules/react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 let App = require('../components');
-const tramite = process.env.TRAMITE || 'gestionTitulos';
+//const tramite = process.env.TRAMITE || 'gestionTitulos';
+const tramite = process.env.TRAMITE || 'gestionCertificados';
+
 
 const render = (Component) => {
   ReactDOM.render(

@@ -219,9 +219,6 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     estadoNuevo = estadosCertificado.PAGO_CONFIRMADO;
                     break;
                 case estadosCertificado.PAGO_CONFIRMADO:
-                    estadoNuevo = estadosCertificado.ESPERA_CERTIFICADO;
-                    break;
-                case estadosCertificado.ESPERA_CERTIFICADO:
                     estadoNuevo = estadosCertificado.CERTIFICADO_DISPONIBLE;
                     break;
                 case estadosCertificado.CERTIFICADO_DISPONIBLE:

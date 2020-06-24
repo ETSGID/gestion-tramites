@@ -7,8 +7,6 @@ export default class Formcancel extends React.Component {
         this.state = { textCancel: "" }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeTextCancel = this.handleChangeTextCancel.bind(this);
-        this.handleCheckBox = this.handleCheckBox.bind(this);
-
     }
 
     handleChangeTextCancel(e) {
@@ -25,19 +23,15 @@ export default class Formcancel extends React.Component {
             this.props.cambioEstadoClick(paramsToUpdate)
         }
     }
-    handleCheckBox(){
-        this.setState({textCancel: "Su certificado académico ya ha sido recogido previamente."})
-    }
     render() {
         return (
             <div>
                 <Modal.Body>
-                    Va a cancelar la petición del certificado académico solicitado el día {this.props.peticion.fedha} por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
+                    Va a cancelar la petición del certificado académico solicitado el día {this.props.peticion.fecha} por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
                     <br />
                     <br />
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Group>
-                            <Form.Check type="checkbox" label="Título recogido previamente" onClick={this.handleCheckBox}/>
                             <Form.Label>Indique motivo de cancelación de la petición de certificado académico</Form.Label>
                             <Form.Control onChange={this.handleChangeTextCancel} as="textarea" rows="3" />
                         </Form.Group>

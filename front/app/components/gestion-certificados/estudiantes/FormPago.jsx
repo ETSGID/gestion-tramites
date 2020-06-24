@@ -40,7 +40,7 @@ export default class FormPago extends React.Component {
     return (
       <div>
         <Modal.Body>
-          Usted va a confirmar el pago del certicado académico solicitado en :{this.props.peticion.fecha} posteriormente será comprobado por personal de la universidad.
+          Usted va a confirmar el pago del certicado académico solicitado el día: {this.props.peticion.fecha}, posteriormente será comprobado por personal de la universidad.
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">

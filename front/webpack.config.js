@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { resolve } = require('path');
 require('dotenv').config()
 const DotenvWebpack = require('dotenv-webpack');
-const tramite = process.env.TRAMITE || 'gestionTitulos';
+const tramite = process.env.TRAMITE || 'gestionCertificados';
 const enumTramites = require('../back/code/enums').tramites;
 
 module.exports = env => {

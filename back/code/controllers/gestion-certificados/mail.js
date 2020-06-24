@@ -24,12 +24,8 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
             break;
         case estadosCertificado.PAGO_CONFIRMADO:
             send = true;
-            text += `Su pago ha sido validado. Pronto recibirá un correo con el resguardo del certificado académico.`
-            break;
-        case estadosCertificado.ESPERA_TITULO:
-            send = true;
-            text += `Se adjunta un resguardo del certificado académico solicitado.`
-            filesname.push(`resguardo_certificado_academico.pdf`);
+            text += `Su pago del certificado académico solicitado ha sido validado por el personal de secretaría.`
+            text += ` El certificado en estado de espera, le será notificado cuando se encuentre disponible para su recogida.`
             break;
         case estadosCertificado.CERTIFICADO_DISPONIBLE:
             send = true;

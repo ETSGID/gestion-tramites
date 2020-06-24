@@ -20,7 +20,6 @@ exports.estadosCertificado = {
     "ESPERA_PAGO": 3,
     "PAGO_REALIZADO": 4,
     "PAGO_CONFIRMADO": 5,
-    "ESPERA_CERTIFICADO": 6,
     "CERTIFICADO_DISPONIBLE": 7,
     "CERTIFICADO_RECOGIDO": 8,
     "PETICION_CANCELADA": -1
@@ -41,7 +40,7 @@ exports.formaPago = {
 
 exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
-    //"gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
+    "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
     /*
     "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
     "anulacionMatriculas": ["anulacion-matricula","Anulación de Matrícula"],

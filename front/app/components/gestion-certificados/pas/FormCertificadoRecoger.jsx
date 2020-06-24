@@ -4,11 +4,10 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 export default class FormTituloRecoger extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { checkReceptor: 1, disabledTextReceptor: "disabled", textReceptor: "", textRegistro: "" }
+    this.state = { checkReceptor: 1, disabledTextReceptor: "disabled", textReceptor: ""}
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeReceptor = this.handleChangeReceptor.bind(this);
     this.handleChangeTextReceptor = this.handleChangeTextReceptor.bind(this);
-    this.handleChangeTextRegistro = this.handleChangeTextRegistro.bind(this);
   }
 
   handleChangeReceptor(e) {
@@ -20,21 +19,13 @@ export default class FormTituloRecoger extends React.Component {
     this.setState({ textReceptor: e.currentTarget.value })
   }
 
-  handleChangeTextRegistro(e) {
-    this.setState({ textRegistro: e.currentTarget.value })
-  }
-
   handleSubmit(event) {
     event.preventDefault();
     if (this.state.checkReceptor != 1 && this.state.textReceptor.trim() == "") {
       alert("Debe indicar el receptor (embajada, tercero autorizado, etc.)");
-    } else if (this.state.textRegistro.trim() == "") {
-      alert("Debe indicar la localización física del registro");
     }else {
-      if (confirm(`Confirmar la recogida del título del plan ${this.props.peticion.planCodigo} por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}).`)) {
-        let paramsToUpdate = {
-          localizacionFisica: this.state.textRegistro.trim()
-        }
+      if (confirm(`Confirmar la recogida del certificado académico por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}).`)) {
+        let paramsToUpdate = {}
         paramsToUpdate.receptor = this.state.checkReceptor == 1 ? null : this.state.textReceptor.trim();
         this.props.cambioEstadoClick(paramsToUpdate)
       }
@@ -72,10 +63,6 @@ export default class FormTituloRecoger extends React.Component {
               </Form.Label>
               <Form.Control type="text" disabled={this.state.disabledTextReceptor} onChange={this.handleChangeTextReceptor} placeholder="Receptor no titular" />
               <br />
-              <Form.Label as="legend">
-                Indique la localización física del registro (Libro de registro X folio Y registro Z):
-              </Form.Label>
-              <Form.Control type="text" onChange={this.handleChangeTextRegistro} placeholder="Libro de registro X folio Y registro Z" />
             </Form.Group>
           </Form >
         </Modal.Body>

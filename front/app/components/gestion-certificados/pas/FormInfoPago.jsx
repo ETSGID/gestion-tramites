@@ -26,7 +26,7 @@ export default class FormInfoPago extends React.Component {
     return (
       <div>
         <Modal.Body>
-          Debe verificar que la carta de pago para {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}) ha sido generada en politécnica virtual para el plan {this.props.peticion.planCodigo}.
+          Debe verificar que la carta de pago para {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}) ha sido generada en politécnica virtual.
           <br/>
           {textDescuento}
         </Modal.Body>
