@@ -39,7 +39,6 @@ let app = express();
 let routerPas = require('./routes/routerPas');
 let routerAlumno = require('./routes/routerAlumno');
 let models = require('./models');
-let models_externa = require('./models/evaluacion-curricular');
 
 // cron activities
 require('./lib/cron');

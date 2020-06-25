@@ -27,52 +27,17 @@ sequelizeExterna.authenticate()
   })
 
 // Importar modelos
-const linea_acta = sequelizeExterna.import(path.join(__dirname, 'linea_acta'));
 const asignatura_plan = sequelizeExterna.import(path.join(__dirname, 'asignatura_plan'));
 const asignatura = sequelizeExterna.import(path.join(__dirname, 'asignatura'));
 const tipo_asignatura = sequelizeExterna.import(path.join(__dirname, 'tipo_asignatura'));
 const plan_estudio = sequelizeExterna.import(path.join(__dirname, 'plan_estudio'));
 const persona = sequelizeExterna.import(path.join(__dirname, 'persona'));
-
-// Relaciones
-
-// 1 a N entre plan_estudio y linea_acta
-// linea_acta.belongsTo(plan_estudio, { foreignKey: 'idplan' });
-// plan_estudio.hasMany(linea_acta, { foreignKey: 'codigo' });
-
-// 1 a N entre persona y linea_acta
-//FK en linea acta
-// linea_acta.belongsTo(persona, { foreignKey: 'dni' }); 
-// persona.hasMany(linea_acta, { foreignKey: 'dni' }); 
-
-// // 1 a N entre asignatura y linea_acta
-// //FK en linea acta
-// linea_acta.belongsTo(asignatura, { as: 'asignaturaId', foreignKey: 'asignatura' });
-// asignatura.hasMany(linea_acta, { foreignKey: 'asignatura' });
-
-// // 1 a N entre asignatura_plan y linea_acta
-// //linea_acta.belongsTo(asignatura_plan, { foreignKey: 'PK_linea_acta_1' });
-// // asignatura_plan.hasMany(linea_acta, { foreignKey: 'PK__asignatura_plan__214BF109' });
-
-// // 1 a N entre tipo_asignatura y asignatura_plan
-// //FK en asignatura_plan
-// asignatura_plan.belongsTo(tipo_asignatura, { foreignKey: 'tipo' });
-// tipo_asignatura.hasMany(asignatura_plan, { foreignKey: 'tipo' });
-
-// // 1 a N ente plan_estudios y asignatura_plan
-// //FK en asignatura_plan
-// asignatura_plan.belongsTo(plan_estudio, { foreignKey: 'idplan' });
-// plan_estudio.hasMany(asignatura_plan, { foreignKey: 'idplan' });
-
-// // 1 a N entre asignatura y asignatura_plan
-// //FK en asignatura_plan
-// asignatura_plan.belongsTo(asignatura, { as:'asignaturaId', foreignKey: 'asignatura' });
-// asignatura.hasMany(asignatura_plan, { foreignKey: 'asignatura' });
+const linea_acta = sequelizeExterna.import(path.join(__dirname, 'linea_acta'));
 
 // crear tablas pendientes
 sequelizeExterna.sync();
 
-// exportar modelos
+ // exportar modelos
 exports.linea_acta = linea_acta;
 exports.asignatura_plan = asignatura_plan;
 exports.asignatura = asignatura;
