@@ -1,7 +1,7 @@
-//import pas from './pas/App'
+import pas from './pas/App'
 import estudiantes from './estudiantes/App'
 
 export {
-  // pas,
+   pas,
     estudiantes
 };
