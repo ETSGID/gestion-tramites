@@ -12,7 +12,7 @@ export default class InfoPeticion extends React.Component {
     render() {
        let denegado;
         if (estadosEvaluacionCurricular.SOLICITUD_DENEGADA == this.props.peticion.estadoPeticion ||estadosEvaluacionCurricular.EVALUACION_DENEGADA == this.props.peticion.estadoPeticion || estadosEvaluacionCurricular.SOLICITUD_CANCELADA == this.props.peticion.estadoPeticion) {
-            denegado = <li>Motivo: {this.props.peticion.textCancel}</li>
+            denegado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>
         }
         
         return (
