@@ -13,7 +13,7 @@ if (month <= 7) {
     cursoActual = year + '-' + (year + 1).toString().substr(2);
 }
 
- // ESTUDIANTES
+// ESTUDIANTES
 
 // Lista de asignaturas (nombre y plan) suspensas para esa persona, dado dni
 const getAsignaturasSuspensas = async function (dni, curso) {
@@ -54,7 +54,7 @@ const getAsignaturasSuspensas = async function (dni, curso) {
                 having: sequelize.literal('COUNT(*) >1') // una convocatoria, la extraordinaria aun no esta en actas??
             });
         }
-      
+
         var asignaturasSuspensasString = JSON.stringify(asignaturasCodigo);
         var asignaturasSuspensasJSON = JSON.parse(asignaturasSuspensasString);
         // Obtiene nombre de las asignaturas suspensas 
@@ -168,20 +168,20 @@ const getInfoAlumno = async function (email) {
     }
 }
 // obtiene fecha de inicio de los estudios en dicho plan
-const getInicioEstudios = async function(dni,idplan){
+const getInicioEstudios = async function (dni, idplan) {
     //de bbdd viendo la primera acta o preguntar si otra api 
 }
 
 // obtiene numero de veces que esa asignatura ha sido suspendida en el curso actual y en el anterior
-const getVecesSuspensa = async function(dni,asignatura){
- //cuenta lo obtenido de getinfoconvocatorias
+const getVecesSuspensa = async function (dni, asignatura) {
+    //cuenta lo obtenido de getinfoconvocatorias
 }
 
 // obtiene notas y fechas de antiguas convocatorias presentadas de dicha asignatura
-const getInfoConvocatorias = async function(dni,asignaturaCodigo){
+const getInfoConvocatorias = async function (dni, asignaturaCodigo) {
     try {
         let info = await modelsEvaluacionCurricular.linea_acta.findAll({
-            attributes: ['curso_academico','convocatoria','calificacion_num'],
+            attributes: ['curso_academico', 'convocatoria', 'calificacion_num'],
             where: {
                 dni: dni,
                 asignatura: asignaturaCodigo
@@ -189,8 +189,8 @@ const getInfoConvocatorias = async function(dni,asignaturaCodigo){
         });
         var infoString = JSON.stringify(info);
         var infoJSON = JSON.parse(infoString);
-        for(var i = 0; i<infoJSON.length;i++){
-            if (infoJSON[i].calificacion_num ==null){
+        for (var i = 0; i < infoJSON.length; i++) {
+            if (infoJSON[i].calificacion_num == null) {
                 infoJSON[i].calificacion_num = "NP";
             }
         }
@@ -201,47 +201,104 @@ const getInfoConvocatorias = async function(dni,asignaturaCodigo){
 }
 
 // Obtiene informacion sobre el TFT de ese alumno
-const getInfoTFT = async function(dni){
+const getInfoTFT = async function (dni) {
 
 }
 
 // Obtiene media para cada tipo de evaluacion curricular
-const getMedia = async function(dni){
+const getMedia = async function (dni) {
 
 }
 
 //Obtiene nombre de asignatura
-const getNombreAsignatura = async function(asignaturaCodigo){
-    try{
-         let nombreAsignatura = await modelsEvaluacionCurricular.asignatura.findOne({
+const getNombreAsignatura = async function (asignaturaCodigo) {
+    try {
+        let nombreAsignatura = await modelsEvaluacionCurricular.asignatura.findOne({
             attributes: ['nombre'],
             where: {
                 codigo: asignaturaCodigo
-            }});
-            return nombreAsignatura.nombre;
-        } catch (error) {
-            throw error;
+            }
+        });
+        return nombreAsignatura.nombre;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//Obtiene asignaturas de los planes obtenidos
+const getCodigosAsignaturas = async function (planes) {
+    try {
+        var codigosAsignaturas = [];
+        // Obtiene nombre de las asignaturas suspensas 
+        for (var i = 0; i < planes.length; i++) {
+            let codigo = await modelsEvaluacionCurricular.asignatura_plan.findAll({
+                attributes: ['asignatura'],
+                where: {
+                    idplan: planes[i].id,
+                },
+            });
+            for (var j = 0; j < codigo.length; j++) {
+                codigosAsignaturas.push(codigo[j]);
+            }
         }
+        return codigosAsignaturas;
+    } catch (error) {
+        throw error;
+    }
 }
 //Obtiene nombre de plan
-const getNombrePlan = async function(planCodigo){
-    try{
-         let nombrePlan = await modelsEvaluacionCurricular.plan_estudio.findOne({
+const getNombrePlan = async function (planCodigo) {
+    try {
+        let nombrePlan = await modelsEvaluacionCurricular.plan_estudio.findOne({
             attributes: ['nombre'],
             where: {
                 codigo: planCodigo
-            }});
-            return nombrePlan.nombre;
-        } catch (error) {
-            throw error;
-        }
+            }
+        });
+        return nombrePlan.nombre;
+    } catch (error) {
+        throw error;
+    }
 }
 
-exports.getNombreAsignatura = async function(asignaturaCodigo){
+const sortJSON = async function(data, key, orden) {
+    return data.sort(function (a, b) {
+        var x = a[key],
+        y = b[key];
+
+        if (orden === 'asc') {
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        }
+
+        if (orden === 'desc') {
+            return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+        }
+    });
+}
+
+exports.getNombreAsignatura = async function (asignaturaCodigo) {
     try {
         let respuesta;
         respuesta = await getNombreAsignatura(asignaturaCodigo);
         return respuesta;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.getAsignaturasDePlan = async function (plans) {
+    try {
+        let respuesta = [];
+        respuesta = await getCodigosAsignaturas(plans);
+        var respuestaString = JSON.stringify(respuesta);
+        var respuestaJSON = JSON.parse(respuestaString);
+        for (var i = 0; i < respuesta.length; i++) {
+            let n = await getNombreAsignatura(respuestaJSON[i].asignatura);
+            respuestaJSON[i].nombre = n;
+
+        }
+        var sorted = sortJSON(respuestaJSON, 'nombre','asc');
+        return sorted;
     } catch (error) {
         console.log(error);
     }
@@ -297,10 +354,10 @@ exports.getInfoConvocatorias = async function (req, res) {
         info = await getInfoConvocatorias(dni['dni'], asignaturaCodigo);
         res.render("confirmacion", {
             title: 'Express',
-            asignatura: [asignaturaCodigo,asignaturaNombre],
+            asignatura: [asignaturaCodigo, asignaturaNombre],
             dni: dni['dni'],
             info: info,
-            plan: [planCodigo,planNombre],
+            plan: [planCodigo, planNombre],
         });
     } catch (error) {
         console.log(error);

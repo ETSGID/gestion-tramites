@@ -41,10 +41,9 @@ exports.formaPago = {
 exports.estadosEvaluacionCurricular = {
     "NO_PEDIDO": 1, 
     "SOLICITUD_PENDIENTE": 2, 
-    "SOLICITUD_DENEGADA": 3,
-    "EVALUACION_PENDIENTE": 4, 
-    "EVALUACION_DENEGADA": 5,
-    "EVALUACION_APROBADA": 6,
+    "EVALUACION_PENDIENTE": 3, 
+    "EVALUACION_DENEGADA": 4,
+    "EVALUACION_APROBADA": 5,
     "SOLICITUD_CANCELADA": -1
 }
 
