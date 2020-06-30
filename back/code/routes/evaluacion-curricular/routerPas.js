@@ -9,7 +9,7 @@ router.all('*', permisoController.comprobarRolYPas);
 
 router.get('/', function (req, res) {
   res.locals.barraInicioText = "GESTIÓN DE EVALUACIÓN CURRICULAR"
-  res.render('gestion_evaluacion_curricular');
+  res.render('index');
 });
 
 router.get('/api/peticiones', peticionController.getInfoAllPas)
