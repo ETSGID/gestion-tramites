@@ -285,32 +285,40 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                 case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                     estadoNuevo = estadosEvaluacionCurricular.EVALUACION_APROBADA;
                     break;
+                case estadosEvaluacionCurricular.EVALUACION_APROBADA:
+                case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
+                    estadoNuevo = estadosEvaluacionCurricular.EVALUACION_FINALIZADA;
+                    break;
                 default:
                     throw "Intenta cambiar un estado que no puede";
             }
         }
         paramsToUpdate.estadoPeticion = estadoNuevo;
-        /*
+
+        let respuesta;
+        let asignaturaNombre;
+        if (estadoNuevo === estadosEvaluacionCurricular.SOLICITUD_PENDIENTE && peticion.estadoPeticion !== estadosEvaluacionCurricular.PETICION_CANCELADA) {
+            asignaturaNombre = await queriesController.getNombreAsignatura(req.body.paramsToUpdate.asignaturaCodigo);
+            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
+        } else {
+            asignaturaNombre = req.body.peticion.asignaturaNombre;
+            respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
+        }
+
         let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
             toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
             toPAS = req.session.user.mail;
+            
         }
-        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
-        solo se envia cuando el alumno tiene algo que enviar
+        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+        //solo se envia cuando el alumno tiene algo que enviar
         if (req.filesBuffer) {
-            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
         }
-        */
-        let respuesta;
-        if (estadoNuevo === estadosEvaluacionCurricular.SOLICITUD_PENDIENTE && peticion.estadoPeticion !== estadosEvaluacionCurricular.PETICION_CANCELADA) {
-            let asignaturaNombre = await queriesController.getNombreAsignatura(req.body.paramsToUpdate.asignaturaCodigo);
-            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
-        } else {
-            respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
-        }
+
         res.json(respuesta)
     } catch (error) {
         console.log(error)

@@ -30,7 +30,6 @@ exports.sendEmailHelper = async function (from, to, subject, text, filesname, fi
                 })
             } 
         }
-
         let transporter = nodemailer.createTransport(smtpConfig)
         let info = await transporter.sendMail(config);
         return info

@@ -44,6 +44,7 @@ exports.estadosEvaluacionCurricular = {
     "EVALUACION_PENDIENTE": 3, 
     "EVALUACION_DENEGADA": 4,
     "EVALUACION_APROBADA": 5,
+    "EVALUACION_FINALIZADA": 6,
     "SOLICITUD_CANCELADA": -1
 }
 
