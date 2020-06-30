@@ -107,8 +107,7 @@ if (process.env.DEV == 'true') {
     res.locals.portalName = 'portal'
     res.locals.pruebasBoolean = false;
     //se envía y se recibe en el propio mail del usuario de pruebas
-    //req.session.user.mail = process.env.EMAIL_USER;
-    req.session.user.mail= "jose.fernandez@upm.es";
+    req.session.user.mail = process.env.EMAIL_USER;
     next();
   })
 } else {
