@@ -103,14 +103,16 @@ export default class App extends React.Component {
         this.setState({
           showTitulacion: true,
           showInicio: false,
-          disableTitulacion: true
+          //disableTitulacion: true
+          disableTitulacion: false //pruebas
         });
         break;
       case 'curso':
         this.setState({
           showCurso: true,
           showInicio: false,
-          disableCurso: true
+          //disableCurso: true
+          disableCurso: false //pruebas
         });
         break;
       case 'consulta':
