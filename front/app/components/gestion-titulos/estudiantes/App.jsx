@@ -101,7 +101,12 @@ export default class App extends React.Component {
           
           <Alert variant="info">
             <p>
-            Recuerde que tras superar todos los ECTS de la titulación, la solicitud de título estará disponible dos días después de que la nota del TFT se encuentre disponible en <a href="https://www.upm.es/politecnica_virtual/">Politécnica Virtual</a>.
+            Recuerde que tras superar todos los ECTS de la titulación, la solicitud de título estará disponible <b>dos días después</b> de que la nota del TFT se encuentre disponible en <a href="https://www.upm.es/politecnica_virtual/" target="_blank">Politécnica Virtual</a>.
+            </p>
+          </Alert>
+          <Alert variant="info">
+            <p>
+            Sólo se podrán solicitar desde la aplicación los títulos que haya finalizado en el curso <b>2019-20 o posterior</b>. Las titulaciones finalizadas con fecha anterior debe solicitarlas a través del <a href="https://appsrv.etsit.upm.es/cau/secretaria/" target="_blank">Servicio CAU de Secretaría</a>.
             </p>
           </Alert>
 

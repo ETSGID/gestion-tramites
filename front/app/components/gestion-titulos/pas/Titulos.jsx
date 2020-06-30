@@ -47,7 +47,7 @@ export default class Titulos extends React.Component {
     render() {
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
-            planSelect[plan.id] = plan.nombre
+            planSelect[plan.id] = `${plan.nombre} (${plan.id})`
         })
 
         const estadoSelect = {};
@@ -83,16 +83,15 @@ export default class Titulos extends React.Component {
             filter: textFilter(),
         },
         {
-            dataField: 'planCodigo',
-            text: 'Plan Codigo',
-            hidden: true
-        },
-        {
             dataField: 'planNombre',
             text: 'Plan',
             filter: selectFilter({
                 options: planSelect
             })
+        },
+        {
+            dataField: 'planCodigo',
+            text: 'Plan Código'
         },
         {
             dataField: 'estadoPeticionTexto',

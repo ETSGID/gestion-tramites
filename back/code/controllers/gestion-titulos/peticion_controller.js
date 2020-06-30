@@ -171,7 +171,7 @@ exports.getInfoAlumno = async function (req, res, next) {
         let peticiones = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
         let titulosAlumno;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            titulosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
+            titulosAlumno = [{ "idplan": "09TT" , "curso_academico":"2019-20"}, { "idplan": "09TT", "curso_academico":"2019-20" }, { "idplan": "09AQ", "curso_academico":"2019-20" }, { "idplan": "0994", "curso_academico":"2019-11" }]
         } else {
             let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
             let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
@@ -184,11 +184,14 @@ exports.getInfoAlumno = async function (req, res, next) {
         }
         if (!Array.isArray(titulosAlumno)) {
             titulosAlumno = [];
+            //para detectar errores
             console.log(req.session.user.irispersonaluniqueid)
         }
 
-        //merge titulos pedidos y los que devuelve api peron. Solo se meten entradas nuevas
-        titulosAlumno.forEach(plan => { return !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
+        // merge titulos pedidos y los que devuelve api peron. Solo se meten entradas nuevas
+        // solo se pueden pedir los titulos a partir del curso 2019-20
+        titulosAlumno.forEach(plan => { return (!peticiones.find(p => p.planCodigo === plan.idplan) && plan.curso_academico >= '2019-20') ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
+        
         let plans = await planController.findAllPlans();
         peticiones.forEach(peticion => {
             const plan = plans.find(p => p.id === peticion.planCodigo);
