@@ -55,8 +55,8 @@ app.use(morgan('combined', {
 
 //only enable CORS in dev
 if (process.env.DEV == 'true') {
-//Enable CORS when developing react front
-app.use(cors());
+  //Enable CORS when developing react front
+  app.use(cors());
 }
 
 app.use(express.json());
@@ -102,9 +102,10 @@ if (process.env.DEV == 'true') {
     req.session.user.sn = "FERNANDEZ FERNANDEZ"
     req.session.user.cn = "FERNANDO"
     //se debe sobrescribir con el texto correspondiente en el router del trámite
-    res.locals.barraInicioText="TRÁMITE";
+    res.locals.barraInicioText = "TRÁMITE";
     res.locals.session = req.session;
-    res.locals.portalName='portal'
+    res.locals.portalName = 'portal'
+    res.locals.pruebasBoolean = false;
     //se envía y se recibe en el propio mail del usuario de pruebas
     req.session.user.mail = process.env.EMAIL_USER;
     next();
@@ -133,14 +134,16 @@ if (process.env.DEV == 'true') {
       req.session.user.employeetype = "FA"
       req.session.user.irispersonaluniqueid = "123456789D"
       req.session.user.sn = "FERNANDEZ FERNANDEZ"
-      req.session.user.cn = "FERNANDO" 
-      res.locals.portalName='pruebas';
+      req.session.user.cn = "FERNANDO"
+      res.locals.portalName = 'pruebas';
+      res.locals.pruebasBoolean = true;
     } else {
-      res.locals.portalName='portal';
+      res.locals.portalName = 'portal';
+      res.locals.pruebasBoolean = false;
     }
-       // Hacer visible req.session en las vistas
+    // Hacer visible req.session en las vistas
     //se debe sobrescribir con el texto correspondiente en el router del trámite
-    res.locals.barraInicioText="TRÁMITE";
+    res.locals.barraInicioText = "TRÁMITE";
     res.locals.session = req.session;
     next();
   });

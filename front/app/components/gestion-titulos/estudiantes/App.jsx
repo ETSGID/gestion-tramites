@@ -101,7 +101,7 @@ export default class App extends React.Component {
           
           <Alert variant="info">
             <p>
-            Recuerde que tras superar todos los ECTS de la titulación, la solicitud de título estará disponible dos días después de la defensa del TFT
+            Recuerde que tras superar todos los ECTS de la titulación, la solicitud de título estará disponible dos días después de que la nota del TFT se encuentre disponible en <a href="https://www.upm.es/politecnica_virtual/">Politécnica Virtual</a>.
             </p>
           </Alert>
 

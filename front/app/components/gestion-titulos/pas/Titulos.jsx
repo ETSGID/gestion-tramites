@@ -1,7 +1,8 @@
 
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -11,8 +12,13 @@ import ModalStructure from './ModalStructure';
 export default class Titulos extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            page: 1,
+            sizePerPage: 50           
+        }
         this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
         this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+        this.handleTableChange = this.handleTableChange.bind(this);
     }
     cambioEstadoClick(paramsToUpdate) {
         this.props.cambioEstadoClick(this.props.selected, paramsToUpdate)
@@ -20,13 +26,41 @@ export default class Titulos extends React.Component {
     cambioSelectedClick(index, cancel, info) {
         this.props.cambioSelectedClick(index, cancel, info)
     }
+
+    handleTableChange(type, { page, sizePerPage, filters }) {
+        this.setState({
+            page: page,
+            sizePerPage: sizePerPage
+        })
+        const filters2 = {};
+        
+        setTimeout(() => {
+            // Handle column filters
+            for (const filter in filters) {
+                filters2[filter] = filters[filter].filterVal;
+            }
+            //call the api
+            this.props.findPeticiones(page, sizePerPage, filters2);
+        }, 2000);
+    }
+
     render() {
+        const planSelect = {};
+        this.props.plans.forEach((plan, index) => {
+            planSelect[plan.id] = plan.nombre
+        })
+
+        const estadoSelect = {};
+        for (const estado in estadosTitulo){
+            estadoSelect[estado] = estado
+        }
+
         let peticiones = this.props.peticiones.map((peticion, index) => {
             peticion.idTabla = index;
             peticion.estadoPeticionTexto = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === peticion.estadoPeticion) || "NO_PEDIDO"
             peticion.accion = peticion.estadoPeticion
             peticion.accion2 = peticion.estadoPeticion
-            peticion.nombreCompleto = peticion.apellido + " " + peticion.nombre
+
             return peticion
         })
         const columns = [{
@@ -37,42 +71,46 @@ export default class Titulos extends React.Component {
             dataField: 'irispersonaluniqueid',
             text: 'DNI',
             filter: textFilter(),
-            sort: true,
         },
         {
-            dataField: 'nombreCompleto',
+            dataField: 'nombre',
             text: 'Nombre',
             filter: textFilter(),
-            sort: true,
+        },
+        {
+            dataField: 'apellido',
+            text: 'Apellidos',
+            filter: textFilter(),
         },
         {
             dataField: 'planCodigo',
-            text: 'Plan',
-            filter: textFilter(),
-            sort: true
+            text: 'Plan Codigo',
+            hidden: true
         },
         {
             dataField: 'planNombre',
             text: 'Plan',
-            filter: textFilter(),
-            sort: true
+            filter: selectFilter({
+                options: planSelect
+            })
         },
         {
             dataField: 'estadoPeticionTexto',
             text: 'Estado petición',
-            sort: true,
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 return (
                     <span>{row.estadoPeticionTexto}</span>
                 )
-            }
+            },
+            filter: selectFilter({
+                options: estadoSelect
+            })
 
         },
         {
             dataField: 'fecha',
-            text: 'Última Actualización',
-            sort: true,
+            text: 'Última Actualización'
         },
         {
             dataField: 'accion',
@@ -117,7 +155,7 @@ export default class Titulos extends React.Component {
                     case estadosTitulo.TITULO_RECOGIDO:
                         if (process.env.NODE_ENV === "development") {
                             return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
-                        }else{
+                        } else {
                             return (<span>No acción asociada</span>)
                         }
 
@@ -152,6 +190,10 @@ export default class Titulos extends React.Component {
         return (
             <div>
                 <BootstrapTable
+                    remote={
+                        { filter: true },
+                        { pagination: true}
+                    }
                     bootstrap4
                     wrapperClasses="table-responsive"
                     keyField="idTabla"
@@ -160,6 +202,8 @@ export default class Titulos extends React.Component {
                     defaultSorted={defaultSorted}
                     striped={true}
                     filter={filterFactory()}
+                    pagination={ paginationFactory({ page: this.state.page, sizePerPage: this.state.sizePerPage, totalSize: this.props.numberPeticiones }) }
+                    onTableChange={this.handleTableChange}
                 />
                 {modal}
             </div>

@@ -19,6 +19,7 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^1.7.0",
+    "react-bootstrap-table2-paginator": "^2.1.2",
     "react-loading-overlay": "^1.0.1",
     "url-join": "^4.0.1"
   },

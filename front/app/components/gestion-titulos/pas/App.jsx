@@ -7,32 +7,51 @@ import LoadingOverlay from 'react-loading-overlay';
 const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service,"/pas/gestion-tramites", tramite[0]) : window.location.href
+const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
 
 
-export default class App extends React.Component {  
+export default class App extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
       peticiones: [],
+      plans: [],
+      // numero de entradas totales en la base de datos
+      numberPeticiones: 0,
+      //plansCargado para pasar las options en el select
+      plansCargado: false,
       selected: null,
       cancel: null,
       info: null,
-      loading: null
+      loading: null,
     };
+    this.findPeticiones = this.findPeticiones.bind(this);
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
   }
   componentDidMount() {
+    this.findPeticiones(1, 50, null);
+  }
+
+  findPeticiones(page, sizePerPage, filters) {
     this.setState({
       loading: true
     })
-    axios.get(urljoin(apiBaseUrl, "api/peticiones"))
+    axios.get(urljoin(apiBaseUrl, "api/peticiones"), {
+      params: {
+        'page': page,
+        'sizePerPage': sizePerPage,
+        'filters': JSON.stringify(filters)
+      }
+    })
       .then((response) => {
         this.setState({
-          peticiones: response.data,
-          loading: null
+          peticiones: response.data.peticiones,
+          numberPeticiones: response.data.numberPeticiones,
+          plans: response.data.plans,
+          loading: null,
+          plansCargado: true
         })
       })
       .catch((error) => {
@@ -40,9 +59,10 @@ export default class App extends React.Component {
           loading: null
         })
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '': ''}`)
+          error.response.data.error || '' : ''}`)
       })
   }
+
 
   cambioEstadoClick(index, paramsToUpdate) {
     let peticionesNuevas = this.state.peticiones.slice()
@@ -84,7 +104,7 @@ export default class App extends React.Component {
           loading: null
         })
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '': ''}`)
+          error.response.data.error || '' : ''}`)
       })
   }
 
@@ -97,6 +117,21 @@ export default class App extends React.Component {
   }
 
   render() {
+    let titulos = "Cargando..."
+    if (this.state.plansCargado) {
+      titulos = <Titulos
+        selected={this.state.selected}
+        cancel={this.state.cancel}
+        info={this.state.info}
+        peticiones={this.state.peticiones}
+        numberPeticiones={this.state.numberPeticiones}
+        plans={this.state.plans}
+        cambioEstadoClick={this.cambioEstadoClick}
+        cambioSelectedClick={this.cambioSelectedClick}
+        findPeticiones={this.findPeticiones}
+      >
+      </Titulos>
+    }
     return (
       <div>
         <div className="cuerpo">
@@ -106,15 +141,7 @@ export default class App extends React.Component {
             spinner
             text='Cargando'
           >
-            <Titulos
-              selected={this.state.selected}
-              cancel={this.state.cancel}
-              info={this.state.info}
-              peticiones={this.state.peticiones}
-              cambioEstadoClick={this.cambioEstadoClick}
-              cambioSelectedClick={this.cambioSelectedClick}
-            >
-            </Titulos>
+            {titulos}
           </LoadingOverlay>
         </div>
       </div>
