@@ -74,8 +74,6 @@ export default class Consulta extends React.Component {
                 switch (estadosEvaluacionCurricular[row.estadoPeticionTexto]) {
                     case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
                         return (<span>Su solicitud está siendo procesada por secretaría para verificar que cumple con los requisitos.</span>)
-                    case estadosEvaluacionCurricular.SOLICITUD_DENEGADA:
-                        return (<span>Su solicitud ha sido denegada por incumplimiento de los requisitos.</span>)
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                         return (<span>Usted cumple los requisitos y la solicitud está siendo procesada por el tribunal encargado.</span>)
                     case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
@@ -84,6 +82,8 @@ export default class Consulta extends React.Component {
                         return (<span>Su solicitud ha sido aprobada.</span>)
                     case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
                         return (<span>Su solicitud ha sido cancelada.</span>)
+                    case estadosEvaluacionCurricular.EVALUACION_FINALIZADA:
+                    return (<span>Su proceso de solicitud ha sido dado por finalizado.</span>)
                     default:
                         return (<span>Su solicitud está siendo procesada por secretaría.</span>)
                 }

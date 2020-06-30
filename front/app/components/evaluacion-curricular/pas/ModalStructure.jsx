@@ -5,7 +5,7 @@ import FormInfoRequisitos from './FormInfoRequisitos';
 import FormAprobarTribunal from './FormAprobarTribunal';
 import FormCancel from './FormCancel';
 import InfoPeticion from './InfoPeticion';
-import FormDocumento from './FormDocumento';
+import FormFinalizar from './FormFinalizar';
 
 export default class ModalStructure extends React.Component {
   constructor(props) {
@@ -61,13 +61,14 @@ export default class ModalStructure extends React.Component {
             >
             </FormAprobarTribunal>
           break;
-        case estadosEvaluacionCurricular.EVALUACION_APROBADA:
-          form = <FormDocumento
+          case estadosEvaluacionCurricular.EVALUACION_APROBADA:
+          case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
+          form = <FormFinalizar
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
-          </FormDocumento>
+          </FormFinalizar>
           break;
         default:
           break;

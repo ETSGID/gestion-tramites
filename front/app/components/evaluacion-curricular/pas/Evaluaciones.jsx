@@ -151,9 +151,10 @@ export default class Evaluaciones extends React.Component {
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Reunion tribunal</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_APROBADA:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Enviar documento</Button>)
+                    case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Finalizar proceso</Button>)
                     default:
-                        return (<span>No acción asociada</span>)
+                    return (<span>No acción asociada</span>)
                 }
             }
 

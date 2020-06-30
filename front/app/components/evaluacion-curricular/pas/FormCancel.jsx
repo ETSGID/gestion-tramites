@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Form} from 'react-bootstrap';
 const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
 
-export default class Formcancel extends React.Component {
+export default class FormCancel extends React.Component {
     constructor(props) {
         super(props);
         this.state = { textCancel: "", cancelNewState: estadosEvaluacionCurricular.SOLICITUD_CANCELADA};
