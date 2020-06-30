@@ -7,7 +7,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
     let send = false;
     let estadoActualText = Object.keys(estadosCertificado).find(k => estadosCertificado[k] === estadoActual);
     let subject = `Solicitud de certificado académico. Estado actual: ${estadoActualText}`
-    let text = `Su solicitud de certificado académico del plan ${planCodigo} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
+    let text = `Su solicitud de certificado académico ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
     let filesname = [];
     switch (estadoActual) {
         case estadosCertificado.PEDIDO:
@@ -25,7 +25,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
         case estadosCertificado.PAGO_CONFIRMADO:
             send = true;
             text += `Su pago del certificado académico solicitado ha sido validado por el personal de secretaría.`
-            text += ` El certificado en estado de espera, le será notificado cuando se encuentre disponible para su recogida.`
+            text += ` Le será notificado cuando se encuentre disponible para su recogida.`
             break;
         case estadosCertificado.CERTIFICADO_DISPONIBLE:
             send = true;
