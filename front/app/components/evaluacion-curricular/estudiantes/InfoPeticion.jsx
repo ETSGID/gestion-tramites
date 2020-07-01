@@ -23,6 +23,7 @@ export default class InfoPeticion extends React.Component {
                     <li>Asignatura: {this.props.peticion.asignaturaCodigo}-{this.props.peticion.asignaturaNombre}</li>
                         <li>Plan: {this.props.peticion.planNombre} {this.props.peticion.planCodigo}</li>
                         <li>Tipo: {this.props.peticion.tipo}</li>
+                        <li>Email de contacto:{this.props.peticion.email}</li>
                         <li>Estado actual: {this.props.peticion.estadoPeticionTexto}</li>
                         <li>Última actualización: {this.props.peticion.fecha || "Petición no registrada todavía"}</li>
                         {denegado}
