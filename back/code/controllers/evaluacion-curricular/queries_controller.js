@@ -1,4 +1,4 @@
-let modelsEvaluacionCurricular = require('../../models/evaluacion-curricular');
+//let modelsEvaluacionCurricular = require('../../../../../evaluacion_curricular/evaluacion-curricular-DBe/models');
 let sequelize = require('sequelize');
 const Op = sequelize.Op;
 
@@ -23,26 +23,34 @@ if (month <= 7) {
 // Lista de asignaturas (nombre y plan) suspensas para esa persona, dado dni
 const getAsignaturasSuspensas = async function (dni, curso) {
     try {
-        var asignaturasCodigo = {};
+        var asignaturasSuspensas;
         // Obtiene codigos de las asignaturas + idplan, dos convocatorias al menos (count>1)
         if (curso === undefined) { // por titulacion
-            asignaturasCodigo = await modelsEvaluacionCurricular.linea_acta.findAll({
-                attributes: ['asignatura', 'idplan'],
-                where: {
-                    asignatura: {
-                        [Op.notIn]: sequelize.literal('(SELECT asignatura FROM linea_acta WHERE calificacion_num >= 5 AND dni ="' + dni + '")')
-                    },
-                    dni: dni,
-                    idplan: ["09TT", "09IB", "09AQ"],
-                    calificacion_num: {
-                        [Op.ne]: null
-                    }
-                },
-                group: ['asignatura', 'idplan'],
-                having: sequelize.literal('COUNT(*) > 1') //dos convocatorias minimo
-            });
+            /*  let asignaturasCodigo = await modelsEvaluacionCurricular.linea_acta.findAll({
+                 attributes: ['asignatura', 'idplan'],
+                 where: {
+                     asignatura: {
+                         [Op.notIn]: sequelize.literal('(SELECT asignatura FROM linea_acta WHERE calificacion_num >= 5 AND dni ="' + dni + '")')
+                     },
+                     dni: dni,
+                     idplan: ["09TT", "09IB", "09AQ"],
+                     calificacion_num: {
+                         [Op.ne]: null
+                     }
+                 },
+                 group: ['asignatura', 'idplan'],
+                 having: sequelize.literal('COUNT(*) > 1') //dos convocatorias minimo
+             }); 
+             var asignaturasSuspensasString = JSON.stringify(asignaturasCodigo);
+              asignaturasSuspensas = JSON.parse(asignaturasSuspensasString);*/
+            asignaturasSuspensas = [{ 'asignatura': '95000015', 'idplan': '09TT', nombre: 'SEÑALES Y SISTEMAS' },
+            { 'asignatura': '95000029', 'idplan': '09TT', nombre: 'ANALISIS Y DISEÑO DE CIRCUITOS' },
+            { 'asignatura': '95000016', 'idplan': '09TT', nombre: 'SEÑALES ALEATORIAS' },
+            { 'asignatura': '95000031', 'idplan': '09TT', nombre: 'REDES DE ORDENADORES' },
+            { asignatura: '95000100', 'idplan': '09IB', nombre: 'BIOQUÍMICA ESTRUCTURAL' }];
         } else { // por curso
-            asignaturasCodigo = await modelsEvaluacionCurricular.linea_acta.findAll({
+            /*
+            let asignaturasCodigo = await modelsEvaluacionCurricular.linea_acta.findAll({
                 attributes: ['asignatura', 'idplan'],
                 where: {
                     asignatura: {
@@ -58,16 +66,16 @@ const getAsignaturasSuspensas = async function (dni, curso) {
                 group: ['asignatura', 'idplan'],
                 having: sequelize.literal('COUNT(*) >1') // una convocatoria, la extraordinaria aun no esta en actas??
             });
+            var asignaturasSuspensasString = JSON.stringify(asignaturasCodigo);
+            asignaturasSuspensas = JSON.parse(asignaturasSuspensasString);*/
+            asignaturasSuspensas = [{ asignatura: '95000031', idplan: '09TT', nombre: 'REDES DE ORDENADORES' }];
         }
-
-        var asignaturasSuspensasString = JSON.stringify(asignaturasCodigo);
-        var asignaturasSuspensasJSON = JSON.parse(asignaturasSuspensasString);
         // Obtiene nombre de las asignaturas suspensas 
-        for (var i = 0; i < asignaturasCodigo.length; i++) {
-            let nombreAsignatura = await getNombreAsignatura(asignaturasCodigo[i].asignatura);
-            asignaturasSuspensasJSON[i].nombre = nombreAsignatura;
-        }
-        return asignaturasSuspensasJSON;
+        /*  for (var i = 0; i < asignaturasCodigo.length; i++) {
+             let nombreAsignatura = await getNombreAsignatura(asignaturasCodigo[i].asignatura);
+             asignaturasSuspensasJSON[i].nombre = nombreAsignatura;
+         } */
+        return asignaturasSuspensas;
     } catch (error) {
         throw error;
     }
@@ -76,6 +84,7 @@ const getAsignaturasSuspensas = async function (dni, curso) {
 // Obtiene dni del alumno a partir de su email
 const getDni = async function (email) {
     try {
+        /*
         let dni = await modelsEvaluacionCurricular.persona.findOne({
             attributes: ['dni'],
             where: {
@@ -84,6 +93,10 @@ const getDni = async function (email) {
         });
         var dniString = JSON.stringify(dni);
         var dniJSON = JSON.parse(dniString);
+        */
+        let dniJSON =
+            { "dni": 'dni_1' }
+            ;
         return dniJSON;
     } catch (error) {
         throw error;
@@ -93,6 +106,7 @@ const getDni = async function (email) {
 // obtiene planes de estudio en los que el alumno esta matriculado
 const getPlanesEstudios = async function (dni) {
     try {
+        /*
         let planes = await modelsEvaluacionCurricular.linea_acta.findAll({
             attributes: [[sequelize.literal('DISTINCT `idplan`'), 'idplan']],
             where: {
@@ -109,7 +123,14 @@ const getPlanesEstudios = async function (dni) {
                 }
             });
             planesJSON[i].nombre = nombrePlan.nombre;
-        }
+        }*/
+        let planesJSON = [
+            { idplan: '09IB', nombre: 'GRADO EN INGENIERIA BIOMEDICA' },
+            {
+                idplan: '09TT',
+                nombre: 'GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION'
+            }
+        ];
         return planesJSON;
     } catch (error) {
         throw error;
@@ -158,7 +179,7 @@ exports.getInfoAlumno = async function (email) {
 
 
 // PAS
-
+/*
 // Obtiene toda la información personal del alumno dado su email
 const getInfoAlumno = async function (email) {
     try {
@@ -172,6 +193,8 @@ const getInfoAlumno = async function (email) {
         throw error;
     }
 }
+*/
+
 // obtiene fecha de inicio de los estudios en dicho plan
 const getInicioEstudios = async function (dni, idplan) {
     //de bbdd viendo la primera acta o preguntar si otra api 
@@ -181,7 +204,7 @@ const getInicioEstudios = async function (dni, idplan) {
 const getVecesSuspensa = async function (dni, asignatura) {
     //cuenta lo obtenido de getinfoconvocatorias
 }
-
+/*
 // obtiene notas y fechas de antiguas convocatorias presentadas de dicha asignatura
 const getInfoConvocatorias = async function (dni, asignaturaCodigo) {
     try {
@@ -204,6 +227,7 @@ const getInfoConvocatorias = async function (dni, asignaturaCodigo) {
         throw error;
     }
 }
+
 
 // Obtiene informacion sobre el TFT de ese alumno
 const getInfoTFT = async function (dni) {
@@ -265,11 +289,12 @@ const getNombrePlan = async function (planCodigo) {
         throw error;
     }
 }
+*/
 
-const sortJSON = async function(data, key, orden) {
+const sortJSON = async function (data, key, orden) {
     return data.sort(function (a, b) {
         var x = a[key],
-        y = b[key];
+            y = b[key];
 
         if (orden === 'asc') {
             return ((x < y) ? -1 : ((x > y) ? 1 : 0));
@@ -284,9 +309,29 @@ const sortJSON = async function(data, key, orden) {
 exports.getNombreAsignatura = async function (asignaturaCodigo) {
     try {
         let respuesta;
-        if (process.env.DEV == 'true'|| process.env.PRUEBAS == 'true') {
-        respuesta = await getNombreAsignatura(asignaturaCodigo);
-        }else {
+        if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
+            //respuesta = await getNombreAsignatura(asignaturaCodigo);
+            switch (asignaturaCodigo) {
+                case '95000015':
+                    respuesta = 'SEÑALES Y SISTEMAS';
+                    break;
+                case '95000029':
+                    respuesta = 'ANALISIS Y DISEÑO DE CIRCUITOS';
+                    break;
+                case '95000016':
+                    respuesta = 'SEÑALES ALEATORIAS';
+                    break;
+                case '95000031':
+                    respuesta = 'REDES DE ORDENADORES';
+                    break;
+                case '95000100':
+                    respuesta = 'BIOQUÍMICA ESTRUCTURAL';
+                    break;
+                default:
+                    respuesta = "";
+                    break;
+            }
+        } else {
             //api upm
         }
         return respuesta;
@@ -298,20 +343,42 @@ exports.getNombreAsignatura = async function (asignaturaCodigo) {
 exports.getAsignaturasDePlan = async function (plans) {
     try {
         let respuesta = []
-        if (process.env.DEV == 'true'|| process.env.PRUEBAS == 'true') {
-        respuesta = await getCodigosAsignaturas(plans);
-        var respuestaString = JSON.stringify(respuesta);
-        var respuestaJSON = JSON.parse(respuestaString);
-        for (var i = 0; i < respuesta.length; i++) {
-            let n = await getNombreAsignatura(respuestaJSON[i].asignatura);
-            respuestaJSON[i].nombre = n;
-
+        if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
+            /* respuesta = await getCodigosAsignaturas(plans);
+             var respuestaString = JSON.stringify(respuesta);
+             var respuestaJSON = JSON.parse(respuestaString);
+             for (var i = 0; i < respuesta.length; i++) {
+                 let n = await getNombreAsignatura(respuestaJSON[i].asignatura);
+                 respuestaJSON[i].nombre = n;
+ 
+             }
+             var sorted = sortJSON(respuestaJSON, 'nombre', 'asc');
+             */
+            let sorted = [
+                { "id": "09BD", "nombre": "DOBLE MASTER ING.TELECOMUNICACION Y TEORIA DE LA SEÑAL Y COMUNICACIONES", "acronimo": null },
+                { "id": "09BB", "nombre": "DOBLE MASTER INGENIERIA TELECOMUNICACION Y EN REDES Y SERVICIOS TELEMATICOS", "acronimo": null },
+                { "id": "09BC", "nombre": "DOBLE MASTER UNIV. ING. TELECOMUNICACION Y EN ING. DE SISTEMAS ELECTRONICOS", "acronimo": null },
+                { "id": "09AV", "nombre": "EIT DIGITAL TRACK ON SOFTWARE AND SERVICES ARCHITECTURE", "acronimo": null },
+                { "id": "09IB", "nombre": "GRADO EN INGENIERIA BIOMEDICA", "acronimo": null },
+                { "id": "09BM", "nombre": "GRADO EN INGENIERIA BIOMEDICA", "acronimo": null },
+                { "id": "09TT", "nombre": "GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION", "acronimo": null },
+                { "id": "09ID", "nombre": "GRADO EN INGENIERIA Y SISTEMAS DE DATOS", "acronimo": null },
+                { "id": "09AR", "nombre": "MASTER UNIV. EN TRATAMIENTO ESTADISTICO-COMPUTACIONAL DE LA INFORMACION", "acronimo": null },
+                { "id": "09AW", "nombre": "MASTER UNIVERSITARIO EN CIBERSEGURIDAD", "acronimo": null },
+                { "id": "09AX", "nombre": "MASTER UNIVERSITARIO EN ENERGIA SOLAR FOTOVOLTAICA", "acronimo": null },
+                { "id": "09AU", "nombre": "MASTER UNIVERSITARIO EN INGENIERIA BIOMEDICA", "acronimo": null },
+                { "id": "09AS", "nombre": "MASTER UNIVERSITARIO EN INGENIERIA DE REDES Y SERVICIOS TELEMATICOS", "acronimo": null },
+                { "id": "09AN", "nombre": "MASTER UNIVERSITARIO EN INGENIERIA DE SISTEMAS ELECTRONICOS", "acronimo": null },
+                { "id": "09AZ", "nombre": "MASTER UNIVERSITARIO EN INGENIERIA DE SISTEMAS ELECTRONICOS", "acronimo": null },
+                { "id": "09AQ", "nombre": "MASTER UNIVERSITARIO EN INGENIERIA DE TELECOMUNICACION", "acronimo": null },
+                { "id": "09BA", "nombre": "MASTER UNIVERSITARIO EN INGENIERÍA DE REDES Y SERVICIOS TELEMÁTICOS", "acronimo": null },
+                { "id": "09AT", "nombre": "MASTER UNIVERSITARIO EN TEORIA DE LA SEÑAL Y COMUNICACIONES", "acronimo": null },
+                { "id": "MV09", "nombre": "MOVILIDAD CENTRO 09", "acronimo": null },
+                { "id": "GX09", "nombre": "VISITANTES GRADO CENTRO 9", "acronimo": null }];
+            return sorted;
+        } else {
+            //api upm
         }
-        var sorted = sortJSON(respuestaJSON, 'nombre','asc');
-        return sorted;
-    } else {
-        //api upm
-    }
     } catch (error) {
         console.log(error);
     }
@@ -326,13 +393,51 @@ exports.getDatosFormularioTitulacion = async function (req, res) {
         email = req.session.user.mail;
         respuesta.email = email;
         if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
-        dniArray = await getDni(email);
-        respuesta.dni = dniArray['dni'];
-        respuesta.planes = await getPlanesEstudios(dniArray['dni']);
-        respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni']);
-        respuesta.cursoActual = cursoActual;
-        } else{
-        // api upm
+            /*dniArray = await getDni(email);
+            respuesta.dni = dniArray['dni'];
+            respuesta.planes = await getPlanesEstudios(dniArray['dni']);
+            respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni']);
+            respuesta.cursoActual = cursoActual;*/
+            respuesta.dni = 'dni_1';
+            respuesta.planes = [
+                {
+                    idplan: '09IB',
+                    nombre: 'GRADO EN INGENIERIA BIOMEDICA'
+                },
+                {
+                    idplan: '09TT',
+                    nombre: 'GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION'
+                }
+            ];
+            respuesta.asignaturas = [{
+                asignatura: '95000015',
+                idplan: '09TT',
+                nombre: 'SEÑALES Y SISTEMAS'
+            },
+            {
+                asignatura: '95000029',
+                idplan: '09TT',
+                nombre: 'ANALISIS Y DISEÑO DE CIRCUITOS'
+            },
+            {
+                asignatura: '95000016',
+                idplan: '09TT',
+                nombre: 'SEÑALES ALEATORIAS'
+            },
+            {
+                asignatura: '95000031',
+                idplan: '09TT',
+                nombre: 'REDES DE ORDENADORES'
+            },
+            {
+                asignatura: '95000100',
+                idplan: '09IB',
+                nombre: 'BIOQUÍMICA ESTRUCTURAL'
+            }]
+
+            respuesta.cursoActual = '2019-20';
+        } else {
+            // api upm
         }
         res.json(respuesta)
     } catch (error) {
@@ -347,14 +452,38 @@ exports.getDatosFormularioCurso = async function (req, res) {
         respuesta.nombre = req.session.user.cn;
         respuesta.apellidos = req.session.user.sn;
         email = req.session.user.mail;
-       // email = "test1@test.com"; //prueba
+        // email = "test1@test.com"; //prueba
         respuesta.email = email;
         if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
-        dniArray = await getDni(email);
-        respuesta.dni = dniArray['dni'];
-        respuesta.planes = await getPlanesEstudios(dniArray['dni']);
-        respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni'], "2018-19");
-        respuesta.cursoActual = cursoActual;
+            /* dniArray = await getDni(email);
+             respuesta.dni = dniArray['dni'];
+             respuesta.planes = await getPlanesEstudios(dniArray['dni']);
+             respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni'], "2018-19");
+             respuesta.cursoActual = cursoActual;
+             */
+            respuesta = [
+                {
+                    nombre: 'FERNANDO',
+                    apellidos: 'FERNANDEZ FERNANDEZ',
+                    email: 'test.9a1@alumnos.upm.es',
+                    dni: 'dni_1',
+                    planes: [
+                        { idplan: '09IB', nombre: 'GRADO EN INGENIERIA BIOMEDICA' },
+                        {
+                            idplan: '09TT',
+                            nombre: 'GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION'
+                        }
+                    ],
+                    asignaturas: [
+                        {
+                            asignatura: '95000031',
+                            idplan: '09TT',
+                            nombre: 'REDES DE ORDENADORES'
+                        }
+                    ],
+                    cursoActual: '2019-20'
+                }
+            ];
         } else {
             //api upm
         }
@@ -364,29 +493,29 @@ exports.getDatosFormularioCurso = async function (req, res) {
         res.json({ error: error.message });
     }
 }
-
+/* 
 exports.getInfoConvocatorias = async function (req, res) {
     try {
         let email = req.session.user.mail;
         let asignaturaCodigo = req.query.asignatura;
         let planCodigo = req.query.plan;
         if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
-        let dni = await getDni(email);
-        let planNombre = await getNombrePlan(planCodigo);
-        let asignaturaNombre = await getNombreAsignatura(asignaturaCodigo);
-        info = await getInfoConvocatorias(dni['dni'], asignaturaCodigo);
-        res.render("confirmacion", {
-            title: 'Express',
-            asignatura: [asignaturaCodigo, asignaturaNombre],
-            dni: dni['dni'],
-            info: info,
-            plan: [planCodigo, planNombre],
-        });
-    } else {
-        //api upm
-    }
+            let dni = await getDni(email);
+            let planNombre = await getNombrePlan(planCodigo);
+            let asignaturaNombre = await getNombreAsignatura(asignaturaCodigo);
+            info = await getInfoConvocatorias(dni['dni'], asignaturaCodigo);
+            res.render("confirmacion", {
+                title: 'Express',
+                asignatura: [asignaturaCodigo, asignaturaNombre],
+                dni: dni['dni'],
+                info: info,
+                plan: [planCodigo, planNombre],
+            });
+        } else {
+            //api upm
+        }
     } catch (error) {
         console.log(error);
         res.json({ error: error.message });
     }
-}
+} */

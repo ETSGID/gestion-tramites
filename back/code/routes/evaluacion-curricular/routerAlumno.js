@@ -8,10 +8,6 @@ router.get('/', function (req, res) {
   res.render('index');
 });
 
-router.get('/solicitarEvaluacion', function (req, res) {
-   queriesController.getInfoConvocatorias(req, res);
- });
-
 router.get('/api/peticiones', peticionController.getInfoAllAlumno)
 router.post('/api/peticionCambioEstado',peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
 router.get('/api/asignaturas/titulacion',queriesController.getDatosFormularioTitulacion)
