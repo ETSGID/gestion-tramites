@@ -2,6 +2,11 @@ let modelsEvaluacionCurricular = require('../../models/evaluacion-curricular');
 let sequelize = require('sequelize');
 const Op = sequelize.Op;
 
+
+const mailsTestAlu = ['test.9a1@alumnos.upm.es', 'test.9p4@alumnos.upm.es', 'test.9p5@alumnos.upm.es']
+const mailsTestPas = ['test.9p2@upm.es', 'test.9p4@upm.es']
+
+
 // Obtiene curso actual
 const date = new Date();
 const year = date.getFullYear();
@@ -279,7 +284,11 @@ const sortJSON = async function(data, key, orden) {
 exports.getNombreAsignatura = async function (asignaturaCodigo) {
     try {
         let respuesta;
+        if (process.env.DEV == 'true'|| process.env.PRUEBAS == 'true') {
         respuesta = await getNombreAsignatura(asignaturaCodigo);
+        }else {
+            //api upm
+        }
         return respuesta;
     } catch (error) {
         console.log(error);
@@ -288,7 +297,8 @@ exports.getNombreAsignatura = async function (asignaturaCodigo) {
 
 exports.getAsignaturasDePlan = async function (plans) {
     try {
-        let respuesta = [];
+        let respuesta = []
+        if (process.env.DEV == 'true'|| process.env.PRUEBAS == 'true') {
         respuesta = await getCodigosAsignaturas(plans);
         var respuestaString = JSON.stringify(respuesta);
         var respuestaJSON = JSON.parse(respuestaString);
@@ -299,6 +309,9 @@ exports.getAsignaturasDePlan = async function (plans) {
         }
         var sorted = sortJSON(respuestaJSON, 'nombre','asc');
         return sorted;
+    } else {
+        //api upm
+    }
     } catch (error) {
         console.log(error);
     }
@@ -310,14 +323,17 @@ exports.getDatosFormularioTitulacion = async function (req, res) {
         let respuesta = {};
         respuesta.nombre = req.session.user.cn;
         respuesta.apellidos = req.session.user.sn;
-       // email = req.session.user.mail;
-        email = "test1@test.com"; //prueba
+        email = req.session.user.mail;
         respuesta.email = email;
+        if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
         dniArray = await getDni(email);
         respuesta.dni = dniArray['dni'];
         respuesta.planes = await getPlanesEstudios(dniArray['dni']);
         respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni']);
         respuesta.cursoActual = cursoActual;
+        } else{
+        // api upm
+        }
         res.json(respuesta)
     } catch (error) {
         console.log(error);
@@ -330,14 +346,18 @@ exports.getDatosFormularioCurso = async function (req, res) {
         let respuesta = {};
         respuesta.nombre = req.session.user.cn;
         respuesta.apellidos = req.session.user.sn;
-        //email = req.session.user.mail;
-        email = "test1@test.com"; //prueba
+        email = req.session.user.mail;
+       // email = "test1@test.com"; //prueba
         respuesta.email = email;
+        if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
         dniArray = await getDni(email);
         respuesta.dni = dniArray['dni'];
         respuesta.planes = await getPlanesEstudios(dniArray['dni']);
         respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni'], "2018-19");
         respuesta.cursoActual = cursoActual;
+        } else {
+            //api upm
+        }
         res.json(respuesta)
     } catch (error) {
         console.log(error);
@@ -348,9 +368,10 @@ exports.getDatosFormularioCurso = async function (req, res) {
 exports.getInfoConvocatorias = async function (req, res) {
     try {
         let email = req.session.user.mail;
-        let dni = await getDni(email);
         let asignaturaCodigo = req.query.asignatura;
         let planCodigo = req.query.plan;
+        if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
+        let dni = await getDni(email);
         let planNombre = await getNombrePlan(planCodigo);
         let asignaturaNombre = await getNombreAsignatura(asignaturaCodigo);
         info = await getInfoConvocatorias(dni['dni'], asignaturaCodigo);
@@ -361,6 +382,9 @@ exports.getInfoConvocatorias = async function (req, res) {
             info: info,
             plan: [planCodigo, planNombre],
         });
+    } else {
+        //api upm
+    }
     } catch (error) {
         console.log(error);
         res.json({ error: error.message });

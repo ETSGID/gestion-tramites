@@ -311,14 +311,15 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
             toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
             toPAS = req.session.user.mail;
-            
         }
-        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
-        //solo se envia cuando el alumno tiene algo que enviar
-        if (req.filesBuffer) {
-            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+        if (process.env.PRUEBAS == 'false' && process.env.DEV == 'false') {
+            console.log("envia correo"); // si no esta en pruebas, manda email
+            let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+            //solo se envia cuando el alumno tiene algo que enviar
+            if (req.filesBuffer) {
+                let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+            }
         }
-
         res.json(respuesta)
     } catch (error) {
         console.log(error)
