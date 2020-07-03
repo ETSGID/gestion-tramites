@@ -14,6 +14,7 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 // Importar la definicion de las tablas 
 
 let Peticion = sequelize.import(path.join(__dirname, 'Peticion'));
+let Peticion_Certificado = sequelize.import(path.join(__dirname, 'Peticion_Certificado'));
 let Permiso = sequelize.import(path.join(__dirname, 'Permiso'));
 let Plan = sequelize.import(path.join(__dirname, 'Plan'))
 

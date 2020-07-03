@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import Certificados from './Certificados';
 import LoadingOverlay from 'react-loading-overlay';
-import {Alert} from 'react-bootstrap';
+import {Alert, Link} from 'react-bootstrap';
 import '../../../../assets/scss/main.scss';
 const tramite = require('../../../../../back/code/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
@@ -42,7 +42,9 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '': ''}`)
       })
+
   }
+
 
   cambioEstadoClick(index, paramsToUpdate) {
     let peticionesNuevas = this.state.peticiones.slice()
@@ -96,8 +98,8 @@ export default class App extends React.Component {
       <div>
         <div className="cuerpo">
           <h2>Certificados Académicos</h2>
-          <p>A continuación se presentan los Certificados Académicos (CE) que tenga solicitados. En caso de no tener solicitado ninguno, puede pedirlo haciendo click en el botón "Solicitar"</p>
-          <p><b>Se le enviarán notificaciones a través de su coqorreo @alumnos.upm.es</b></p>
+          <p>A continuación se presentan los Certificados Académicos que tenga solicitados. En caso de no tener solicitado ninguno, puede pedirlo haciendo click en el botón "Solicitar"</p>
+          <p><b>Se le enviarán notificaciones a través de su correo @alumnos.upm.es</b></p>
           <LoadingOverlay
             active={this.state.loading}
             spinner
@@ -107,10 +109,6 @@ export default class App extends React.Component {
           <Alert variant ="info">
           Antes de solicitar los certificados de notas, comprobar que se hayan incorporado todas las calificaciones a su expediente en Politécnica Virtual.
           </Alert>
-
-          <a href="http://www.etsit.upm.es/fileadmin/documentos/servicios/secretaria/archivos/Nuevos_impresos/Instancia_solicitud_certificado_academico.pdf" target="_blank">
-            Descargar solicitud en formato pdf
-          </a>
 
             <Certificados
               selected={this.state.selected}

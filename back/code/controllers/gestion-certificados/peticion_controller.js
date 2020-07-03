@@ -1,18 +1,25 @@
-let models = require('../../models');
-let mail = require('./mail');
-const estadosCertificado = require('../../enums').estadosCertificado;
+var inspect = require('util').inspect;
 var Busboy = require('busboy');
+
 const axios = require('axios');
+
+let models = require('../../models');
+let Sequelize = require('sequelize');
+let Op = Sequelize.Op
+let mail = require('./mail');
+let planController = require('../plan_controller');
+
+const estadosCertificado = require('../../enums').estadosCertificado;
 const base64 = require('../../lib/base64');
 const dni = require('../../lib/dni');
-var inspect = require('util').inspect;
+
 
 //devuelve todas las peticiones de un alumno
-const getAllPeticionAlumno = async function (irispersonaluniqueid) {
+const getAllPeticionAlumno = async function (eduPersonUniqueId) {
     try {
-        let peticiones = await models.Peticion.findAll({
+        let peticiones = await models.Peticion_Certificado.findAll({
             where: {
-                irispersonaluniqueid: irispersonaluniqueid
+                eduPersonUniqueId : eduPersonUniqueId
             }
         });
         return peticiones || [];
@@ -25,12 +32,11 @@ const getAllPeticionAlumno = async function (irispersonaluniqueid) {
 
 
 //devuelve todas las peticiones de un alumno
-const getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
+const getPeticionAlumno = async function (eduPersonUniqueId) {
     try {
-        let peticion = await models.Peticion.findOne({
+        let peticion = await models.Peticion_Certificado.findOne({
             where: {
-                irispersonaluniqueid: irispersonaluniqueid,
-                planCodigo: planCodigo
+                eduPersonUniqueId: eduPersonUniqueId,
             }
         });
         return peticion
@@ -41,12 +47,11 @@ const getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
 
 }
 
-const updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, paramsToUpdate) {
+const updatePeticionAlumno = async function (eduPersonUniqueId, paramsToUpdate) {
     try {
-        let peticion = await models.Peticion.update(paramsToUpdate, {
+        let peticion = await models.Peticion_Certificado.update(paramsToUpdate, {
             where: {
-                irispersonaluniqueid: irispersonaluniqueid,
-                planCodigo: planCodigo
+                eduPersonUniqueId: eduPersonUniqueId,
             },
             returning: true,
         });
@@ -57,10 +62,10 @@ const updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, p
     }
 }
 
-const createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre, apellido, planCodigo, descuento) {
+const createPeticionAlumno = async function (eduPersonUniqueId, mail, nombre, apellido, planCodigo, descuento) {
     try {
-        let peticion = await models.Peticion.create({
-            irispersonaluniqueid: irispersonaluniqueid,
+        let peticion = await models.Peticion_Certificado.create({
+            eduPersonUniqueId: eduPersonUniqueId,
             email: mail,
             nombre: nombre,
             apellido: apellido,
@@ -80,7 +85,7 @@ const createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre,
 //devuelve toda las peticiones de todos los alumnos
 const getAllPeticionPas = async function () {
     try {
-        let peticiones = await models.Peticion.findAll();
+        let peticiones = await models.Peticion_Certificado.findAll();
         return peticiones || [];
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -92,27 +97,27 @@ const getAllPeticionPas = async function () {
 //devuelve toda la info del alumno que se acaba de conectar
 exports.getInfoAlumno = async function (req, res, next) {
     try {
-        let peticiones = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
+        let peticiones = await getAllPeticionAlumno(req.session.user.eduPersonUniqueId)
         let certificadosAlumno;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            certificadosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
+            certificadosAlumno = [{ "idPerson": "12345678A" }, { "idPerson": "12345678B" }, { "idPerson": "12345678C" },  { "idPerson": "12345678D" },  { "idPerson": "12345678E" }]
         } else {
-            let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
+            let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.eduPersonUniqueId);
             let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
             certificadosAlumno = secondCall.data
-            if (!Array.isArray(certificadosAlumno) && typeof req.session.user.irispersonaluniqueid === 'string' ) {
-                let firstCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + dni.sanetizeDni(req.session.user.irispersonaluniqueid));
+            if (!Array.isArray(certificadosAlumno) && typeof req.session.user.eduPersonUniqueId === 'string' ) {
+                let firstCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + dni.sanetizeDni(req.session.user.eduPersonUniqueId));
                 let secondCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall2.data.token))
                 certificadosAlumno = secondCall2.data
             }
         }
         if (!Array.isArray(certificadosAlumno)){
             certificadosAlumno = [];
-            console.log(req.session.user.irispersonaluniqueid)
+            console.log(req.session.user.eduPersonUniqueId)
         } 
         
         //merge certificados pedidos y los que puede repetir
-        certificadosAlumno.forEach(plan => { return !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosCertificado.NOPEDIDO }) : null })
+        certificadosAlumno.forEach(person => { return !peticiones.find(id => id.eduPersonUniqueId === person.idPerson) ? peticiones.push({ eduPersonUniqueId: person.idPerson, estadoPeticion: estadosCertificado.NOPEDIDO }) : null })
         res.json(peticiones)
     } catch (error) {
         console.log(error)
@@ -185,8 +190,8 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 //update or create estado peticion
 exports.updateOrCreatePeticion = async function (req, res, next) {
     try {
-        if (!req.body.peticion.irispersonaluniqueid) req.body.peticion.irispersonaluniqueid = null;
-        let peticion = await getPeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo)
+        if (!req.body.peticion.eduPersonUniqueId) req.body.peticion.eduPersonUniqueId = null;
+        let peticion = await getPeticionAlumno(req.body.peticion.eduPersonUniqueId, req.body.peticion.planCodigo)
         if (!peticion) peticion = { estadoPeticion: estadosCertificado.NO_PEDIDO }
         let paramsToUpdate = {};
         let estadoNuevo;
@@ -243,9 +248,9 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         }
         let respuesta;
         if (estadoNuevo === estadosCertificado.PEDIDO && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
+            respuesta = await createPeticionAlumno(req.session.user.eduPersonUniqueId, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
         } else {
-            respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo, paramsToUpdate)
+            respuesta = await updatePeticionAlumno(req.body.peticion.eduPersonUniqueId, req.body.peticion.planCodigo, paramsToUpdate)
         }
         res.json(respuesta)
     } catch (error) {

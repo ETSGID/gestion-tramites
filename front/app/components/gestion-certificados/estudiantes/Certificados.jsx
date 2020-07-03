@@ -31,10 +31,10 @@ export default class Titulos extends React.Component {
             text: 'idTabla',
             hidden: true
         },
-        /*{
+        {
             dataField: 'planCodigo',
             text: 'Plan'
-        },*/
+        },
         {
             dataField: 'estadoPeticionTexto',
             text: 'Estado petición',
