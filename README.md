@@ -115,6 +115,29 @@ npm start
 #### BBDD
 Debe instalar **PostgreSQL** y crear la base de datos con el mismo password, username y nombre de la base de datos que se configuró en el local.env
 Se recomienda instalar **pgAdmin**, una interfaz gráfica que permite manipular fácilmente la base de datos.
+
+##### Ejecutar migraciones
+Para realizar cambios en la base de datos deben hacerse a través de migraciones. Puede ejecutar todas las migracines con el siguiente comando:
+
+```shell
+cd back
+# la url debe ser la de la base de datos
+node_modules/.bin/sequelize db:migrate --url postgres://postgres:1234@localhost:5432/gestion_tramites
+```
+Para deshacer las migraciones:
+```shell
+cd back
+# la url debe ser la de la base de datos
+node_modules/.bin/sequelize db:migrate:undo --url postgres://postgres:1234@localhost:5432/gestion_tramites
+```
+
+Para deshacer una migración determinada
+```shell
+cd back
+# la url debe ser la de la base de datos
+node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://postgres:1234@localhost:5432/gestion_tramites
+```
+
 #### Front
 Si se quiere probar / desarrollar el front de un trámite realizado con **React.js**,  debe arrancar el back para poder realizar peticiones. Debe iniciarse como se indica en el apartado anterior. Otra opción si aún no está desarrollada la parte de back del trámite es utilizar jsons para simular los datos.
 
