@@ -3,7 +3,7 @@
 module.exports = function (sequelize, DataTypes) {
     let Peticion_Certificado = sequelize.define('Peticion_Certificado',
         {
-            eduPersonUniqueId: {
+            edupersonuniqueid: {
                 type: DataTypes.STRING,
                 primaryKey : true
             },

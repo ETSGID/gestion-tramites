@@ -15,11 +15,11 @@ const dni = require('../../lib/dni');
 
 
 //devuelve todas las peticiones de un alumno
-const getAllPeticionAlumno = async function (eduPersonUniqueId) {
+const getAllPeticionAlumno = async function (edupersonuniqueid) {
     try {
         let peticiones = await models.Peticion_Certificado.findAll({
             where: {
-                eduPersonUniqueId : eduPersonUniqueId
+                edupersonuniqueid : edupersonuniqueid
             }
         });
         return peticiones || [];
@@ -32,11 +32,11 @@ const getAllPeticionAlumno = async function (eduPersonUniqueId) {
 
 
 //devuelve todas las peticiones de un alumno
-const getPeticionAlumno = async function (eduPersonUniqueId) {
+const getPeticionAlumno = async function (edupersonuniqueid) {
     try {
         let peticion = await models.Peticion_Certificado.findOne({
             where: {
-                eduPersonUniqueId: eduPersonUniqueId,
+                edupersonuniqueid: edupersonuniqueid,
             }
         });
         return peticion
@@ -47,11 +47,11 @@ const getPeticionAlumno = async function (eduPersonUniqueId) {
 
 }
 
-const updatePeticionAlumno = async function (eduPersonUniqueId, paramsToUpdate) {
+const updatePeticionAlumno = async function (edupersonuniqueid, paramsToUpdate) {
     try {
         let peticion = await models.Peticion_Certificado.update(paramsToUpdate, {
             where: {
-                eduPersonUniqueId: eduPersonUniqueId,
+                edupersonuniqueid: edupersonuniqueid,
             },
             returning: true,
         });
@@ -62,10 +62,10 @@ const updatePeticionAlumno = async function (eduPersonUniqueId, paramsToUpdate) 
     }
 }
 
-const createPeticionAlumno = async function (eduPersonUniqueId, mail, nombre, apellido, planCodigo, descuento) {
+const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, descuento) {
     try {
         let peticion = await models.Peticion_Certificado.create({
-            eduPersonUniqueId: eduPersonUniqueId,
+            edupersonuniqueid: edupersonuniqueid,
             email: mail,
             nombre: nombre,
             apellido: apellido,
@@ -97,18 +97,8 @@ const getAllPeticionPas = async function () {
 //devuelve toda la info del alumno que se acaba de conectar
 exports.getInfoAlumno = async function (req, res, next) {
     try {
-        let peticiones = await getAllPeticionAlumno(req.session.user.eduPersonUniqueId)
-        let certificadosAlumno;
-        if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            certificadosAlumno = [{ "idPerson": "12345678A" }, { "idPerson": "12345678B" }, { "idPerson": "12345678C" },  { "idPerson": "12345678D" },  { "idPerson": "12345678E" }]
-        }
-        if (!Array.isArray(certificadosAlumno)){
-            certificadosAlumno = [];
-            console.log(req.session.user.eduPersonUniqueId)
-        } 
-        
-        //merge certificados pedidos y los que puede repetir
-        certificadosAlumno.forEach(person => { return !peticiones.find(id => id.eduPersonUniqueId === person.idPerson) ? peticiones.push({ eduPersonUniqueId: person.idPerson, estadoPeticion: estadosCertificado.NOPEDIDO }) : null })
+        let peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid)
+        // Leer las peticiones de la bbdd
         res.json(peticiones)
     } catch (error) {
         console.log(error)
@@ -181,8 +171,8 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 //update or create estado peticion
 exports.updateOrCreatePeticion = async function (req, res, next) {
     try {
-        if (!req.body.peticion.eduPersonUniqueId) req.body.peticion.eduPersonUniqueId = null;
-        let peticion = await getPeticionAlumno(req.body.peticion.eduPersonUniqueId, req.body.peticion.planCodigo)
+        if (!req.body.peticion.edupersonuniqueid) req.body.peticion.edupersonuniqueid = null;
+        let peticion = await getPeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo)
         if (!peticion) peticion = { estadoPeticion: estadosCertificado.NO_PEDIDO }
         let paramsToUpdate = {};
         let estadoNuevo;
@@ -239,9 +229,9 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         }
         let respuesta;
         if (estadoNuevo === estadosCertificado.PEDIDO && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.eduPersonUniqueId, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
         } else {
-            respuesta = await updatePeticionAlumno(req.body.peticion.eduPersonUniqueId, req.body.peticion.planCodigo, paramsToUpdate)
+            respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, paramsToUpdate)
         }
         res.json(respuesta)
     } catch (error) {
