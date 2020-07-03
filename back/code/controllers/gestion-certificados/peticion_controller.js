@@ -101,15 +101,6 @@ exports.getInfoAlumno = async function (req, res, next) {
         let certificadosAlumno;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
             certificadosAlumno = [{ "idPerson": "12345678A" }, { "idPerson": "12345678B" }, { "idPerson": "12345678C" },  { "idPerson": "12345678D" },  { "idPerson": "12345678E" }]
-        } else {
-            let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.eduPersonUniqueId);
-            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
-            certificadosAlumno = secondCall.data
-            if (!Array.isArray(certificadosAlumno) && typeof req.session.user.eduPersonUniqueId === 'string' ) {
-                let firstCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + dni.sanetizeDni(req.session.user.eduPersonUniqueId));
-                let secondCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall2.data.token))
-                certificadosAlumno = secondCall2.data
-            }
         }
         if (!Array.isArray(certificadosAlumno)){
             certificadosAlumno = [];

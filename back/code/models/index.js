@@ -37,6 +37,7 @@ sequelize.sync();
 //Exportamos modelos
 
 exports.Peticion = Peticion;
+exports.Peticion_Certificado = Peticion_Certificado;
 exports.Permiso = Permiso;
 exports.Plan = Plan;
 
