@@ -2,6 +2,7 @@ version: '3'
 
 services:
   dbtramites:
+    container_name: gestiontramites_db
     image: postgres:9.6
     restart: always
     volumes:
