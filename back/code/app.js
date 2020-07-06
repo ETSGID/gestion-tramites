@@ -99,6 +99,7 @@ if (process.env.DEV == 'true') {
     req.session.user = {}
     req.session.user.employeetype = "FA"
     req.session.user.irispersonaluniqueid = "123456789D"
+    req.session.user.edupersonuniqueid = "123456789D"
     req.session.user.sn = "FERNANDEZ FERNANDEZ"
     req.session.user.cn = "FERNANDO"
     //se debe sobrescribir con el texto correspondiente en el router del trámite
@@ -133,6 +134,7 @@ if (process.env.DEV == 'true') {
     */
       req.session.user.employeetype = "FA"
       req.session.user.irispersonaluniqueid = "123456789D"
+      req.session.user.edupersonuniqueid = "123456789D"
       req.session.user.sn = "FERNANDEZ FERNANDEZ"
       req.session.user.cn = "FERNANDO"
       res.locals.portalName = 'pruebas';
