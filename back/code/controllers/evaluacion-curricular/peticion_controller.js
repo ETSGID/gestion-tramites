@@ -12,11 +12,11 @@ let Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 //devuelve todas las peticiones de un alumno
-const getAllPeticionAlumno = async function (irispersonaluniqueid) { // en realiudad solo una peticion por alumno posible
+const getAllPeticionAlumno = async function (edupersonuniqueid) { // en realiudad solo una peticion por alumno posible
     try {
-        let peticiones = await models.Peticion.findAll({
+        let peticiones = await models.PeticionEvaluacionCurricular.findAll({
             where: {
-                irispersonaluniqueid: irispersonaluniqueid
+                edupersonuniqueid: edupersonuniqueid
             }
         });
         return peticiones || [];
@@ -29,11 +29,11 @@ const getAllPeticionAlumno = async function (irispersonaluniqueid) { // en reali
 
 
 //devuelve todas las peticiones de un alumno
-const getPeticionAlumno = async function (irispersonaluniqueid, asignaturaCodigo) { //plan, asignatura, o nada??
+const getPeticionAlumno = async function (edupersonuniqueid, asignaturaCodigo) { //plan, asignatura, o nada??
     try {
-        let peticion = await models.Peticion.findOne({
+        let peticion = await models.PeticionEvaluacionCurricular.findOne({
             where: {
-                irispersonaluniqueid: irispersonaluniqueid,
+                edupersonuniqueid: edupersonuniqueid,
                 asignaturaCodigo: asignaturaCodigo
             }
         });
@@ -45,11 +45,11 @@ const getPeticionAlumno = async function (irispersonaluniqueid, asignaturaCodigo
 
 }
 
-const updatePeticionAlumno = async function (irispersonaluniqueid, asignaturaCodigo, paramsToUpdate) {
+const updatePeticionAlumno = async function (edupersonuniqueid, asignaturaCodigo, paramsToUpdate) {
     try {
-        let peticion = await models.Peticion.update(paramsToUpdate, {
+        let peticion = await models.PeticionEvaluacionCurricular.update(paramsToUpdate, {
             where: {
-                irispersonaluniqueid: irispersonaluniqueid,
+                edupersonuniqueid: edupersonuniqueid,
                 asignaturaCodigo: asignaturaCodigo
             },
             returning: true,
@@ -61,10 +61,10 @@ const updatePeticionAlumno = async function (irispersonaluniqueid, asignaturaCod
     }
 }
 
-const createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre, apellido, planCodigo, asignaturaNombre, asignaturaCodigo, tipo, justificacion) {
+const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, asignaturaNombre, asignaturaCodigo, tipo, justificacion) {
     try {
-        let peticion = await models.Peticion.create({
-            irispersonaluniqueid: irispersonaluniqueid,
+        let peticion = await models.PeticionEvaluacionCurricular.create({
+            edupersonuniqueid: edupersonuniqueid,
             email: mail,
             nombre: nombre,
             apellido: apellido,
@@ -91,10 +91,10 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
         const where = {}
         const whereAnd = []
         if (filters) {
-            if (filters.irispersonaluniqueid) {
+            if (filters.edupersonuniqueid) {
                 whereAnd.push({
-                    irispersonaluniqueid: {
-                        [Op.iLike]: `%${filters.irispersonaluniqueid}%`
+                    edupersonuniqueid: {
+                        [Op.iLike]: `%${filters.edupersonuniqueid}%`
                     }
                 })
             }
@@ -138,7 +138,7 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
         if (whereAnd.length > 0) {
             where[Op.and] = whereAnd
         }
-        let { count, rows } = await models.Peticion.findAndCountAll({
+        let { count, rows } = await models.PeticionEvaluacionCurricular.findAndCountAll({
             where,
             offset,
             limit: sizePerPage,
@@ -172,7 +172,7 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
 
 exports.getInfoAllAlumno = async function (req, res, next) {
     try {
-        respuesta = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
+        respuesta = await getAllPeticionAlumno(req.session.user.edupersonuniqueid)
         res.json(respuesta)
     } catch (error) {
         console.log(error)
@@ -246,6 +246,12 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 //update or create estado peticion
 exports.updateOrCreatePeticion = async function (req, res, next) {
     try {
+        // pasar req.mail a array y utilizar el primer elemento (hay casos con array de varios mails)
+        var mail = req.session.user.mail;
+        if (!Array.isArray(mail)) {
+             mail = mail.split();
+        }
+        var mainMail = mail[0];
         //console.log("body: ",req.body);
         let peticion = {};
         // si peticion vacia, es que se tiene que crear
@@ -258,8 +264,8 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     estadoPeticionTexto: "NO_PEDIDO"
                 }
         } else { // modifica una peticion ya creada, cambio de estado
-            if (!req.body.peticion.irispersonaluniqueid) req.body.peticion.irispersonaluniqueid = null;
-            peticion = await getPeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.asignaturaCodigo)
+            if (!req.body.peticion.edupersonuniqueid) req.body.peticion.edupersonuniqueid = null;
+            peticion = await getPeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.asignaturaCodigo)
         }
         let paramsToUpdate = {};
         let estadoNuevo;
@@ -299,18 +305,18 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let asignaturaNombre;
         if (estadoNuevo === estadosEvaluacionCurricular.SOLICITUD_PENDIENTE && peticion.estadoPeticion !== estadosEvaluacionCurricular.PETICION_CANCELADA) {
             asignaturaNombre = await queriesController.getNombreAsignatura(req.body.paramsToUpdate.asignaturaCodigo);
-            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.cn, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
         } else {
             asignaturaNombre = req.body.peticion.asignaturaNombre;
-            respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
+            respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
         }
 
-        let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
+        let toAlumno = peticion.email || mainMail; //si no existe la peticion sera el correo el que se pasa por email
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
-            toPAS = req.session.user.mail;
+            toAlumno = mainMail; //siempre se le manda el email al que hace la prueba
+            toPAS = mainMail;
         }
         if (process.env.PRUEBAS == 'false' && process.env.DEV == 'false') {
             console.log("envia correo"); // si no esta en pruebas, manda email
