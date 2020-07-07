@@ -9,12 +9,22 @@ module.exports = {
       // Cambiar nombre tabla
       await queryInterface.renameTable('Peticions', 'PeticionTitulos', { transaction: t })
 
+      // Cambiar nombre columna
+      await queryInterface.renameColumn('PeticionTitulos', 'irispersonaluniqueid', 'edupersonuniqueid', { transaction: t })
+
+      // Anadir columna
       await queryInterface.addColumn(
         'PeticionTitulos',
-        'edupersonuniqueid',
+        'irispersonaluniqueid',
         Sequelize.STRING,
         { transaction: t }
       )
+
+      // Copiar datos de una columna a otra
+      await queryInterface.sequelize.query(
+        'UPDATE "PeticionTitulos" SET irispersonaluniqueid = edupersonuniqueid;',
+        { transaction: t }
+      );
 
       await t.commit();
     } catch (error) {
@@ -29,7 +39,8 @@ module.exports = {
     try {
       const t = await queryInterface.sequelize.transaction();
       // Reverting commands
-      await queryInterface.removeColumn('PeticionTitulos', 'edupersonuniqueid', { transaction: t });
+      await queryInterface.removeColumn('PeticionTitulos', 'irispersonaluniqueid', { transaction: t });
+      await queryInterface.renameColumn('PeticionTitulos', 'edupersonuniqueid', 'irispersonaluniqueid', { transaction: t })
       await queryInterface.renameTable('PeticionTitulos', 'Peticions', { transaction: t });
 
       await t.commit();

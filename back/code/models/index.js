@@ -13,7 +13,7 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 
 // Importar la definicion de las tablas 
 
-let Peticion = sequelize.import(path.join(__dirname, 'Peticion'));
+let PeticionTitulo = sequelize.import(path.join(__dirname, 'PeticionTitulo'));
 let Permiso = sequelize.import(path.join(__dirname, 'Permiso'));
 let Plan = sequelize.import(path.join(__dirname, 'Plan'))
 
@@ -35,7 +35,7 @@ let Plan = sequelize.import(path.join(__dirname, 'Plan'))
 
 //Exportamos modelos
 
-exports.Peticion = Peticion;
+exports.PeticionTitulo = PeticionTitulo;
 exports.Permiso = Permiso;
 exports.Plan = Plan;
 
