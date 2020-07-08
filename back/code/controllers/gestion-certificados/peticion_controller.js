@@ -232,12 +232,12 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             }
         }
         paramsToUpdate.estadoPeticion = estadoNuevo;
-        let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
+        let toAlumno = peticion.email || req.session.user.mailPrincipal; //si no existe la peticion sera el correo el que se pasa por email
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
-            toPAS = req.session.user.mail;
+            toAlumno = req.session.user.mailPrincipal; //siempre se le manda el email al que hace la prueba
+            toPAS = req.session.user.mailPrincipal;
         }
         let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         //solo se envia cuando el alumno tiene algo que enviar
@@ -246,7 +246,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         }
         let respuesta;
         if (estadoNuevo === estadosCertificado.PEDIDO && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
+            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo, paramsToUpdate)
         }

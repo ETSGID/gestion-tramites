@@ -61,19 +61,19 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
 exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosCertificado).find(k => estadosCertificado[k] === estadoActual);
-    let subject = `Solicitud de certificado académico. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn} ${session.user.sn}`
+    let subject = `Solicitud de certificado académico. Estado actual: ${estadoActualText}. Alumno: ${session.user.givenname} ${session.user.sn}`
     let text;
     let filesname = [];
     switch (estadoActual) {
         case estadosCertificado.PEDIDO:
             send = true;
-            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.givenname} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosCertificado.PAGO_REALIZADO:
             send = true;
-            text = `Se adjunta la carta de pago de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `Se adjunta la carta de pago de ${session.user.givenname} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`carta_pago.pdf`)
             break;
     }

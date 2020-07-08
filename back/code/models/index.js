@@ -1,6 +1,6 @@
 // Cargar ORM
 let Sequelize = require('sequelize');
-
+const planController = require('../controllers/plan_controller');
 
 //    DATABASE_URL = postgres://user:passwd@host:port/database
 let logs = process.env.DEV === 'true' ? false : false
@@ -21,9 +21,16 @@ let Plan = require('./Plan')(sequelize, Sequelize);
         // await sequelize.sync();
         await sequelize.authenticate();
         console.log("Connected to the database")
-        await sequelize.query('CREATE EXTENSION unaccent;')
+        // actualizar o crear planes
+        await planController.createOrUpdatePlans();
+        // extension unaccent
+        try {
+            await sequelize.query('CREATE EXTENSION unaccent;')
+        } catch (error) {
+            console.log(error.message);
+        }
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
     }
 })();
 

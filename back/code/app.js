@@ -95,13 +95,14 @@ if (process.env.DEV == 'true') {
    * Está preparado para usar el servidor de desarrollo de react
   */
   app.use(function (req, res, next) {
-    req.session.user = {}
+    req.session.user = req.session.user || {}
 
     req.session.user.employeetype = ['F', 'A'];
     //se envía y se recibe en el propio mail del usuario de pruebas
     req.session.user.mail = process.env.EMAIL_USER;
     req.session.user.uid = 'ejemplo';
     req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
+    req.session.user.sn= 'FERNANDEZ FERNANDEZ';
     req.session.user.givenname = 'FERNANDO';
     req.session.user.edupersonuniqueid = '123@upm.es'
 
@@ -138,6 +139,7 @@ if (process.env.DEV == 'true') {
       req.session.user.mail = process.env.EMAIL_USER;
       req.session.user.uid = 'ejemplo';
       req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
+      req.session.user.sn= 'FERNANDEZ FERNANDEZ';
       req.session.user.givenname = 'FERNANDO';
       req.session.user.edupersonuniqueid = '123@upm.es'
       
