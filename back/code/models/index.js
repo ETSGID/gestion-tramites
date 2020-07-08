@@ -1,7 +1,3 @@
-let path = require('path');
-
-
-
 // Cargar ORM
 let Sequelize = require('sequelize');
 
