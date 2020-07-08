@@ -16,7 +16,7 @@ let Permiso = sequelize.import(path.join(__dirname, 'Permiso'));
 let Plan = sequelize.import(path.join(__dirname, 'Plan'));
 
     // En producción ya no sincronizar, hacer mejor migraciones
-    // sequelize.sync();
+    sequelize.sync();
 
     // habilitar extension unaccent
     // extension especifica de sequelize
