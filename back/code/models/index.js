@@ -5,6 +5,7 @@ let path = require('path');
 // Cargar ORM
 let Sequelize = require('sequelize');
 
+
 //    DATABASE_URL = postgres://user:passwd@host:port/database
 let logs = process.env.DEV === 'true' ? false : false
 let sequelize;
@@ -13,18 +14,17 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 
 // Importar la definicion de las tablas 
 
-let PeticionTitulo = sequelize.import(path.join(__dirname, 'PeticionTitulo'));
-let Permiso = sequelize.import(path.join(__dirname, 'Permiso'));
-let Plan = sequelize.import(path.join(__dirname, 'Plan'))
+let PeticionTitulo = require('./PeticionTitulo')(sequelize, Sequelize);
+let Permiso = require('./Permiso')(sequelize, Sequelize);
+let Plan = require('./Plan')(sequelize, Sequelize);
 
-// En producción ya no sincronizar, hacer mejor migraciones
-// sequelize.sync();
-
-// habilitar extension unaccent
-// extension especifica de sequelize
 
 (async () => {
     try {
+        // En producción ya no sincronizar, hacer mejor migraciones
+        // await sequelize.sync();
+        await sequelize.authenticate();
+        console.log("Connected to the database")
         await sequelize.query('CREATE EXTENSION unaccent;')
     } catch (error) {
         console.log(error.message);

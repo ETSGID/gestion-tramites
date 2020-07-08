@@ -80,7 +80,6 @@ app.use(session({
 app.get(path.join(contextPath1, 'logout'), cas.logout);
 app.get(path.join(contextPath2, 'logout'), cas.logout);
 
-
 /**
  * OTRO MIDDLEWARE - Para ambos contextos
  * Este es para añadir a las variables req parametros necesarios en posteriores middlewares
@@ -97,17 +96,20 @@ if (process.env.DEV == 'true') {
   */
   app.use(function (req, res, next) {
     req.session.user = {}
-    req.session.user.employeetype = "FA"
-    req.session.user.irispersonaluniqueid = "123456789D"
-    req.session.user.sn = "FERNANDEZ FERNANDEZ"
-    req.session.user.cn = "FERNANDO"
-    //se debe sobrescribir con el texto correspondiente en el router del trámite
-    res.locals.barraInicioText = "TRÁMITE";
-    res.locals.session = req.session;
-    res.locals.portalName = 'portal'
-    res.locals.pruebasBoolean = false;
+
+    req.session.user.employeetype = ['F', 'A'];
     //se envía y se recibe en el propio mail del usuario de pruebas
     req.session.user.mail = process.env.EMAIL_USER;
+    req.session.user.uid = 'ejemplo';
+    req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
+    req.session.user.givenname = 'FERNANDO';
+    req.session.user.edupersonuniqueid = '123@upm.es'
+
+    //se debe sobrescribir con el texto correspondiente en el router del trámite
+    res.locals.barraInicioText = "TRÁMITE";
+    res.locals.portalName = 'portal'
+    res.locals.pruebasBoolean = false;
+
     next();
   })
 } else {
@@ -131,10 +133,14 @@ if (process.env.DEV == 'true') {
      * Usa datos inventados
      * Debe usar el bundle.js
     */
-      req.session.user.employeetype = "FA"
-      req.session.user.irispersonaluniqueid = "123456789D"
-      req.session.user.sn = "FERNANDEZ FERNANDEZ"
-      req.session.user.cn = "FERNANDO"
+      req.session.user.employeetype = ['F', 'A'];
+      //se envía y se recibe en el propio mail del usuario de pruebas
+      req.session.user.mail = process.env.EMAIL_USER;
+      req.session.user.uid = 'ejemplo';
+      req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
+      req.session.user.givenname = 'FERNANDO';
+      req.session.user.edupersonuniqueid = '123@upm.es'
+      
       res.locals.portalName = 'pruebas';
       res.locals.pruebasBoolean = true;
     } else {
@@ -144,10 +150,30 @@ if (process.env.DEV == 'true') {
     // Hacer visible req.session en las vistas
     //se debe sobrescribir con el texto correspondiente en el router del trámite
     res.locals.barraInicioText = "TRÁMITE";
-    res.locals.session = req.session;
     next();
   });
 }
+
+app.use(async (req, res, next) => {
+  // Hacer visible req.session en las vistas
+  res.locals.session = req.session;
+  /*
+  convert mail and employeetype to array
+  because CAS sometimes returns array and other strings
+  */
+  req.session.user.mail = [].concat(req.session.user.mail);
+  try {
+    req.session.user.mailPrincipal = req.session.user.mail[0];
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+
+  if (typeof req.session.user.employeetype === 'string') {
+    req.session.user.employeetype = req.session.user.employeetype.split('');
+  }
+  next();
+});
 
 
 //static
@@ -181,15 +207,17 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+// TODO diferenciar entre rutas de API (o ajax) y rutas tradicionales
+app.use((err, req, res) => {
   // set locals, only providing error in development
-  console.log(err)
   res.locals.message = err.message;
-  res.locals.error = process.env.DEV === 'true' ? err : {};
-
+  console.log(err);
   // render the error page
   res.status(err.status || 500);
-  res.render('error')
+  res.json({
+    msg: 'Ha habido un error la acción no se ha podido completar',
+    error: err.message
+  });
 });
 
 module.exports = app;
