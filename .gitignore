@@ -1,3 +1,2 @@
-gestion-tramites/gestion-tramites-db.env
-gestion-tramites/gestion-tramites.env
-gestion-tramites/docker-compose.override.yml
+gestion-tramites/gestion-tramites-db-local.env
+gestion-tramites/gestion-tramites-local.env
