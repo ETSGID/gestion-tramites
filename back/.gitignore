@@ -36,7 +36,8 @@ build/Release
 code/node_modules/
 code/jspm_packages/
 code/local.env
-
+gestion-tramites/gestion-tramites.env
+gestion-tramites/gestion-tramites-db.env
 
 
 # Typescript v1 declaration files
