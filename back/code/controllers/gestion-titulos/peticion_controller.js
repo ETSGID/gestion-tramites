@@ -207,7 +207,7 @@ exports.getInfoAlumno = async function (req, res, next) {
                 { "idplan": "0994", "curso_academico": "2018-19", "dni": "12345678" }
             ]
         } else {
-            let apiCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=" + base64.Base64EncodeUrl(req.session.edupersonuniqueid))
+            let apiCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=" + base64.Base64EncodeUrl(req.session.user.edupersonuniqueid))
             titulosAlumno = apiCall.data
         }
         if (Array.isArray(titulosAlumno) && titulosAlumno.length > 0) {
