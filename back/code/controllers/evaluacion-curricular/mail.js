@@ -53,13 +53,13 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, asignaturaNo
 exports.sendEmailToPas = async function (estadoActual, from, to, asignaturaNombre, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosEvaluacionCurricular).find(k => estadosEvaluacionCurricular[k] === estadoActual);
-    let subject = `Solicitud de evaluación curricular. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn} ${session.user.sn}`
+    let subject = `Solicitud de evaluación curricular. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn}`
     let text;
     let filesname = [];
     switch (estadoActual) {
         case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
             send = true;
-            text = `El alumno ${session.user.cn} ${session.user.sn} ha solicitado la evaluación curricular de la asignatura ${asignaturaNombre}. Debe comprobar que cumple los requisitos y aceptar o denegar dicha solicitud para pasar al siguiente estado.`
+            text = `El alumno ${session.user.cn} ha solicitado la evaluación curricular de la asignatura ${asignaturaNombre}. Debe comprobar que cumple los requisitos y aceptar o denegar dicha solicitud para pasar al siguiente estado.`
             break;
         //pongo algun otro estado para avisar de que falta evaluacion aun???
     }

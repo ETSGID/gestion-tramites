@@ -160,7 +160,7 @@ const getPlanesEstudios = async function (dni) {
 
 /* exports.getDni = async function (req, res) {
     try {
-        var email = req.session.user.mail;
+        var email = req.session.user.mailPrincipal;
         respuesta = await getDni(email);
         dni = respuesta['dni'];
     } catch (error) {
@@ -388,9 +388,9 @@ exports.getAsignaturasDePlan = async function (plans) {
 exports.getDatosFormularioTitulacion = async function (req, res) {
     try {
         let respuesta = {};
-        respuesta.nombre = req.session.user.cn;
+        respuesta.nombre = req.session.user.givenname;
         respuesta.apellidos = req.session.user.sn;
-        email = req.session.user.mail;
+        email = req.session.user.mailPrincipal;
         respuesta.email = email;
         if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
             /*dniArray = await getDni(email);
@@ -449,9 +449,9 @@ exports.getDatosFormularioTitulacion = async function (req, res) {
 exports.getDatosFormularioCurso = async function (req, res) {
     try {
         let respuesta = {};
-        respuesta.nombre = req.session.user.cn;
+        respuesta.nombre = req.session.user.givenname;
         respuesta.apellidos = req.session.user.sn;
-        email = req.session.user.mail;
+        email = req.session.user.mailPrincipal;
         // email = "test1@test.com"; //prueba
         respuesta.email = email;
         if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
@@ -496,7 +496,7 @@ exports.getDatosFormularioCurso = async function (req, res) {
 /* 
 exports.getInfoConvocatorias = async function (req, res) {
     try {
-        let email = req.session.user.mail;
+        let email = req.session.user.mailPrincipal;
         let asignaturaCodigo = req.query.asignatura;
         let planCodigo = req.query.plan;
         if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {

@@ -1,14 +1,18 @@
-// Definicion del modelo Peticion:
+// Definicion del modelo PeticionTitulo:
 
 module.exports = function (sequelize, DataTypes) {
-    let Peticion = sequelize.define('Peticion',
+    let PeticionTitulo = sequelize.define('PeticionTitulo',
         {
-            irispersonaluniqueid: {
+            edupersonuniqueid: {
                 type: DataTypes.STRING,
-                primaryKey : true
+                primaryKey: true
             },
             planCodigo: {
                 type: DataTypes.STRING,
+                primaryKey: true
+            },
+            irispersonaluniqueid: {
+                type: DataTypes.STRING
             },
             planNombre: {
                 type: DataTypes.STRING
@@ -23,14 +27,14 @@ module.exports = function (sequelize, DataTypes) {
             apellido: {
                 type: DataTypes.STRING
             },
-            descuento:{
-                type : DataTypes.INTEGER
+            descuento: {
+                type: DataTypes.INTEGER
             },
-            formaPago:{
-                type : DataTypes.INTEGER
+            formaPago: {
+                type: DataTypes.INTEGER
             },
             estadoPeticion: {
-                type : DataTypes.INTEGER
+                type: DataTypes.INTEGER
             },
             fecha: {
                 type: DataTypes.DATEONLY
@@ -39,29 +43,16 @@ module.exports = function (sequelize, DataTypes) {
             receptor: {
                 type: DataTypes.TEXT
             },
-            localizacionFisica:{
-                type: DataTypes.STRING 
+            localizacionFisica: {
+                type: DataTypes.STRING
             },
-            textCancel:{
+            textCancel: {
                 type: DataTypes.TEXT
-            },
-            asignaturaNombre:{
-                type: DataTypes.STRING 
-            },
-            asignaturaCodigo:{
-                type: DataTypes.STRING,
-                primaryKey : true
-            },
-            tipo:{
-                type: DataTypes.STRING
-            },
-            justificacion:{
-                type: DataTypes.STRING
             }
-            
+
         },
         {
             timestamps: false
         });
-    return Peticion;
+    return PeticionTitulo;
 };

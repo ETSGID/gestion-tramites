@@ -69,19 +69,19 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
 exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, planNombre, textoAdicional, filesContentBuffer, session) {
     let send = false;
     let estadoActualText = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === estadoActual);
-    let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}. Alumno: ${session.user.cn} ${session.user.sn}`
+    let subject = `Solicitud de título ${planCodigo}. Estado actual: ${estadoActualText}. Alumno: ${session.user.givenname} ${session.user.sn}`
     let text;
     let filesname = [];
     switch (estadoActual) {
         case estadosTitulo.PEDIDO:
             send = true;
-            text = `Se adjunta el dni y la infromación de descuentos aplicables (en el caso de que haya alguno) de ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `Se adjunta el dni y la infromación de descuentos aplicables (en el caso de que haya alguno) de ${session.user.givenname} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosTitulo.PAGO_REALIZADO:
             send = true;
-            text = `El alumno ${session.user.cn} ${session.user.sn} (${session.user.irispersonaluniqueid}) informa de que ha realizado el pago del título. Se adjunta la carta de pago en caso de que no se haya pagado online. La dirección de contacto del alumno es ${session.user.mail}.`
+            text = `El alumno ${session.user.givenname} ${session.user.sn} (${session.user.irispersonaluniqueid}) informa de que ha realizado el pago del título. Se adjunta la carta de pago en caso de que no se haya pagado online. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`carta_pago.pdf`)
             break;
         default:

@@ -247,7 +247,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 exports.updateOrCreatePeticion = async function (req, res, next) {
     try {
         // pasar req.mail a array y utilizar el primer elemento (hay casos con array de varios mails)
-        var mail = req.session.user.mail;
+        var mail = req.session.user.mailPrincipal;
         if (!Array.isArray(mail)) {
              mail = mail.split();
         }
@@ -305,7 +305,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let asignaturaNombre;
         if (estadoNuevo === estadosEvaluacionCurricular.SOLICITUD_PENDIENTE && peticion.estadoPeticion !== estadosEvaluacionCurricular.PETICION_CANCELADA) {
             asignaturaNombre = await queriesController.getNombreAsignatura(req.body.paramsToUpdate.asignaturaCodigo);
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.cn, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
         } else {
             asignaturaNombre = req.body.peticion.asignaturaNombre;
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
