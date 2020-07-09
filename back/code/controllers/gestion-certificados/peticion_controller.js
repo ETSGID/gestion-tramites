@@ -17,7 +17,7 @@ const dni = require('../../lib/dni');
 //devuelve todas las peticiones de un alumno
 const getAllPeticionAlumno = async function (edupersonuniqueid) {
     try {
-        let peticiones = await models.Peticion_Certificado.findAll({
+        let peticiones = await models.PeticionCertificado.findAll({
             where: {
                 edupersonuniqueid : edupersonuniqueid
             }
@@ -34,7 +34,7 @@ const getAllPeticionAlumno = async function (edupersonuniqueid) {
 //devuelve todas las peticiones de un alumno
 const getPeticionAlumno = async function (edupersonuniqueid) {
     try {
-        let peticion = await models.Peticion_Certificado.findOne({
+        let peticion = await models.PeticionCertificado.findOne({
             where: {
                 edupersonuniqueid: edupersonuniqueid,
             }
@@ -49,7 +49,7 @@ const getPeticionAlumno = async function (edupersonuniqueid) {
 
 const updatePeticionAlumno = async function (edupersonuniqueid, paramsToUpdate) {
     try {
-        let peticion = await models.Peticion_Certificado.update(paramsToUpdate, {
+        let peticion = await models.PeticionCertificado.update(paramsToUpdate, {
             where: {
                 edupersonuniqueid: edupersonuniqueid,
             },
@@ -64,7 +64,7 @@ const updatePeticionAlumno = async function (edupersonuniqueid, paramsToUpdate) 
 
 const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, descuento) {
     try {
-        let peticion = await models.Peticion_Certificado.create({
+        let peticion = await models.PeticionCertificado.create({
             edupersonuniqueid: edupersonuniqueid,
             email: mail,
             nombre: nombre,
@@ -85,7 +85,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
 //devuelve toda las peticiones de todos los alumnos
 const getAllPeticionPas = async function () {
     try {
-        let peticiones = await models.Peticion_Certificado.findAll();
+        let peticiones = await models.PeticionCertificado.findAll();
         return peticiones || [];
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -215,12 +215,12 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             }
         }
         paramsToUpdate.estadoPeticion = estadoNuevo;
-        let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
+        let toAlumno = peticion.email || req.session.user.mailPrincipal; //si no existe la peticion sera el correo el que se pasa por email
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
-            toPAS = req.session.user.mail;
+            toAlumno = req.session.user.mailPrincipal; //siempre se le manda el email al que hace la prueba
+            toPAS = req.session.user.mailPrincipal;
         }
         let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         //solo se envia cuando el alumno tiene algo que enviar
@@ -229,7 +229,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         }
         let respuesta;
         if (estadoNuevo === estadosCertificado.PEDIDO && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, paramsToUpdate)
         }

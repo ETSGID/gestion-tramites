@@ -8,15 +8,37 @@ let mail = require('./mail');
 let planController = require('../plan_controller');
 const estadosTitulo = require('../../enums').estadosTitulo;
 const base64 = require('../../lib/base64');
-const dni = require('../../lib/dni');
 
+// Actualizar la base de datos cambiando el dni por el edupersonuniqueid
+exports.updateDatabase = async function (req, res, next) {
+    try {
+        await models.PeticionTitulo.update(
+            {
+                edupersonuniqueid: req.session.user.edupersonuniqueid
+            },
+            {
+                where: {
+                    email: req.session.user.mailPrincipal
+                }
+            }
+
+        );
+        next();
+    } catch (error) {
+        console.log(error)
+        res.json({ error: error.message });
+    }
+}
 
 //devuelve todas las peticiones de un alumno
-const getAllPeticionAlumno = async function (irispersonaluniqueid) {
+const getAllPeticionAlumno = async function (edupersonuniqueid, email) {
     try {
-        let peticiones = await models.Peticion.findAll({
+        let peticiones = await models.PeticionTitulo.findAll({
             where: {
-                irispersonaluniqueid: irispersonaluniqueid
+                [Op.or]: [
+                    { edupersonuniqueid: edupersonuniqueid },
+                    { email: email }
+                ]
             }
         });
         return peticiones;
@@ -27,12 +49,16 @@ const getAllPeticionAlumno = async function (irispersonaluniqueid) {
 
 }
 
-//devuelve todas las peticiones de un alumno
-const getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
+
+//devuelve las peticion de un alumno relativa a un plan
+const getPeticionAlumno = async function (edupersonuniqueid, email, planCodigo) {
     try {
-        let peticion = await models.Peticion.findOne({
+        let peticion = await models.PeticionTitulo.findOne({
             where: {
-                irispersonaluniqueid: irispersonaluniqueid,
+                [Op.or]: [
+                    { edupersonuniqueid: edupersonuniqueid },
+                    { email: email }
+                ],
                 planCodigo: planCodigo
             }
         });
@@ -56,11 +82,14 @@ const getPeticionAlumno = async function (irispersonaluniqueid, planCodigo) {
 
 }
 
-const updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, paramsToUpdate) {
+const updatePeticionAlumno = async function (edupersonuniqueid, email, planCodigo, paramsToUpdate) {
     try {
-        let peticion = await models.Peticion.update(paramsToUpdate, {
+        let peticion = await models.PeticionTitulo.update(paramsToUpdate, {
             where: {
-                irispersonaluniqueid: irispersonaluniqueid,
+                [Op.or]: [
+                    { edupersonuniqueid: edupersonuniqueid },
+                    { email: email }
+                ],
                 planCodigo: planCodigo
             },
             returning: true,
@@ -72,11 +101,12 @@ const updatePeticionAlumno = async function (irispersonaluniqueid, planCodigo, p
     }
 }
 
-const createPeticionAlumno = async function (irispersonaluniqueid, mail, nombre, apellido, planCodigo, descuento) {
+const createPeticionAlumno = async function (edupersonuniqueid, irispersonaluniqueid, email, nombre, apellido, planCodigo, descuento) {
     try {
-        let peticion = await models.Peticion.create({
+        let peticion = await models.PeticionTitulo.create({
+            edupersonuniqueid: edupersonuniqueid,
             irispersonaluniqueid: irispersonaluniqueid,
-            email: mail,
+            email: email,
             nombre: nombre,
             apellido: apellido,
             planCodigo: planCodigo,
@@ -135,7 +165,7 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
         if (whereAnd.length > 0) {
             where[Op.and] = whereAnd
         }
-        let { count, rows } = await models.Peticion.findAndCountAll({
+        let { count, rows } = await models.PeticionTitulo.findAndCountAll({
             where,
             offset,
             limit: sizePerPage,
@@ -168,27 +198,33 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
 //devuelve toda la info del alumno que se acaba de conectar
 exports.getInfoAlumno = async function (req, res, next) {
     try {
-        let peticiones = await getAllPeticionAlumno(req.session.user.irispersonaluniqueid)
         let titulosAlumno;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            titulosAlumno = [{ "idplan": "09TT" }, { "idplan": "09TT" }, { "idplan": "09AQ" }]
+            titulosAlumno = [
+                { "idplan": "09TT", "curso_academico": "2019-20", "dni": "12345678" },
+                { "idplan": "09TT", "curso_academico": "2019-20", "dni": "12345678" },
+                { "idplan": "09AQ", "curso_academico": "2019-20", "dni": "12345678" },
+                { "idplan": "0994", "curso_academico": "2018-19", "dni": "12345678" }
+            ]
         } else {
-            let firstCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + req.session.user.irispersonaluniqueid);
-            let secondCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall.data.token))
-            titulosAlumno = secondCall.data
-            if (!Array.isArray(titulosAlumno) && typeof req.session.user.irispersonaluniqueid === 'string') {
-                let firstCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?dni=" + dni.sanetizeDni(req.session.user.irispersonaluniqueid));
-                let secondCall2 = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?token=" + base64.Base64EncodeUrl(firstCall2.data.token))
-                titulosAlumno = secondCall2.data
-            }
+            let apiCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=" + base64.Base64EncodeUrl(req.session.user.edupersonuniqueid))
+            titulosAlumno = apiCall.data
         }
-        if (!Array.isArray(titulosAlumno)) {
+        if (Array.isArray(titulosAlumno) && titulosAlumno.length > 0) {
+            req.session.user.irispersonaluniqueid = titulosAlumno[0]['dni'];
+        } else {
             titulosAlumno = [];
-            console.log(req.session.user.irispersonaluniqueid)
+            //para detectar errores
+            console.log("NOT FOUND")
+            console.log(req.session.user.mailPrincipal)
+            console.log(req.session.user.edupersonuniqueid)
+            console.log("===")
         }
+        let peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal)
+        // merge titulos pedidos y los que devuelve api peron. Solo se meten entradas nuevas
+        // solo se pueden pedir los titulos a partir del curso 2019-20
+        titulosAlumno.forEach(plan => { return (!peticiones.find(p => p.planCodigo === plan.idplan) && plan.curso_academico >= '2019-20') ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
 
-        //merge titulos pedidos y los que devuelve api peron. Solo se meten entradas nuevas
-        titulosAlumno.forEach(plan => { return !peticiones.find(p => p.planCodigo === plan.idplan) ? peticiones.push({ planCodigo: plan.idplan, estadoPeticion: estadosTitulo.NOPEDIDO }) : null })
         let plans = await planController.findAllPlans();
         peticiones.forEach(peticion => {
             const plan = plans.find(p => p.id === peticion.planCodigo);
@@ -273,8 +309,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 //update or create estado peticion interaccion de un alumno
 exports.updateOrCreatePeticionFromAlumno = async function (req, res, next) {
     try {
-        if (!req.body.peticion.irispersonaluniqueid) req.body.peticion.irispersonaluniqueid = null;
-        let peticion = await getPeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo)
+        let peticion = await getPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.body.peticion.planCodigo)
         if (!peticion) peticion = { estadoPeticion: estadosTitulo.NO_PEDIDO }
         let paramsToUpdate = {};
         let estadoNuevo;
@@ -298,12 +333,12 @@ exports.updateOrCreatePeticionFromAlumno = async function (req, res, next) {
         }
 
         paramsToUpdate.estadoPeticion = estadoNuevo;
-        let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
+        let toAlumno = req.session.user.mailPrincipal;
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
-            toPAS = req.session.user.mail;
+            toAlumno = req.session.user.mailPrincipal; //siempre se le manda el email al que hace la prueba
+            toPAS = req.session.user.mailPrincipal;
         }
         let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, req.body.peticion.planNombre, textoAdicional, req.filesBuffer, req.session)
         //solo se envia cuando el alumno tiene algo que enviar. Y no siempre, depende del estado
@@ -312,9 +347,9 @@ exports.updateOrCreatePeticionFromAlumno = async function (req, res, next) {
         }
         let respuesta;
         if (estadoNuevo === estadosTitulo.PEDIDO && peticion.estadoPeticion !== estadosTitulo.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.irispersonaluniqueid, req.session.user.mail, req.session.user.cn, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.irispersonaluniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, req.body.peticion.planCodigo, req.body.paramsToUpdate.descuento)
         } else {
-            respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo, paramsToUpdate)
+            respuesta = await updatePeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.body.peticion.planCodigo, paramsToUpdate)
         }
         res.json(respuesta)
     } catch (error) {
@@ -326,8 +361,7 @@ exports.updateOrCreatePeticionFromAlumno = async function (req, res, next) {
 //update estado peticion interaccion de pas
 exports.updatePeticionFromPas = async function (req, res, next) {
     try {
-        if (!req.body.peticion.irispersonaluniqueid) req.body.peticion.irispersonaluniqueid = null;
-        let peticion = await getPeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo)
+        let peticion = await getPeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.email, req.body.peticion.planCodigo)
         if (!peticion) peticion = { estadoPeticion: estadosTitulo.NO_PEDIDO }
         let paramsToUpdate = {};
         let estadoNuevo;
@@ -380,12 +414,12 @@ exports.updatePeticionFromPas = async function (req, res, next) {
             }
         }
         paramsToUpdate.estadoPeticion = estadoNuevo;
-        let toAlumno = peticion.email || req.session.user.mail; //si no existe la peticion sera el correo el que se pasa por email
+        let toAlumno = peticion.email;
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mail; //siempre se le manda el email al que hace la prueba
-            toPAS = req.session.user.mail;
+            toAlumno = req.session.user.mailPrincipal; //siempre se le manda el email al que hace la prueba
+            toPAS = req.session.user.mailPrincipal;
         }
         let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, req.body.peticion.planNombre, textoAdicional, req.filesBuffer, req.session)
         //solo se envia cuando el alumno tiene algo que enviar. Y no siempre, depende del estado
@@ -393,7 +427,7 @@ exports.updatePeticionFromPas = async function (req, res, next) {
             let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, req.body.peticion.planNombre, textoAdicional, req.filesBuffer, req.session)
         }
         let respuesta;
-        respuesta = await updatePeticionAlumno(req.body.peticion.irispersonaluniqueid, req.body.peticion.planCodigo, paramsToUpdate)
+        respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, peticion.email, req.body.peticion.planCodigo, paramsToUpdate)
         res.json(respuesta)
     } catch (error) {
         console.log(error)

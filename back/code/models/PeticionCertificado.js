@@ -1,7 +1,7 @@
-// Definicion del modelo Peticion_Certificado:
+// Definicion del modelo PeticionCertificado:
 
 module.exports = function (sequelize, DataTypes) {
-    let Peticion_Certificado = sequelize.define('Peticion_Certificado',
+    let PeticionCertificado = sequelize.define('PeticionCertificado',
         {
             edupersonuniqueid: {
                 type: DataTypes.STRING,
@@ -47,5 +47,5 @@ module.exports = function (sequelize, DataTypes) {
         {
             timestamps: false
         });
-    return Peticion_Certificado;
+    return PeticionCertificado;
 };
