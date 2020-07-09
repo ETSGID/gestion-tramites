@@ -55,6 +55,7 @@ EMAIL_PORT=587
 EMAIL_USER=zz.mailer.sys2
 EMAIL_PASS=
 EMAIL_SENDER=Solicitud título <noreply@etsit.upm.es>
+EMAIL_ALUMNO=javier.conde.diaz@alumnos.upm.es #(solo para pruebas a donde envia el mail de los alumnos)
 EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es #(usario de correo upm)
 ```
 ###### gestion-tramites-db.env 
