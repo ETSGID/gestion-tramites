@@ -11,7 +11,7 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 // Importar la definicion de las tablas 
 
 let PeticionTitulo = require('./PeticionTitulo')(sequelize, Sequelize);
-let PeticionEvaluacionCurricular = require('./Peticion_evaluacion_curricular')(sequelize, Sequelize);
+let PeticionEvaluacionCurricular = require('./PeticionEvaluacionCurricular')(sequelize, Sequelize);
 let Permiso = require('./Permiso')(sequelize, Sequelize);
 let Plan = require('./Plan')(sequelize, Sequelize);
 
@@ -19,7 +19,7 @@ let Plan = require('./Plan')(sequelize, Sequelize);
 (async () => {
     try {
         // En producción ya no sincronizar, hacer mejor migraciones
-        await sequelize.sync();
+        // await sequelize.sync();
         await sequelize.authenticate();
         console.log("Connected to the database")
         // actualizar o crear planes
