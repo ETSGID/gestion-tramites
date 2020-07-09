@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import Certificados from './Certificados';
 import LoadingOverlay from 'react-loading-overlay';
-import {Alert, Link} from 'react-bootstrap';
+import {Alert, Link, Button} from 'react-bootstrap';
 import '../../../../assets/scss/main.scss';
 const tramite = require('../../../../../back/code/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
@@ -22,6 +22,7 @@ export default class App extends React.Component {
     };
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+    this.solicitarCertificado = this.solicitarCertificado.bind(this);
   }
 
   componentDidMount() {
@@ -93,12 +94,20 @@ export default class App extends React.Component {
     })
   }
 
+  solicitarCertificado(){
+
+
+  }
+
   render() {
+ 
+
+
     return (
       <div>
         <div className="cuerpo">
           <h2>Certificados Académicos</h2>
-          <p>A continuación se presentan los Certificados Académicos que tenga solicitados. En caso de no tener solicitado ninguno, puede pedirlo haciendo click en el botón "Solicitar"</p>
+          <p>A continuación se presentan los Certificados Académicos que tenga solicitados. En caso de no tener solicitado ninguno, puede pedirlo haciendo click en el botón "Solicitar certificado académico"</p>
           <p><b>Se le enviarán notificaciones a través de su correo @alumnos.upm.es</b></p>
           <LoadingOverlay
             active={this.state.loading}
@@ -109,6 +118,8 @@ export default class App extends React.Component {
           <Alert variant ="info">
           Antes de solicitar los certificados de notas, comprobar que se hayan incorporado todas las calificaciones a su expediente en Politécnica Virtual.
           </Alert>
+
+          <span/>
 
             <Certificados
               selected={this.state.selected}

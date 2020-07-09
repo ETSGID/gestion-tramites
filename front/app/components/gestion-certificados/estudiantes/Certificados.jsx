@@ -7,11 +7,12 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosCertificado = require('../../../../../back/code/enums').estadosCertificado;
 import ModalStructure from './ModalStructure';
 
-export default class Titulos extends React.Component {
+export default class Certificados extends React.Component {
     constructor(props) {
         super(props)
         this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
         this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+        this.solicitar = this.solicitar.bind(this);
     }
     cambioEstadoClick(paramsToUpdate) {
         this.props.cambioEstadoClick(this.props.selected, paramsToUpdate)
@@ -19,6 +20,17 @@ export default class Titulos extends React.Component {
     cambioSelectedClick(index, info) {
         this.props.cambioSelectedClick(index, info)
     }
+    solicitar(){
+        let newPeticion ={
+            estadoPeticionTexto : "NO_PEDIDO",
+            accion : peticion.estadoPeticionTexto,
+
+        }
+
+        this.props.peticiones.push(newPeticion);
+        this.cambioSelectedClick(newPeticion.index, false);
+    }
+
     render() {
         let peticiones = this.props.peticiones.map((peticion, index) => {
             peticion.idTabla = index;
@@ -93,6 +105,14 @@ export default class Titulos extends React.Component {
         }
         return (
             <div>
+                
+          <Button 
+          size="lg"
+          style={{marginBottom:"15px"}}
+          onClick={this.solicitar}
+          >Solicitar certificado académico</Button>
+
+
                 <BootstrapTable
                     bootstrap4
                     wrapperClasses="table-responsive"
