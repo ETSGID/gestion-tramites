@@ -246,12 +246,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
 //update or create estado peticion
 exports.updateOrCreatePeticion = async function (req, res, next) {
     try {
-        // pasar req.mail a array y utilizar el primer elemento (hay casos con array de varios mails)
-        var mail = req.session.user.mailPrincipal;
-        if (!Array.isArray(mail)) {
-             mail = mail.split();
-        }
-        var mainMail = mail[0];
+        var mainMail = req.session.user.mailPrincipal;
         //console.log("body: ",req.body);
         let peticion = {};
         // si peticion vacia, es que se tiene que crear
@@ -315,8 +310,8 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = mainMail; //siempre se le manda el email al que hace la prueba
-            toPAS = mainMail;
+            toAlumno = process.env.EMAIL_ALUMNO; //siempre se le manda el email al que hace la prueba
+            toPAS = process.env.EMAIL_ALUMNO;
         }
         if (process.env.PRUEBAS == 'false' && process.env.DEV == 'false') {
             console.log("envia correo"); // si no esta en pruebas, manda email
