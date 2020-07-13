@@ -461,29 +461,22 @@ exports.getDatosFormularioCurso = async function (req, res) {
              respuesta.asignaturas = await getAsignaturasSuspensas(dniArray['dni'], "2018-19");
              respuesta.cursoActual = cursoActual;
              */
-            respuesta = [
+            respuesta.dni = 'dni_1';
+            respuesta.planes = [
+                { idplan: '09IB', nombre: 'GRADO EN INGENIERIA BIOMEDICA' },
                 {
-                    nombre: 'FERNANDO',
-                    apellidos: 'FERNANDEZ FERNANDEZ',
-                    email: 'test.9a1@alumnos.upm.es',
-                    dni: 'dni_1',
-                    planes: [
-                        { idplan: '09IB', nombre: 'GRADO EN INGENIERIA BIOMEDICA' },
-                        {
-                            idplan: '09TT',
-                            nombre: 'GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION'
-                        }
-                    ],
-                    asignaturas: [
-                        {
-                            asignatura: '95000031',
-                            idplan: '09TT',
-                            nombre: 'REDES DE ORDENADORES'
-                        }
-                    ],
-                    cursoActual: '2019-20'
+                    idplan: '09TT',
+                    nombre: 'GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION'
                 }
             ];
+            respuesta.asignaturas = [
+                {
+                    asignatura: '95000031',
+                    idplan: '09TT',
+                    nombre: 'REDES DE ORDENADORES'
+                }
+            ];
+            respuesta.cursoActual = '2019-20';
         } else {
             //api upm
         }
@@ -493,7 +486,7 @@ exports.getDatosFormularioCurso = async function (req, res) {
         res.json({ error: error.message });
     }
 }
-/* 
+/*
 exports.getInfoConvocatorias = async function (req, res) {
     try {
         let email = req.session.user.mailPrincipal;
