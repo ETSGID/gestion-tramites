@@ -61,7 +61,7 @@ const updatePeticionAlumno = async function (edupersonuniqueid, asignaturaCodigo
     }
 }
 
-const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, asignaturaNombre, asignaturaCodigo, tipo, justificacion) {
+const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, justificacion) {
     try {
         let peticion = await models.PeticionEvaluacionCurricular.create({
             edupersonuniqueid: edupersonuniqueid,
@@ -69,6 +69,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
             nombre: nombre,
             apellido: apellido,
             planCodigo: planCodigo,
+            planNombre: planNombre,
             estadoPeticion: estadosEvaluacionCurricular.SOLICITUD_PENDIENTE,
             asignaturaNombre: asignaturaNombre,
             asignaturaCodigo: asignaturaCodigo,
@@ -300,7 +301,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let asignaturaNombre;
         if (estadoNuevo === estadosEvaluacionCurricular.SOLICITUD_PENDIENTE && peticion.estadoPeticion !== estadosEvaluacionCurricular.PETICION_CANCELADA) {
             asignaturaNombre = await queriesController.getNombreAsignatura(req.body.paramsToUpdate.asignaturaCodigo);
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.planCodigo, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.planCodigo,req.body.paramsToUpdate.planNombre, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
         } else {
             asignaturaNombre = req.body.peticion.asignaturaNombre;
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
