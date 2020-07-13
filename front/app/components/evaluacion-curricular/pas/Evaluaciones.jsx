@@ -77,8 +77,8 @@ export default class Evaluaciones extends React.Component {
             text: 'idTabla',
             hidden: true
         }, {
-            dataField: 'irispersonaluniqueid',
-            text: 'DNI',
+            dataField: 'edupersonuniqueid',
+            text: 'Unique ID',
             filter: textFilter(),
         },
         {
