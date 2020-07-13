@@ -47,6 +47,11 @@ export default class TitulacionForm extends React.Component {
     }
     else {
       paramsToUpdate.planCodigo = this.planElegido.value;
+      for (var i = 0; i< this.props.data.planes.length;i++){
+        if(this.props.data.planes[i].idplan === this.planElegido.value){
+          paramsToUpdate.planNombre = this.props.data.planes[i].nombre;
+        }
+      }
       paramsToUpdate.asignaturaCodigo = this.asignaturaElegida.value;
       paramsToUpdate.justificacion = this.texto.value;
       paramsToUpdate.tipo = "titulacion";
