@@ -120,7 +120,7 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
             }
             if (filters.estadoPeticionTexto) {
                 whereAnd.push({
-                    estadoPeticion: estadosTitulo[filters.estadoPeticionTexto]
+                    estadoPeticion: estadosEvaluacionCurricular[filters.estadoPeticionTexto]
                 })
             }
 
@@ -163,8 +163,8 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
         })
 
         let asignaturas = await queriesController.getAsignaturasDePlan(plans);
-
-        return { numberPeticiones: count, peticiones: rows, plans, asignaturas: asignaturas };
+        console.log("asignayuras:",asignaturas);
+        return { numberPeticiones: count, peticiones: rows, asignaturas: asignaturas, plans:plans };
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
