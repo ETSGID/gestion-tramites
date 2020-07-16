@@ -99,7 +99,7 @@ if (process.env.DEV == 'true') {
 
     req.session.user.employeetype = ['F', 'A'];
     //se envía y se recibe en el propio mail del usuario de pruebas
-    req.session.user.mail = process.env.EMAIL_USER;
+    req.session.user.mail = process.env.EMAIL_PRUEBAS;
     req.session.user.uid = 'ejemplo';
     req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
     req.session.user.sn= 'FERNANDEZ FERNANDEZ';
@@ -136,7 +136,7 @@ if (process.env.DEV == 'true') {
     */
       req.session.user.employeetype = ['F', 'A'];
       //se envía al email configurado para el alumno o el que devuelve el cas
-      req.session.user.mail = process.env.EMAIL_ALUMNO || req.session.user.mail;
+      req.session.user.mail = req.session.user.mail;
       req.session.user.uid = 'ejemplo';
       req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
       req.session.user.sn= 'FERNANDEZ FERNANDEZ';
