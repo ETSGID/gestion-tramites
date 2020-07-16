@@ -376,7 +376,7 @@ exports.getDatosFormularioTitulacion = async function (req, res) {
         respuesta.apellidos = req.session.user.sn;
         email = req.session.user.mailPrincipal;
         respuesta.email = email;
-        if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
+        if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
             /*dniArray = await getDni(email);
             respuesta.dni = dniArray['dni'];
             respuesta.planes = await getPlanesEstudios(dniArray['dni']);
@@ -438,7 +438,7 @@ exports.getDatosFormularioCurso = async function (req, res) {
         email = req.session.user.mailPrincipal;
         // email = "test1@test.com"; //prueba
         respuesta.email = email;
-        if ((process.env.DEV == 'true' && mailsTestAlu.includes(email)) || (process.env.PRUEBAS == 'true' && mailsTestAlu.includes(email))) {
+        if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
             /* dniArray = await getDni(email);
              respuesta.dni = dniArray['dni'];
              respuesta.planes = await getPlanesEstudios(dniArray['dni']);

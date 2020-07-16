@@ -163,8 +163,7 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
         })
 
         let asignaturas = await queriesController.getAsignaturasDePlan(plans);
-        console.log("asignayuras:",asignaturas);
-        return { numberPeticiones: count, peticiones: rows, asignaturas: asignaturas, plans:plans };
+        return { numberPeticiones: count, peticiones: rows, asignaturas: asignaturas, plans: plans };
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -301,7 +300,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let asignaturaNombre;
         if (estadoNuevo === estadosEvaluacionCurricular.SOLICITUD_PENDIENTE && peticion.estadoPeticion !== estadosEvaluacionCurricular.PETICION_CANCELADA) {
             asignaturaNombre = await queriesController.getNombreAsignatura(req.body.paramsToUpdate.asignaturaCodigo);
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.planCodigo,req.body.paramsToUpdate.planNombre, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, mainMail, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.planCodigo, req.body.paramsToUpdate.planNombre, asignaturaNombre, req.body.paramsToUpdate.asignaturaCodigo, req.body.paramsToUpdate.tipo, req.body.paramsToUpdate.justificacion)
         } else {
             asignaturaNombre = req.body.peticion.asignaturaNombre;
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.asignaturaCodigo, paramsToUpdate)
@@ -311,16 +310,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = process.env.EMAIL_ALUMNO; //siempre se le manda el email al que hace la prueba
-            toPAS = process.env.EMAIL_ALUMNO;
+            toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
+            toPAS = process.env.EMAIL_PRUEBAS;
         }
-        if (process.env.PRUEBAS == 'false' && process.env.DEV == 'false') {
-            console.log("envia correo"); // si no esta en pruebas, manda email
-            let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
-            //solo se envia cuando el alumno tiene algo que enviar
-            if (req.filesBuffer) {
-                let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
-            }
+        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+        //solo se envia cuando el alumno tiene algo que enviar
+        if (req.filesBuffer) {
+            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
         }
         res.json(respuesta)
     } catch (error) {
