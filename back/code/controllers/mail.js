@@ -5,7 +5,7 @@ const smtpConfig = {
     port: process.env.EMAIL_PORT,
     secure: false,
     auth: {
-        user: process.env.DEV ? process.env.EMAIL_PRUEBAS : process.env.EMAIL_USER,
+        user: process.env.DEV == 'true' ? process.env.EMAIL_PRUEBAS : process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     logger:false,
@@ -15,7 +15,7 @@ const smtpConfig = {
 exports.sendEmailHelper = async function (from, to, subject, text, filesname, filesContentBuffer) {
     try {
         let config = {
-            from: process.env.DEV ? process.env.EMAIL_PRUEBAS : process.env.EMAIL_SENDER,
+            from: process.env.DEV == 'true' ? process.env.EMAIL_PRUEBAS : process.env.EMAIL_SENDER,
             to: to, // list of receivers
             subject: subject, // Subject line
             text: text, // plain text body
