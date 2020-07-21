@@ -26,13 +26,31 @@ export default class App extends React.Component {
       cancel: null,
       info: null,
       loading: null,
+      disableTitulacion: null,
+      disableCurso: null
     };
     this.findPeticiones = this.findPeticiones.bind(this);
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+    this.cambioEstadoTramite = this.cambioEstadoTramite.bind(this);
   }
+
   componentDidMount() {
     this.findPeticiones(1, 50, null);
+    axios.get(urljoin(apiBaseUrl, "/api/estadoTramite"))
+      .then((response) => {
+        this.setState({
+          disableCurso: response.data[0].estadoCurso == "DESACTIVADO" ? true : false,
+          disableTitulacion: response.data[0].estadoTitulacion == "DESACTIVADO" ? true : false
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
   }
 
   findPeticiones(page, sizePerPage, filters) {
@@ -114,6 +132,52 @@ export default class App extends React.Component {
     })
   }
 
+  cambioEstadoTramite(tramite) {
+    let paramsToUpdate = {};
+    switch (tramite) {
+      case 'titulacion':
+        this.setState({
+          disableTitulacion: !this.state.disableTitulacion,
+          loading: true,
+        });
+        paramsToUpdate.estadoTitulacion = !this.state.disableTitulacion  ? 'DESACTIVADO' : 'ACTIVADO';
+        paramsToUpdate.estadoCurso = this.state.disableCurso ? 'DESACTIVADO' : 'ACTIVADO';
+        break;
+      case 'curso':
+        this.setState({
+          disableCurso: !this.state.disableCurso,
+          loading: true
+        });
+        paramsToUpdate.estadoTitulacion = this.state.disableTitulacion  ? 'DESACTIVADO' : 'ACTIVADO';
+        paramsToUpdate.estadoCurso = !this.state.disableCurso ? 'DESACTIVADO' : 'ACTIVADO';
+        break;
+      default:
+        return;
+    }
+    console.log(this.state);
+   
+    console.log(paramsToUpdate);
+    let formData = new FormData();
+    formData.append("body", JSON.stringify({paramsToUpdate: paramsToUpdate }));
+    axios.post(urljoin(apiBaseUrl, "api/updateEstadoTramite"), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then((response) => {
+        this.setState({
+          loading: null
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
+
   render() {
     let evaluaciones = "Cargando..."
     if (this.state.plansCargado) {
@@ -124,10 +188,13 @@ export default class App extends React.Component {
         peticiones={this.state.peticiones}
         numberPeticiones={this.state.numberPeticiones}
         plans={this.state.plans}
-        asignaturas ={this.state.asignaturas}
+        asignaturas={this.state.asignaturas}
         cambioEstadoClick={this.cambioEstadoClick}
         cambioSelectedClick={this.cambioSelectedClick}
         findPeticiones={this.findPeticiones}
+        cambioEstadoTramite={this.cambioEstadoTramite}
+        disableCurso={this.state.disableCurso}
+        disableTitulacion={this.state.disableTitulacion}
       >
       </Evaluaciones>
     }

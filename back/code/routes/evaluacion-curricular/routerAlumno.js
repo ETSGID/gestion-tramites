@@ -9,8 +9,9 @@ router.get('/', function (req, res) {
 });
 
 router.get('/api/peticiones', peticionController.getInfoAllAlumno)
-router.post('/api/peticionCambioEstado',peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
-router.get('/api/asignaturas/titulacion',queriesController.getDatosFormularioTitulacion)
-router.get('/api/asignaturas/curso',queriesController.getDatosFormularioCurso)
+router.post('/api/peticionCambioEstado', peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
+router.get('/api/asignaturas/titulacion', queriesController.getDatosFormularioTitulacion)
+router.get('/api/asignaturas/curso', queriesController.getDatosFormularioCurso)
+router.get('/api/estadoTramite', peticionController.getEstadoTramite)
 
 module.exports = router;
