@@ -236,8 +236,8 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
         if (process.env.PRUEBAS == 'true' || process.env.DEV == 'true') {
-            toAlumno = req.session.user.mailPrincipal; //siempre se le manda el email al que hace la prueba
-            toPAS = req.session.user.mailPrincipal;
+            toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
+            toPAS = process.env.EMAIL_PRUEBAS;
         }
         let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         //solo se envia cuando el alumno tiene algo que enviar
