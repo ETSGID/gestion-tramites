@@ -14,6 +14,7 @@ let PeticionTitulo = require('./PeticionTitulo')(sequelize, Sequelize);
 let PeticionEvaluacionCurricular = require('./PeticionEvaluacionCurricular')(sequelize, Sequelize);
 let Permiso = require('./Permiso')(sequelize, Sequelize);
 let Plan = require('./Plan')(sequelize, Sequelize);
+let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequelize, Sequelize);
 
 
 (async () => {
@@ -41,6 +42,7 @@ exports.PeticionTitulo = PeticionTitulo;
 exports.PeticionEvaluacionCurricular = PeticionEvaluacionCurricular;
 exports.Permiso = Permiso;
 exports.Plan = Plan;
+exports.EstadoEvaluacionCurricular = EstadoEvaluacionCurricular;
 
 
 exports.sequelize = sequelize;

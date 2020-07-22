@@ -170,6 +170,31 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
     }
 }
 
+const getEstadoTramite = async function () {
+    try {
+        let estados = await models.EstadoEvaluacionCurricular.findAll();
+        return estados || [];
+    } catch (error) {
+        //se propaga el error, se captura en el middleware
+        throw error;
+    }
+}
+
+const updateEstadoTramite = async function (paramsToUpdate){
+    try {
+        let estados = models.EstadoEvaluacionCurricular.update(paramsToUpdate, {
+            where: {
+                id: '1'
+            },
+            returning: true,
+        });
+        return estados || [];
+    } catch (error) {
+        //se propaga el error, se captura en el middleware
+        throw error;
+    }
+}
+
 exports.getInfoAllAlumno = async function (req, res, next) {
     try {
         respuesta = await getAllPeticionAlumno(req.session.user.edupersonuniqueid)
@@ -324,3 +349,27 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         res.status(500).json({ error: error.message });
     }
 }
+
+exports.getEstadoTramite = async function (req, res, next) {
+    try {
+        respuesta = await getEstadoTramite();
+        res.json(respuesta)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.updateEstadoTramite = async function (req, res, next) {
+    try {
+        let paramsToUpdate = {};
+        paramsToUpdate.estadoTitulacion = req.body.paramsToUpdate.estadoTitulacion;
+        paramsToUpdate.estadoCurso = req.body.paramsToUpdate.estadoCurso;
+        respuesta = await updateEstadoTramite(paramsToUpdate);
+        res.json(respuesta)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+

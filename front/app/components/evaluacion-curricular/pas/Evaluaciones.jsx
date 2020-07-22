@@ -8,17 +8,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
 import ModalStructure from './ModalStructure';
+import { tramites } from '../../../../../back/code/enums';
 
 export default class Evaluaciones extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             page: 1,
-            sizePerPage: 50           
+            sizePerPage: 50
         }
         this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
         this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
         this.handleTableChange = this.handleTableChange.bind(this);
+        this.cambioEstadoTramite = this.cambioEstadoTramite.bind(this);
     }
     cambioEstadoClick(paramsToUpdate) {
         this.props.cambioEstadoClick(this.props.selected, paramsToUpdate)
@@ -33,7 +35,7 @@ export default class Evaluaciones extends React.Component {
             sizePerPage: sizePerPage
         })
         const filters2 = {};
-        
+
         setTimeout(() => {
             // Handle column filters
             for (const filter in filters) {
@@ -44,6 +46,10 @@ export default class Evaluaciones extends React.Component {
         }, 2000);
     }
 
+    cambioEstadoTramite(tramite){
+        this.props.cambioEstadoTramite(tramite);
+    }
+
     render() {
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
@@ -51,7 +57,7 @@ export default class Evaluaciones extends React.Component {
         })
 
         const estadoSelect = {};
-        for (const estado in estadosEvaluacionCurricular){
+        for (const estado in estadosEvaluacionCurricular) {
             estadoSelect[estado] = estado
         }
 
@@ -61,8 +67,9 @@ export default class Evaluaciones extends React.Component {
         })
 
         const tipoSelect = {
-            titulacion:"Titulacion",
-            curso:"Curso"};
+            titulacion: "Titulacion",
+            curso: "Curso"
+        };
 
         let peticiones = this.props.peticiones.map((peticion, index) => {
             peticion.idTabla = index;
@@ -154,7 +161,7 @@ export default class Evaluaciones extends React.Component {
                     case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Finalizar proceso</Button>)
                     default:
-                    return (<span>No acción asociada</span>)
+                        return (<span>No acción asociada</span>)
                 }
             }
 
@@ -199,12 +206,40 @@ export default class Evaluaciones extends React.Component {
                 >
                 </ModalStructure>
         }
+
+        let botonTitulacion;
+        let estadoTitulacion;
+        if (this.props.disableTitulacion) {
+            estadoTitulacion = "TRÁMITE DESACTIVADO";
+            botonTitulacion = <Button variant="primary" onClick={() => this.cambioEstadoTramite('titulacion')}> Activar</Button>
+        } else {
+            estadoTitulacion = "TRÁMITE ACTIVADO";
+            botonTitulacion = <Button variant="danger" onClick={() => this.cambioEstadoTramite('titulacion')}> Desactivar</Button>
+        }
+
+        let botonCurso;
+        let estadoCurso;
+        if (this.props.disableCurso) {
+            estadoCurso = "TRÁMITE DESACTIVADO";
+            botonCurso = <Button variant="primary" onClick={() => this.cambioEstadoTramite('curso')}> Activar</Button>
+        } else {
+            estadoCurso = "TRÁMITE ACTIVADO";
+            botonCurso = <Button variant="danger" onClick={() => this.cambioEstadoTramite('curso')}> Desactivar</Button>
+        }
+
+       
+
+
         return (
             <div>
+            <p>Estado evaluación por titulación: {estadoTitulacion}   {botonTitulacion}</p>
+            <p>Estado evaluación por curso: {estadoCurso}   {botonCurso}</p>
+            
+             <p></p>
                 <BootstrapTable
                     remote={
                         { filter: true },
-                        { pagination: true}
+                        { pagination: true }
                     }
                     bootstrap4
                     wrapperClasses="table-responsive"
@@ -214,7 +249,7 @@ export default class Evaluaciones extends React.Component {
                     defaultSorted={defaultSorted}
                     striped={true}
                     filter={filterFactory()}
-                    pagination={ paginationFactory({ page: this.state.page, sizePerPage: this.state.sizePerPage, totalSize: this.props.numberPeticiones }) }
+                    pagination={paginationFactory({ page: this.state.page, sizePerPage: this.state.sizePerPage, totalSize: this.props.numberPeticiones })}
                     onTableChange={this.handleTableChange}
                 />
                 {modal}

@@ -36,12 +36,27 @@ export default class App extends React.Component {
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     this.getPeticiones = this.getPeticiones.bind(this);
+    this.getEstadoTramite = this.getEstadoTramite.bind(this);
   }
 
   componentDidMount() {
     this.setState({
       loading: true
     })
+    axios.get(urljoin(apiBaseUrl, "/api/estadoTramite"))
+      .then((response) => {
+        this.setState({
+          disableCurso: response.data[0].estadoCurso == "DESACTIVADO" ? true : false,
+          disableTitulacion: response.data[0].estadoTitulacion == "DESACTIVADO" ? true : false
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
     axios.get(urljoin(apiBaseUrl, "/api/asignaturas/titulacion"))
       .then((response) => {
         this.setState({
@@ -71,7 +86,7 @@ export default class App extends React.Component {
           error.response.data.error || '' : ''}`)
       })
     this.getPeticiones();
-
+    this.getEstadoTramite();
   }
 
   getPeticiones() {
@@ -81,7 +96,7 @@ export default class App extends React.Component {
           peticiones: response.data,
           loading: null
         })
-        
+
         if (this.state.peticiones.length > 0) {
           this.setState({
             disableConsulta: false
@@ -95,6 +110,10 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
+  }
+
+  getEstadoTramite() {
+
   }
 
   handleClick(servicio) {
