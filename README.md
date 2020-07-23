@@ -4,6 +4,8 @@
 Aplicación para gestión de trámites en la ETSIT UPM.
 Trámites gestionados por la app:
 - Gestión de títulos
+- Gestión de certificados
+- Evaluación curricular
 
 El proyecto se separa en dos partes:
 
@@ -107,6 +109,7 @@ EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 	- En local no se puede usar la cuenta de correo ``zz.mailer.sys2``, pero sí se puede usar el correo de tipo @upm.es o @alumnos.upm.es con las credenciales del usuario.
 	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
 	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
+	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
 ##### Comandos necesarios
 ```shell
 cd code/back
