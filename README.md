@@ -161,10 +161,13 @@ node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url po
 #### Front
 Si se quiere probar / desarrollar el front de un trámite realizado con **React.js**,  debe arrancar el back para poder realizar peticiones. Debe iniciarse como se indica en el apartado anterior. Otra opción si aún no está desarrollada la parte de back del trámite es utilizar jsons para simular los datos.
 
-### Trámites
-**1. Gestión Títulos**
-**2. Gestión Certificados**
-**3. Evaluación Curricular**
-
 ##### Arrancar el servidor de Front para desarrollar
 Ver [Front README.md](front/README.md)
+
+
+### Trámites
+**1. Gestión Títulos**
+
+**2. Gestión Certificados**
+
+**3. Evaluación Curricular**
