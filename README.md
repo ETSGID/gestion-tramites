@@ -40,23 +40,23 @@ El proyecto se separa en dos partes:
 POSTGRES_DB=gestion_tramites #(nombre de DB)
 DB_USERNAME=postgres #(nombre de DB)
 DB_PASSWORD=1234
-DB_HOST=dbtitulos
+DB_HOST=dbtramites
 SERVICE=https://pruebas.etsit.upm.es #url servicio sin contexto
-CAS=https://repo.etsit.upm.es/cas-upm #url servidor cas
+CAS=https://siupruebas.upm.es/cas #url nuevo servidor cas
 SESSION_SECRET=Secreto_para_las_sesiones
-CONTEXT1=/pas/gestion-titulos/
-CONTEXT2=/estudiantes/gestion-titulos/
+CONTEXT1=/pas/gestion-tramites/
+CONTEXT2=/estudiantes/gestion-tramites/
 PORT=3000
 DEV=false
-PRUEBAS=false
+PRUEBAS=true # false en producción 
 DOCKER=true
 EMAIL_HOST=smtp.etsit.upm.es
 EMAIL_PORT=587
 EMAIL_USER=zz.mailer.sys2
-EMAIL_PASS=
-EMAIL_SENDER=Solicitud título <noreply@etsit.upm.es>
-EMAIL_ALUMNO=javier.conde.diaz@alumnos.upm.es #(solo para pruebas a donde envia el mail de los alumnos)
-EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es #(usario de correo upm)
+EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
+EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
+EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
+EMAIL_PASS= #contraseña de zz.mailer.sys2
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -82,23 +82,24 @@ Se deben copiar las variables presentes en el fichero  `back/code/file.env` en e
 ```shell
 POSTGRES_DB=gestion_tramites #(nombre de DB)
 DB_USERNAME=postgres #(nombre de usuario de DB)
-DB_PASSWORD=1234#(password de DB)
+DB_PASSWORD=1234 #(password de DB)
 DB_HOST=localhost
 SERVICE=http://localhost:3000
-CAS=https://repo.etsit.upm.es/cas-upm
+CAS=ttps://siupruebas.upm.es/cas
 SESSION_SECRET=Secreto_para_las_sesiones
 CONTEXT1=/pas/gestion-tramites/
 CONTEXT2=/estudiantes/gestion-tramites/
 PORT=3000
-DEV=true#(entorno de desarrollo)
-PRUEBAS=false#(entrono de pruebas host26 o 27)
+DEV=true #(entorno de desarrollo)
+PRUEBAS=false #(entrono de pruebas host26 o 27)
 DOCKER=false
 EMAIL_HOST=smtp.upm.es
 EMAIL_PORT=587
-EMAIL_USER=xxxx@alumnos.upm.es#(usario de correo upm)
-EMAIL_PASS=XXXX#(contraseña de correo upm)
-EMAIL_SENDER=xxxx@alumnos.upm.es#(usario de correo upm)
-EMAIL_SECRETARIA=xxxx@alumnos.upm.es#(usario de correo upm)
+EMAIL_USER=zz.mailer.sys2
+EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
+EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
+EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
+EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 ```
 - Consideraciones:
 	- En local no se pueden utilizar las apis externas, por lo que se usan maquetas de datos **(DEV=true)**
@@ -156,6 +157,11 @@ node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url po
 
 #### Front
 Si se quiere probar / desarrollar el front de un trámite realizado con **React.js**,  debe arrancar el back para poder realizar peticiones. Debe iniciarse como se indica en el apartado anterior. Otra opción si aún no está desarrollada la parte de back del trámite es utilizar jsons para simular los datos.
+
+### Trámites
+**1. Gestión Títulos**
+**2. Gestión Certificados**
+**3. Evaluación Curricular**
 
 ##### Arrancar el servidor de Front para desarrollar
 Ver [Front README.md](front/README.md)
