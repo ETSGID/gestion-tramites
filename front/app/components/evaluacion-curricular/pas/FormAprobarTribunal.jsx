@@ -1,27 +1,29 @@
 import React from 'react';
-import {  Modal, Button, Form, OverlayTrigger, Tooltip }  from 'react-bootstrap';
+import { Modal, Button, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default class FormAprobarTribunal extends React.Component {
   constructor(props) {
     super(props);
-    this.fileInput = React.createRef();
+    this.fecha = React.createRef();
+    this.motivo = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
 
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    if (!this.fileInput.current.files[0]) {
-      alert(`Debe adjuntar el documento generado de confirmación de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}) referente a la evaluación curricular de tipo ${this.props.peticion.tipo} de la asignatura ${this.props.peticion.asignaturaNombre} (${this.props.peticion.asignaturaCodigo}) del plan ${this.props.peticion.planNombre} (${this.props.peticion.planCodigo}).`);
-    } else {
-      if (confirm(`Asegurese de que manda el documento correspondiente.`)) {
-        let paramsToUpdate = {}
-        //solo se pasa en este caso
-        paramsToUpdate.file = this.fileInput.current.files[0]
-        this.props.cambioEstadoClick(paramsToUpdate)
-      }
+    if (!this.fecha.current.value) {
+      alert(`Debe indicar la fecha en la que la comisión se reunió.`);
+    } if (!this.motivo.current.value) {
+      alert(`Debe añadir un texto que explique las conclusiones de la comisión.`);
+    }
+    else {
+      let paramsToUpdate = {};
+      paramsToUpdate.fecha = this.fecha.current.value;
+      paramsToUpdate.motivo = this.motivo.current.value;
+      this.props.cambioEstadoClick(paramsToUpdate);
     }
   }
 
@@ -30,23 +32,25 @@ export default class FormAprobarTribunal extends React.Component {
       <div>
         <Modal.Body>
           Debe comprobar que el tribunal correspondiente se reune para decidir sobre la evaluación curricular del alumno.
-          En caso de que sea aprobada, adjunte el documento generado de confirmación de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}) de la asignatura {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo}) y seleccione el botón de "Aprobar evaluación".
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Label as="legend">
-              Adjunte documento de confirmación
-            </Form.Label>
-            <input type="file" ref={this.fileInput} />
-            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
-              </Tooltip>}>
-              <span className="d-inline-block">
-              <FontAwesomeIcon icon={faInfoCircle}/>
-              </span>
-            </OverlayTrigger>
-          </Form >
+          En caso de que sea aprobada, se enviará un email de confirmación con los siguientes datos:
+          <ul><li>
+            <b>NOMBRE Y APELLIDOS:</b> {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.edupersonuniqueid})
+          </li><li><b>ASIGNATURA</b>: {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo})
+          </li><li><b>TITULACIÓN:</b> {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})
+          </li><li>
+              <Form.Group controlId="fechaReunion">
+                <Form.Label as="fecha"><b>FECHA DE REUNIÓN DE LA COMISIÓN:</b></Form.Label>
+                <Form.Control type="date" name="fecha" placeholder="fecha de reunión" ref={this.fecha} />
+              </Form.Group>
+            </li><li>
+              <Form.Group controlId="motivo">
+                <Form.Label as="motivo"><b>MOTIVO</b></Form.Label>
+                <Form.Control placeholder="Motivo..." ref={this.motivo} />
+              </Form.Group>
+            </li></ul>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button>
+          {/* <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button> */}
           <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Aprobar evaluación</Button>
         </Modal.Footer>
       </div>
