@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const estadosCertificado = require('../../../../../back/code/enums').estadosCertificado;
+const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import FormInfoPago from './FormInfoPago';
 import FormConfirmarPago from './FormConfirmarPago';
 import FormResguardo from './FormResguardo';

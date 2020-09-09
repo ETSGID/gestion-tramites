@@ -4,7 +4,7 @@ import axios from 'axios';
 import Titulos from './Titulos'
 import './../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
-const tramite = require('../../../../../back/code/enums').tramites.gestionCertificados;
+const tramite = require('../../../../../back/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service,"/pas/gestion-tramites", tramite[0]) : window.location.href

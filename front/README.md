@@ -12,7 +12,7 @@ Cada trámite tiene dos bundles (`bundle_estudiantes.js` y `bundle_pas.js`), que
 
 - `npm run buildEstudiantes`: Genera el bundle en la carpeta `front/build/[nombre-trámite]/bundle_estudiantes.js` con el procediento configurado en el fichero `.env (front/.env)`.
 
-En el fichero `.env (front/.env)` se **debe** poner el mismo nombre para los trámites que el que hay en el enum  ``back/code/enums.js`` y debe existir dicha entrada en el enum. Un ejemplo de configuración del enum es:
+En el fichero `.env (front/.env)` se **debe** poner el mismo nombre para los trámites que el que hay en el enum  ``back/enums.js`` y debe existir dicha entrada en el enum. Un ejemplo de configuración del enum es:
 
 ```json
 exports.tramites = {
@@ -29,4 +29,4 @@ TRAMITE=gestionTitulos
 #TRAMITE=gestionCertificados
 ```
 ## Pasar a producción
-El paso a producción es manual, copiando el ``bundle_estudiantes.js`` o el ``bundle_pas.js`` de la carpeta ``front/build/[nombre-trámite]/`` a la carpeta ``back/code/public/js/[nombre-trámite]/``. Está configurado así para evitar pisar el ``bundle.js`` de producción por error.
+El paso a producción es manual, copiando el ``bundle_estudiantes.js`` o el ``bundle_pas.js`` de la carpeta ``front/build/[nombre-trámite]/`` a la carpeta ``back/public/js/[nombre-trámite]/``. Está configurado así para evitar pisar el ``bundle.js`` de producción por error.

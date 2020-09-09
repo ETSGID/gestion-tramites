@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-const formaPago = require('../../../../../back/code/enums').formaPago
+const formaPago = require('../../../../../back/enums').formaPago
 
 export default class FormPago extends React.Component {
   constructor(props) {

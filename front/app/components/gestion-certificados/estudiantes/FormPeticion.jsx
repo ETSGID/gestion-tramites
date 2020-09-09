@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Modal, Button, Form, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
-const descuento = require('../../../../../back/code/enums').descuento
+const descuento = require('../../../../../back/enums').descuento
 
 export default class FormPeticion extends React.Component {
   constructor(props) {

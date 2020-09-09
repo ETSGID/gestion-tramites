@@ -20,12 +20,11 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, asignaturaNo
             break;
         case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
             send = true;
-            text += `Se ha denegado su solicitud de evaluación curricular debido a los siguientes motivos:\n${textoAdicional}`
+            text += `La comisión ha concluido que se deniega su solicitud de evaluación curricular, con los siguientes datos:\n`+ textoAdicional;
             break;
         case estadosEvaluacionCurricular.EVALUACION_APROBADA:
             send = true;
-            text += `Se ha aprobado su solicitud de evaluación curricular. Se adjunta el documento generado.`
-            filesname.push(`documento_evaluacion.pdf`);
+            text += `La comisión ha concluido que se aprueba su solicitud de evaluación curricular, con los siguientes datos:\n`+ textoAdicional;
             break;
         case estadosEvaluacionCurricular.EVALUACION_FINALIZADA:
             send = true;
@@ -33,7 +32,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, asignaturaNo
             break;
         case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
             send = true;
-            text += `Su petición de evaluación curricular ha sido cancelada por el siguiente motivo.\n${textoAdicional} `
+            text += `Su petición de evaluación curricular ha sido cancelada por el siguiente motivo.\n`+ textoAdicional;
             break;
     }
     if (send) {

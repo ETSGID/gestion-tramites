@@ -80,7 +80,7 @@ docker-compose up
 ### Local (sin Docker)
 #### Back
 ##### Variables de entorno
-Se deben copiar las variables presentes en el fichero  `back/code/file.env` en el siguiente fichero `back/code/local.env`. Este fichero no se subirá al repositorio para proteger las credenciales del usuario. En este fichero se deben configurar las variables de entorno con contraseñas, ya que se encuentra en el `.gitignore`. Las variables de entorno son las siguientes:
+Se deben copiar las variables presentes en el fichero  `back/file.env` en el siguiente fichero `back/local.env`. Este fichero no se subirá al repositorio para proteger las credenciales del usuario. En este fichero se deben configurar las variables de entorno con contraseñas, ya que se encuentra en el `.gitignore`. Las variables de entorno son las siguientes:
 ```shell
 POSTGRES_DB=gestion_tramites #(nombre de DB)
 DB_USERNAME=postgres #(nombre de usuario de DB)
@@ -112,7 +112,7 @@ EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
 ##### Comandos necesarios
 ```shell
-cd code/back
+cd back
 npm install #instala los paquetes
 npm start
 ```

@@ -3,7 +3,7 @@ import '../../../../assets/scss/main.scss';
 import { Alert, Button } from 'react-bootstrap';
 import axios from 'axios';
 
-const tramite = require('../../../../../back/code/enums').tramites.evaluacionCurricular;
+const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/estudiantes/gestion-tramites", tramite[0]) : window.location.href

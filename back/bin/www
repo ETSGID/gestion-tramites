@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-require('dotenv').config({ path: './code/local.env' })
+require('dotenv').config({ path: './local.env' })
 
 let app = require('../app');
 let path = require('path');

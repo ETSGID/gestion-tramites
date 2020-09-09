@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
+const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 import FormInfoRequisitos from './FormInfoRequisitos';
 import FormAprobarTribunal from './FormAprobarTribunal';
 import FormCancel from './FormCancel';

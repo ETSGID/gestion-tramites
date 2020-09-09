@@ -3,7 +3,7 @@ const { resolve } = require('path');
 require('dotenv').config()
 const DotenvWebpack = require('dotenv-webpack');
 const tramite = process.env.TRAMITE || 'gestionTitulos';
-const enumTramites = require('../back/code/enums').tramites;
+const enumTramites = require('../back/enums').tramites;
 
 module.exports = env => {
     let build = '/build'

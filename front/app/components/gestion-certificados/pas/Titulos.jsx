@@ -5,7 +5,7 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-const estadosCertificado = require('../../../../../back/code/enums').estadosCertificado;
+const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import ModalStructure from './ModalStructure';
 
 export default class Titulos extends React.Component {

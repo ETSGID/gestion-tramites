@@ -4,7 +4,7 @@ import Titulos from './Titulos';
 import LoadingOverlay from 'react-loading-overlay';
 import {Alert} from 'react-bootstrap';
 import '../../../../assets/scss/main.scss';
-const tramite = require('../../../../../back/code/enums').tramites.gestionTitulos;
+const tramite = require('../../../../../back/enums').tramites.gestionTitulos;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service,"/estudiantes/gestion-tramites", tramite[0]) : window.location.href

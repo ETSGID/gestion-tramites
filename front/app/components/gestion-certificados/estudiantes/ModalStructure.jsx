@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import FormPeticion from './FormPeticion';
 import FormPago from './FormPago';
-const estadosCertificado = require('../../../../../back/code/enums').estadosCertificado;
+const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import InfoPeticion from './InfoPeticion';
 
 

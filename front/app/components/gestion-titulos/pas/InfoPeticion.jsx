@@ -1,8 +1,8 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const estadosTitulo = require('../../../../../back/code/enums').estadosTitulo;
-const descuento = require('../../../../../back/code/enums').descuento;
-const formaPago = require('../../../../../back/code/enums').formaPago;
+const estadosTitulo = require('../../../../../back/enums').estadosTitulo;
+const descuento = require('../../../../../back/enums').descuento;
+const formaPago = require('../../../../../back/enums').formaPago;
 
 export default class InfoPeticion extends React.Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const descuento = require('../../../../../back/code/enums').descuento
+const descuento = require('../../../../../back/enums').descuento
 
 export default class FormInfoPago extends React.Component {
   constructor(props) {

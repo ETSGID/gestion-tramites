@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import FormPeticion from './FormPeticion';
 import FormPago from './FormPago';
-const estadosTitulo = require('../../../../../back/code/enums').estadosTitulo;
+const estadosTitulo = require('../../../../../back/enums').estadosTitulo;
 import InfoPeticion from './InfoPeticion';
 
 

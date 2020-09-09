@@ -4,7 +4,7 @@ import axios from 'axios';
 import Evaluaciones from './Evaluaciones'
 import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
-const tramite = require('../../../../../back/code/enums').tramites.evaluacionCurricular;
+const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
@@ -88,10 +88,6 @@ export default class App extends React.Component {
     let peticionesNuevas = this.state.peticiones.slice()
     //para mandar el archivo hace falta crear un FormData
     let formData = new FormData();
-    //sino había file se queda a null
-    if (paramsToUpdate.file) {
-      formData.append("file", paramsToUpdate.file);
-    }
     this.setState({
       loading: true,
       selected: null

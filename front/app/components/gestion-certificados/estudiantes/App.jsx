@@ -3,7 +3,7 @@ import axios from 'axios';
 import Titulos from './Titulos';
 import LoadingOverlay from 'react-loading-overlay';
 import '../../assets/scss/main.scss';
-const tramite = require('../../../../../back/code/enums').tramites.gestionCertificados;
+const tramite = require('../../../../../back/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/estudiantes/gestion-tramites", tramite[0]) : window.location.href

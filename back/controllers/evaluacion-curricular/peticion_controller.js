@@ -294,9 +294,9 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         if (req.body.cancel) {
             estadoNuevo = req.body.paramsToUpdate.cancelNewState === -1 ? estadosEvaluacionCurricular.SOLICITUD_CANCELADA : estadosEvaluacionCurricular.EVALUACION_DENEGADA;
             paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel
-            textoAdicional = req.body.paramsToUpdate.textCancel
+            textoAdicional = estadoNuevo === estadosEvaluacionCurricular.EVALUACION_DENEGADA ? "Nombre: "+req.body.peticion.nombre+"\nApellido:"+req.body.peticion.apellido+"\nAsignatura: "+req.body.peticion.asignaturaNombre+" ("+req.body.peticion.asignaturaCodigo+")\nTitulación: "+req.body.peticion.planNombre+" ("+req.body.peticion.planCodigo+")\nFecha reunión comisión: "+req.body.paramsToUpdate.fecha+"\nMotivo:"+req.body.paramsToUpdate.motivo : req.body.paramsToUpdate.textCancel
         } else {// si crear o actualizar peticion
-            // console.log("db peticion:",peticion);
+            // console.log("db peticion:",peticion)
             // console.log("body peticion:",req.body.peticion);
             if (peticion.estadoPeticion !== estadosEvaluacionCurricular[req.body.peticion.estadoPeticionTexto]) throw "Intenta cambiar un estado que no puede";
             switch (peticion.estadoPeticion) {
@@ -310,6 +310,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     break;
                 case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                     estadoNuevo = estadosEvaluacionCurricular.EVALUACION_APROBADA;
+                    textoAdicional = "Nombre: "+req.body.peticion.nombre+"\nApellido:"+req.body.peticion.apellido+"\nAsignatura: "+req.body.peticion.asignaturaNombre+" ("+req.body.peticion.asignaturaCodigo+")\nTitulación: "+req.body.peticion.planNombre+" ("+req.body.peticion.planCodigo+")\nFecha reunión comisión: "+req.body.paramsToUpdate.fecha+"\nMotivo:"+req.body.paramsToUpdate.motivo;
                     break;
                 case estadosEvaluacionCurricular.EVALUACION_APROBADA:
                 case estadosEvaluacionCurricular.EVALUACION_DENEGADA:

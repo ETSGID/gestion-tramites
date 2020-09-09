@@ -3,7 +3,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { Alert, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
+const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 import ModalStructure from './ModalStructure';
 
 export default class Consulta extends React.Component {

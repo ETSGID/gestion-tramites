@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form} from 'react-bootstrap';
-const estadosTitulo = require('../../../../../back/code/enums').estadosTitulo;
+const estadosTitulo = require('../../../../../back/enums').estadosTitulo;
 
 export default class Formcancel extends React.Component {
     constructor(props) {

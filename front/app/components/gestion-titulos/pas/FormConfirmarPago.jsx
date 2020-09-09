@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const formaPago = require('../../../../../back/code/enums').formaPago
+const formaPago = require('../../../../../back/enums').formaPago
 //Va a confirmar el pago del aluno XXX, lo ha realizado a través de YYY. Asegúrese de que es correcto.
 export default class FormConfirmarPago extends React.Component {
   constructor(props) {

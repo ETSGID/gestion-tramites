@@ -4,7 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-const estadosTitulo = require('../../../../../back/code/enums').estadosTitulo;
+const estadosTitulo = require('../../../../../back/enums').estadosTitulo;
 import ModalStructure from './ModalStructure';
 
 export default class Titulos extends React.Component {

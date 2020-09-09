@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
+const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 
 
 export default class InfoPeticion extends React.Component {
