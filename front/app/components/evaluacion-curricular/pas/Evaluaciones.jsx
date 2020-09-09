@@ -6,9 +6,9 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
+const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 import ModalStructure from './ModalStructure';
-import { tramites } from '../../../../../back/code/enums';
+import { tramites } from '../../../../../back/enums';
 
 export default class Evaluaciones extends React.Component {
     constructor(props) {
@@ -156,7 +156,7 @@ export default class Evaluaciones extends React.Component {
                     case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Revisar requisitos</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Reunion tribunal</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Reunión tribunal</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_APROBADA:
                     case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Finalizar proceso</Button>)
@@ -173,11 +173,11 @@ export default class Evaluaciones extends React.Component {
             formatter: (cellContent, row) => {
                 switch (row.estadoPeticion) {
                     case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
-                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
+                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Rechazar solicitud</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
-                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
+                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Denegar evaluación</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_APROBADA:
-                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
+                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar proceso</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
