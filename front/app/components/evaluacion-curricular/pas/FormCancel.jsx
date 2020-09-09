@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form} from 'react-bootstrap';
-const estadosEvaluacionCurricular = require('../../../../../back/code/enums').estadosEvaluacionCurricular;
+const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 
 export default class FormCancel extends React.Component {
     constructor(props) {
@@ -59,7 +59,7 @@ export default class FormCancel extends React.Component {
         return (
             <div>
                 <Modal.Body>
-                    Va a cancelar la petición de la evaluación curricular de {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo}) de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
+                    Va a cancelar la petición de la evaluación curricular de {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo}) de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.edupersonuniqueid}).
                     <br />
                     <br />
                     <Form onSubmit={this.handleSubmit}>
@@ -73,7 +73,7 @@ export default class FormCancel extends React.Component {
                     </Form >
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button>
+                    {/* <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button> */}
                     <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Confirmar</Button>
                 </Modal.Footer>
             </div>
