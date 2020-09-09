@@ -19,10 +19,10 @@ export default class FormFinalizar extends React.Component {
         return (
             <div>
               <Modal.Body>
-                Asegúrese de que el alumno ha obtenido el documento de confirmación antes de finalizar el proceso.
+                Asegúrese de que el alumno ha obtenido el email de confirmación antes de finalizar el proceso.
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button>
+                {/* <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button> */}
                 <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Confirmar</Button>
               </Modal.Footer>
             </div>
