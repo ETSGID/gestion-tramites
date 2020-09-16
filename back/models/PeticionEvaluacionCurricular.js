@@ -1,7 +1,7 @@
 // Definicion del modelo Peticion:
 
 module.exports = function (sequelize, DataTypes) {
-    let Peticion = sequelize.define('PeticionEvaluacionCurricular',
+    let PeticionEvaluacionCurricular = sequelize.define('PeticionEvaluacionCurricular',
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -55,5 +55,5 @@ module.exports = function (sequelize, DataTypes) {
         {
             timestamps: false
         });
-    return Peticion;
+    return PeticionEvaluacionCurricular;
 };
