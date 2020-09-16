@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GESTOR DE PERMISOS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--BOOTSTRAP 4-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel='stylesheet' type="text/css" href='<%=context%>/stylesheets/index.css' />
+
+</head>
+
+<body>
+    <div id="buttonMenuPortales123" style="position:fixed; z-index:4; text-align: right"></div>
+    <script src="https://<%=portalName%>.etsit.upm.es/<%=session.portal%>/static-button"></script>
+    <script src="<%=context%>/js/paginate.js"></script>
+    <script>
+        let context = '<%-context%>';
+        document.addEventListener('DOMContentLoaded', dibujarmenulateral("buttonMenuPortales123", context + "/logout", '<%=session.user.mailPrincipal%>', '<%=session.user.givenname%>', '<%=pruebasBoolean%>'));
+    </script>
+    <nav class="barraInicio navbar navbar-expand-md navbar-dark">
+        <span class="navbar-brand"><%=barraInicioText%></span>
+    </nav>
+
+    <div class="textoInicio">
+        <p>
+            A continuación, se muestra la lista de permisos activados:
+            <br>
+        <table id="table" class="table hover">
+            <tr>
+                <th>Email</th>
+                <th>Trámite</th>
+                <%Object.values(session.permisos).forEach(permiso =>{ %>
+            <tr>
+                <td><%=permiso["email"]%></td>
+                <td><%=permiso["tramite"]%></td>
+            </tr>
+            <% }) %>
+            </tr>
+        </table><br>
+        <input type="search" id="searchBox" placeholder="Búsqueda...">
+        </p>
+        <p>
+            Tanto si desea crear un nuevo permiso como eliminarlo, rellene el siguiente formulario con el email de la
+            persona en cuestión y el trámite correspondiente:
+        <form formaction="<%-context%>/permisos" method="GET">
+            <div class="form-group">
+                <label for="email"><b>Email:</b></label>
+                <input type="email" class="form-control" name="email" placeholder="ejemplo@upm.es">
+            </div>
+            <div class="form-group">
+                <label for="tramite"><b>Seleccione trámite:</b></label>
+                <select class="form-control" name="tramite">
+                    <%Object.values(tramites).forEach(tramite =>{ %>
+                    <option><%=tramite[0]%></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="accion" id="exampleRadios1" value="crear"
+                        checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                        Crear permiso
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="accion" id="exampleRadios2" value="eliminar">
+                    <label class="form-check-label" for="exampleRadios2">
+                        Eliminar permiso
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <a href="<%=context%>" class="btn btn-primary">Volver atrás</a>
+        </form>
+
+    </div>
+</body>
+<script>
+    let options = {
+        numberPerPage: 5, //Cantidad de datos por pagina
+        goBar: false, //Barra donde puedes digitar el numero de la pagina al que quiere ir
+        pageCounter: false, //Contador de paginas, en cual estas, de cuantas paginas
+    };
+
+    let filterOptions = {
+        el: '#searchBox'
+    };
+
+    paginate.init('#table', options, filterOptions);
+</script>
+
+</html>

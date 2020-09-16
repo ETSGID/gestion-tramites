@@ -5,10 +5,15 @@ module.exports = function (sequelize, DataTypes) {
         {
             id: {
                 type: DataTypes.STRING,
-                unique: true,
-                primaryKey: true,
-                allowNull: false
-            }
+                autoIncrement: true,
+                primaryKey: true
+            },
+            email: {
+                type: DataTypes.STRING
+            },
+            tramite: {
+                type: DataTypes.STRING
+            },
         },
         {
             timestamps: false

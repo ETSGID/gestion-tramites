@@ -1,26 +1,85 @@
-//comprobamos que solo pueden acceder profesores y alumnos.
+let models = require('../models');
 
-
-exports.comprobarRolYPas = function (req, res, next) {
-    let role = req.session.user.employeetype;
-    if (role && Array.isArray(role) && (role.includes("F") || role.includes("L")
-        || process.env.PRUEBAS == 'true' || process.env.DEV == 'true')) {
-        req.session.portal = 'pas'
-        next();
+exports.getAllPermisos = async function (req, res, next) {
+    try {
+        let permisos = await models.Permiso.findAll();
+        return permisos;
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
     }
-    else {
-        res.render('noPermitido');
-    }
-};
+}
 
-exports.comprobarRolYAlumno = function (req, res, next) {
-    let role = req.session.user.employeetype;
-    if (role && Array.isArray(role)
-        && (role.includes("A") || role.includes("E") ||
-            role.includes("I") || role.includes("N") || process.env.PRUEBAS == 'true' || process.env.DEV == 'true')) {
-        req.session.portal = 'estudiantes'
-        next();
-    } else {
-        res.render('noPermitido');
+exports.getPermisosTramite = async function (req, res, next) {
+    try {
+        let respuesta = {};
+        let email = req.session.user.mailPrincipal;
+        let tramite = req.session.tramite;
+        respuesta.emailUser = email;
+        let permisos = await models.Permiso.findAll({
+            where: {
+                tramite: tramite
+            }
+        });
+        respuesta.permisos = permisos;
+        res.json(respuesta)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.crearPermiso = async function (req, res, next) {
+    try {
+        let permiso = await models.Permiso.findOne({
+            where: {
+                email: req.params.email,
+                tramite: req.params.tramite
+            }
+        });
+        if (!permiso) {
+            let permiso = await models.Permiso.create({
+                email: req.params.email,
+                tramite: req.params.tramite
+            });
+            res.render("confirmacionPermiso", {
+                barraInicioText: "GESTOR DE PERMISOS",
+                mensaje: 'El permiso indicado se ha creado correctamente.'
+            });
+        } else {
+            res.render("confirmacionPermiso", {
+                barraInicioText: "GESTOR DE PERMISOS",
+                mensaje: 'El permiso que intenta crear ya existe.'
+            });
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.eliminarPermiso = async function (req, res, next) {
+    try {
+        let permiso = await models.Permiso.destroy({
+            where: {
+                email: req.params.email,
+                tramite: req.params.tramite
+            }
+        });
+        if (permiso) {
+            res.render("confirmacionPermiso", {
+                barraInicioText: "GESTOR DE PERMISOS",
+                mensaje: 'El permiso indicado se ha eliminado correctamente.'
+            });
+        } else {
+            res.render("confirmacionPermiso", {
+                barraInicioText: "GESTOR DE PERMISOS",
+                mensaje: 'El permiso que intenta eliminar no existe.'
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
     }
 }
