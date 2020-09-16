@@ -22,12 +22,64 @@
 
 .textoInicio{
   position: relative;
-  left: 70px;
+  padding-left: 70px;
+  padding-right: 70px;
   top: 20px;
 }
 
 .listaTramites{
   position: relative;
-  left: 60px;
+  padding-left: 100px;
   top: 20px;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  
+  /* width: 100%; */
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+div.paginate{
+  padding: 5px 0px;
+  margin: auto;
+}
+
+div.paginate input[type='button']:hover{
+  cursor: pointer;
+}
+
+div.paginate input[type='button']{
+  margin: 0px 2px;
+  border: none;
+  color: black;
+  background-color: transparent;
+  border-radius: 50%;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  outline: none;
+}
+
+div.paginate input[type='button'].active{
+  background-color: grey;
+  color: #fff;
+  font-weight: bold;
+}
+
+#searchBox{
+  border-radius: .25rem;
+  font-size: 16px; /* Increase font-size */
+  padding: 8px; /* Add some padding */
+  border: 2px solid #ddd; /* Add a grey border */
+  border-radius: .25rem;
+  margin-bottom: 12px; /* Add some space below the input */
 }

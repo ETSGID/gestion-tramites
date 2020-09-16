@@ -8,8 +8,6 @@ const routerEvaluacionCurricular = require('./evaluacion-curricular/routerAlumno
 const peticionTituloController = require('../controllers/gestion-titulos/peticion_controller');
 
 
-router.all('*', permisoController.comprobarRolYAlumno);
-
 //TODO quitar updateDatabase cuando ya se haya actualizado la base de datos
 router.get(`/`, peticionTituloController.updateDatabase,
     function (req, res, next) {

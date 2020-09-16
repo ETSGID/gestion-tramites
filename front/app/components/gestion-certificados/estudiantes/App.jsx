@@ -3,7 +3,7 @@ import axios from 'axios';
 import Certificados from './Certificados';
 import LoadingOverlay from 'react-loading-overlay';
 import {Alert, Link, Button} from 'react-bootstrap';
-import '../../assets/scss/main.scss';
+import '../../../../assets/scss/main.scss';
 const tramite = require('../../../../../back/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';

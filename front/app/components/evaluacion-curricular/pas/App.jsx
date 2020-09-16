@@ -2,6 +2,7 @@
 import React from 'react';
 import axios from 'axios';
 import Evaluaciones from './Evaluaciones'
+import NoPermiso from '../../NoPermiso'
 import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
 const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
@@ -27,15 +28,18 @@ export default class App extends React.Component {
       info: null,
       loading: null,
       disableTitulacion: null,
-      disableCurso: null
+      disableCurso: null,
+      tienePermiso: false
     };
     this.findPeticiones = this.findPeticiones.bind(this);
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     this.cambioEstadoTramite = this.cambioEstadoTramite.bind(this);
+    this.checkPermisos = this.checkPermisos.bind(this);
   }
 
   componentDidMount() {
+    this.checkPermisos();
     this.findPeticiones(1, 50, null);
     axios.get(urljoin(apiBaseUrl, "/api/estadoTramite"))
       .then((response) => {
@@ -51,6 +55,7 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
+
   }
 
   findPeticiones(page, sizePerPage, filters) {
@@ -73,6 +78,32 @@ export default class App extends React.Component {
           plansCargado: true,
           asignaturas: response.data.asignaturas
         })
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
+  checkPermisos() {
+    axios.get(urljoin(apiBaseUrl, "api/permisos"))
+      .then((response) => {
+        var permisos = response.data.permisos;
+        for (var i = 0; i < permisos.length; i++) {
+          if (response.data.emailUser === permisos[i].email) {
+            this.setState({
+              tienePermiso: true,
+              loading: null,
+            })
+          } else {
+            this.setState({
+              tienePermiso: false,
+              loading: null,
+            })
+          }
+        }
       })
       .catch((error) => {
         this.setState({
@@ -136,7 +167,7 @@ export default class App extends React.Component {
           disableTitulacion: !this.state.disableTitulacion,
           loading: true,
         });
-        paramsToUpdate.estadoTitulacion = !this.state.disableTitulacion  ? 'DESACTIVADO' : 'ACTIVADO';
+        paramsToUpdate.estadoTitulacion = !this.state.disableTitulacion ? 'DESACTIVADO' : 'ACTIVADO';
         paramsToUpdate.estadoCurso = this.state.disableCurso ? 'DESACTIVADO' : 'ACTIVADO';
         break;
       case 'curso':
@@ -144,17 +175,17 @@ export default class App extends React.Component {
           disableCurso: !this.state.disableCurso,
           loading: true
         });
-        paramsToUpdate.estadoTitulacion = this.state.disableTitulacion  ? 'DESACTIVADO' : 'ACTIVADO';
+        paramsToUpdate.estadoTitulacion = this.state.disableTitulacion ? 'DESACTIVADO' : 'ACTIVADO';
         paramsToUpdate.estadoCurso = !this.state.disableCurso ? 'DESACTIVADO' : 'ACTIVADO';
         break;
       default:
         return;
     }
     console.log(this.state);
-   
+
     console.log(paramsToUpdate);
     let formData = new FormData();
-    formData.append("body", JSON.stringify({paramsToUpdate: paramsToUpdate }));
+    formData.append("body", JSON.stringify({ paramsToUpdate: paramsToUpdate }));
     axios.post(urljoin(apiBaseUrl, "api/updateEstadoTramite"), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -176,23 +207,27 @@ export default class App extends React.Component {
 
   render() {
     let evaluaciones = "Cargando..."
-    if (this.state.plansCargado) {
-      evaluaciones = <Evaluaciones
-        selected={this.state.selected}
-        cancel={this.state.cancel}
-        info={this.state.info}
-        peticiones={this.state.peticiones}
-        numberPeticiones={this.state.numberPeticiones}
-        plans={this.state.plans}
-        asignaturas={this.state.asignaturas}
-        cambioEstadoClick={this.cambioEstadoClick}
-        cambioSelectedClick={this.cambioSelectedClick}
-        findPeticiones={this.findPeticiones}
-        cambioEstadoTramite={this.cambioEstadoTramite}
-        disableCurso={this.state.disableCurso}
-        disableTitulacion={this.state.disableTitulacion}
-      >
-      </Evaluaciones>
+    if (!this.state.tienePermiso) {
+      evaluaciones = <NoPermiso />
+    } else {
+      if (this.state.plansCargado) {
+        evaluaciones = <Evaluaciones
+          selected={this.state.selected}
+          cancel={this.state.cancel}
+          info={this.state.info}
+          peticiones={this.state.peticiones}
+          numberPeticiones={this.state.numberPeticiones}
+          plans={this.state.plans}
+          asignaturas={this.state.asignaturas}
+          cambioEstadoClick={this.cambioEstadoClick}
+          cambioSelectedClick={this.cambioSelectedClick}
+          findPeticiones={this.findPeticiones}
+          cambioEstadoTramite={this.cambioEstadoTramite}
+          disableCurso={this.state.disableCurso}
+          disableTitulacion={this.state.disableTitulacion}
+        >
+        </Evaluaciones>
+      }
     }
     return (
       <div>

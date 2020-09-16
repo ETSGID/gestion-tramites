@@ -2,15 +2,17 @@
 import React from 'react';
 import axios from 'axios';
 import Certificados from './Certificados'
+import Titulos from './Titulos'
+import NoPermiso from '../../NoPermiso'
 import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
 const tramite = require('../../../../../back/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service,"/pas/gestion-tramites", tramite[0]) : window.location.href
+const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
 
 
-export default class App extends React.Component {  
+export default class App extends React.Component {
 
   constructor(props) {
     super(props)
@@ -19,12 +21,15 @@ export default class App extends React.Component {
       selected: null,
       cancel: null,
       info: null,
-      loading: null
+      loading: null,
+      tienePermiso: false
     };
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+    this.checkPermisos = this.checkPermisos.bind(this);
   }
   componentDidMount() {
+    this.checkPermisos();
     this.setState({
       loading: true
     })
@@ -40,7 +45,7 @@ export default class App extends React.Component {
           loading: null
         })
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '': ''}`)
+          error.response.data.error || '' : ''}`)
       })
   }
 
@@ -84,7 +89,7 @@ export default class App extends React.Component {
           loading: null
         })
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '': ''}`)
+          error.response.data.error || '' : ''}`)
       })
   }
 
@@ -95,8 +100,48 @@ export default class App extends React.Component {
       info: info
     })
   }
+  checkPermisos() {
+    axios.get(urljoin(apiBaseUrl, "api/permisos"))
+      .then((response) => {
+        var permisos = response.data.permisos;
+        for (var i = 0; i < permisos.length; i++) {
+          if (response.data.emailUser === permisos[i].email) {
+            this.setState({
+              tienePermiso: true,
+              loading: null,
+            })
+          } else {
+            this.setState({
+              tienePermiso: false,
+              loading: null,
+            })
+          }
+        }
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
 
   render() {
+    let certificados = "Cargando..."
+    if (!this.state.tienePermiso) {
+      certificados = <NoPermiso />
+    } else {
+      certificados = <Titulos
+        selected={this.state.selected}
+        cancel={this.state.cancel}
+        info={this.state.info}
+        peticiones={this.state.peticiones}
+        cambioEstadoClick={this.cambioEstadoClick}
+        cambioSelectedClick={this.cambioSelectedClick}
+      >
+      </Titulos>
+    }
     return (
       <div>
         <div className="cuerpo">
@@ -106,15 +151,7 @@ export default class App extends React.Component {
             spinner
             text='Cargando'
           >
-            <Certificados
-              selected={this.state.selected}
-              cancel={this.state.cancel}
-              info={this.state.info}
-              peticiones={this.state.peticiones}
-              cambioEstadoClick={this.cambioEstadoClick}
-              cambioSelectedClick={this.cambioSelectedClick}
-            >
-            </Certificados>
+            {certificados}
           </LoadingOverlay>
         </div>
       </div>
