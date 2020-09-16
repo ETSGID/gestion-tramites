@@ -39,9 +39,9 @@ exports.formaPago = {
 
 // EV. CURRICULAR
 exports.estadosEvaluacionCurricular = {
-    "NO_PEDIDO": 1, 
-    "SOLICITUD_PENDIENTE": 2, 
-    "EVALUACION_PENDIENTE": 3, 
+    "NO_PEDIDO": 1,
+    "SOLICITUD_PENDIENTE": 2,
+    "EVALUACION_PENDIENTE": 3,
     "EVALUACION_DENEGADA": 4,
     "EVALUACION_APROBADA": 5,
     "EVALUACION_FINALIZADA": 6,
@@ -51,7 +51,7 @@ exports.estadosEvaluacionCurricular = {
 
 exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
-   // "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
+    "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
     "evaluacionCurricular": ["evaluacion-curricular", "Solicitud de evaluación curricular"],
     /*
     "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
