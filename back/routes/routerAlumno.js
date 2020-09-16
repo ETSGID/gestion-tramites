@@ -8,8 +8,6 @@ const routerEvaluacionCurricular = require('./evaluacion-curricular/routerAlumno
 const peticionTituloController = require('../controllers/gestion-titulos/peticion_controller');
 
 
-router.all('*', permisoController.comprobarRolYAlumno);
-
 //TODO quitar updateDatabase cuando ya se haya actualizado la base de datos
 router.get(`/`, peticionTituloController.updateDatabase,
     function (req, res, next) {
@@ -26,12 +24,12 @@ router.use(`/${enums.tramites.gestionTitulos[0]}`, function (req, res, next) {
     next();
 }, routerGestionTitulos);
 
-/*
+
 router.use(`/${enums.tramites.gestionCertificados[0]}`, function(req,res,next){
     req.session.tramite = enums.tramites.gestionCertificados[0];
     next();
 }, routerGestionCertificados);
-*/
+
 
 router.use(`/${enums.tramites.evaluacionCurricular[0]}`, function(req,res,next){
     req.session.tramite = enums.tramites.evaluacionCurricular[0];
