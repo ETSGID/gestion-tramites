@@ -3,9 +3,8 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import FormInfoPago from './FormInfoPago';
 import FormConfirmarPago from './FormConfirmarPago';
-import FormResguardo from './FormResguardo';
-import FormTituloListo from './FormTituloListo';
-import FormTituloRecoger from './FormTituloRecoger';
+import FormTituloListo from './FormCertificadoListo';
+import FormTituloRecoger from './FormCertificadoRecoger';
 import FormCancel from './FormCancel';
 import InfoPeticion from './InfoPeticion';
 
@@ -64,12 +63,12 @@ export default class ModalStructure extends React.Component {
             </FormConfirmarPago>
           break;
         case estadosCertificado.PAGO_CONFIRMADO:
-          form = <FormResguardo
+          form = <FormTituloListo
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
-          </FormResguardo>
+          </FormTituloListo>
           break;
         case estadosCertificado.ESPERA_CERTIFICADO:
           form = <FormTituloListo

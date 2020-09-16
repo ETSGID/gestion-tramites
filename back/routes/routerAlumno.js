@@ -26,12 +26,12 @@ router.use(`/${enums.tramites.gestionTitulos[0]}`, function (req, res, next) {
     next();
 }, routerGestionTitulos);
 
-/*
+
 router.use(`/${enums.tramites.gestionCertificados[0]}`, function(req,res,next){
     req.session.tramite = enums.tramites.gestionCertificados[0];
     next();
 }, routerGestionCertificados);
-*/
+
 
 router.use(`/${enums.tramites.evaluacionCurricular[0]}`, function(req,res,next){
     req.session.tramite = enums.tramites.evaluacionCurricular[0];

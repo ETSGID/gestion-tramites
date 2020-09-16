@@ -48,8 +48,15 @@ export default class FormPeticion extends React.Component {
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">
-                Adjunte su documento oficial de identidad (DNI/PASAPORTE), no se admite NIE, escaneado por <b>ambas caras</b>
+                Por favor descargue el siguiente documento de solicitud y cumpliméntelo con los datos requeridos:
+                <br/>
+                <a href="http://www.etsit.upm.es/fileadmin/documentos/servicios/secretaria/archivos/Nuevos_impresos/Instancia_solicitud_certificado_academico.pdf" target="_blank">
+                Descargar solicitud en formato pdf
+                </a>
+                <br/>                
+                Adjunte su documento de solicitud de certificado cumplimentado:
               </Form.Label>
+
               <input type="file" ref={this.fileInputDNI} />
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
               Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.

@@ -56,7 +56,7 @@ export default class ModalStructure extends React.Component {
       <Modal show={true} onHide={this.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            Petición certificado - {this.props.peticion.planCodigo}
+            Petición certificado
           </Modal.Title>
         </Modal.Header>
         {form}

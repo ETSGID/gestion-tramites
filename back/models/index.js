@@ -12,6 +12,7 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 
 let PeticionTitulo = require('./PeticionTitulo')(sequelize, Sequelize);
 let PeticionEvaluacionCurricular = require('./PeticionEvaluacionCurricular')(sequelize, Sequelize);
+let PeticionCertificado = require('./PeticionCertificado')(sequelize, Sequelize);
 let Permiso = require('./Permiso')(sequelize, Sequelize);
 let Plan = require('./Plan')(sequelize, Sequelize);
 let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequelize, Sequelize);
@@ -20,7 +21,7 @@ let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequeli
 (async () => {
     try {
         // En producción ya no sincronizar, hacer mejor migraciones
-        // await sequelize.sync();
+        await sequelize.sync();
         await sequelize.authenticate();
         console.log("Connected to the database")
         // actualizar o crear planes
@@ -40,6 +41,7 @@ let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequeli
 
 exports.PeticionTitulo = PeticionTitulo;
 exports.PeticionEvaluacionCurricular = PeticionEvaluacionCurricular;
+exports.PeticionCertificado = PeticionCertificado;
 exports.Permiso = Permiso;
 exports.Plan = Plan;
 exports.EstadoEvaluacionCurricular = EstadoEvaluacionCurricular;

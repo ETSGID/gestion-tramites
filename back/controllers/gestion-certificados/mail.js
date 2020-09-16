@@ -7,7 +7,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
     let send = false;
     let estadoActualText = Object.keys(estadosCertificado).find(k => estadosCertificado[k] === estadoActual);
     let subject = `Solicitud de certificado académico. Estado actual: ${estadoActualText}`
-    let text = `Su solicitud de certificado académico del plan ${planCodigo} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
+    let text = `Su solicitud de certificado académico ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
     let filesname = [];
     switch (estadoActual) {
         case estadosCertificado.PEDIDO:
@@ -24,12 +24,8 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
             break;
         case estadosCertificado.PAGO_CONFIRMADO:
             send = true;
-            text += `Su pago ha sido validado. Pronto recibirá un correo con el resguardo del certificado académico.`
-            break;
-        case estadosCertificado.ESPERA_TITULO:
-            send = true;
-            text += `Se adjunta un resguardo del certificado académico solicitado.`
-            filesname.push(`resguardo_certificado_academico.pdf`);
+            text += `Su pago del certificado académico solicitado ha sido validado por el personal de secretaría.`
+            text += ` Le será notificado cuando se encuentre disponible para su recogida.`
             break;
         case estadosCertificado.CERTIFICADO_DISPONIBLE:
             send = true;
@@ -67,13 +63,13 @@ exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, tex
     switch (estadoActual) {
         case estadosCertificado.PEDIDO:
             send = true;
-            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.givenname} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
+            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.givenname} ${session.user.sn}. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosCertificado.PAGO_REALIZADO:
             send = true;
-            text = `Se adjunta la carta de pago de ${session.user.givenname} ${session.user.sn} (${session.user.irispersonaluniqueid}). La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
+            text = `Se adjunta la carta de pago de ${session.user.givenname} ${session.user.sn}. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`carta_pago.pdf`)
             break;
     }
