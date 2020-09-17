@@ -2,7 +2,6 @@
 import React from 'react';
 import axios from 'axios';
 import Certificados from './Certificados'
-import Titulos from './Titulos'
 import NoPermiso from '../../NoPermiso'
 import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
@@ -132,7 +131,7 @@ export default class App extends React.Component {
     if (!this.state.tienePermiso) {
       certificados = <NoPermiso />
     } else {
-      certificados = <Titulos
+      certificados = <Certificados
         selected={this.state.selected}
         cancel={this.state.cancel}
         info={this.state.info}
@@ -140,7 +139,7 @@ export default class App extends React.Component {
         cambioEstadoClick={this.cambioEstadoClick}
         cambioSelectedClick={this.cambioSelectedClick}
       >
-      </Titulos>
+      </Certificados>
     }
     return (
       <div>

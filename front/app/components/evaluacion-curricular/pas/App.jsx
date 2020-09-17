@@ -181,9 +181,6 @@ export default class App extends React.Component {
       default:
         return;
     }
-    console.log(this.state);
-
-    console.log(paramsToUpdate);
     let formData = new FormData();
     formData.append("body", JSON.stringify({ paramsToUpdate: paramsToUpdate }));
     axios.post(urljoin(apiBaseUrl, "api/updateEstadoTramite"), formData, {
@@ -206,29 +203,30 @@ export default class App extends React.Component {
   }
 
   render() {
-    let evaluaciones = "Cargando..."
-    if (!this.state.tienePermiso) {
+    let evaluaciones;
+    if (!this.state.tienePermiso && this.state.plansCargado) {
       evaluaciones = <NoPermiso />
+    } else if (this.state.plansCargado) {
+      evaluaciones = <Evaluaciones
+        selected={this.state.selected}
+        cancel={this.state.cancel}
+        info={this.state.info}
+        peticiones={this.state.peticiones}
+        numberPeticiones={this.state.numberPeticiones}
+        plans={this.state.plans}
+        asignaturas={this.state.asignaturas}
+        cambioEstadoClick={this.cambioEstadoClick}
+        cambioSelectedClick={this.cambioSelectedClick}
+        findPeticiones={this.findPeticiones}
+        cambioEstadoTramite={this.cambioEstadoTramite}
+        disableCurso={this.state.disableCurso}
+        disableTitulacion={this.state.disableTitulacion}
+      >
+      </Evaluaciones>
     } else {
-      if (this.state.plansCargado) {
-        evaluaciones = <Evaluaciones
-          selected={this.state.selected}
-          cancel={this.state.cancel}
-          info={this.state.info}
-          peticiones={this.state.peticiones}
-          numberPeticiones={this.state.numberPeticiones}
-          plans={this.state.plans}
-          asignaturas={this.state.asignaturas}
-          cambioEstadoClick={this.cambioEstadoClick}
-          cambioSelectedClick={this.cambioSelectedClick}
-          findPeticiones={this.findPeticiones}
-          cambioEstadoTramite={this.cambioEstadoTramite}
-          disableCurso={this.state.disableCurso}
-          disableTitulacion={this.state.disableTitulacion}
-        >
-        </Evaluaciones>
-      }
+      evaluaciones = "Cargando...";
     }
+
     return (
       <div>
         <div className="cuerpo">

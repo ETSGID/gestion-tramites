@@ -149,7 +149,7 @@ export default class App extends React.Component {
 
   render() {
     let titulos = "Cargando..."
-    if (!this.state.tienePermiso) {
+    if (!this.state.tienePermiso && this.state.plansCargado) {
       titulos = <NoPermiso />
     } else {
       if (this.state.plansCargado) {
