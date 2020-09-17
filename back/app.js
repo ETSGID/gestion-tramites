@@ -184,11 +184,13 @@ app.use(contextPath2, express.static(path.join(__dirname, 'public')));
 
 //separa ente los dos contextPath disponibles
 app.use(contextPath1, function (req, res, next) {
+  req.session.portal = 'pas';
   res.locals.context = contextPath1;
   next();
 });
 
 app.use(contextPath2, function (req, res, next) {
+  req.session.portal = 'estudiantes';
   res.locals.context = contextPath2
   next();
 })
