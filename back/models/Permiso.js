@@ -4,9 +4,9 @@ module.exports = function (sequelize, DataTypes) {
     let Permiso = sequelize.define('Permiso',
         {
             id: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
+                primaryKey: true,
                 autoIncrement: true,
-                primaryKey: true
             },
             email: {
                 type: DataTypes.STRING
