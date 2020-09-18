@@ -16,6 +16,8 @@ exports.contextPath2 = contextPath2;
 const local = process.env.DEV;
 exports.local = local;
 
+const admin = process.env.EMAIL_ADMIN;
+
 
 //cas autentication
 let CASAuthentication = require('cas-authentication');
@@ -95,6 +97,7 @@ if (process.env.DEV == 'true') {
    * Está preparado para usar el servidor de desarrollo de react
   */
   app.use(function (req, res, next) {
+    
     req.session.user = req.session.user || {}
 
     req.session.user.employeetype = ['F', 'A'];
@@ -110,7 +113,7 @@ if (process.env.DEV == 'true') {
     res.locals.barraInicioText = "TRÁMITE";
     res.locals.portalName = 'portal'
     res.locals.pruebasBoolean = false;
-
+    res.locals.admin = admin;
     next();
   })
 } else {
@@ -124,7 +127,7 @@ if (process.env.DEV == 'true') {
      * Usa la api nodos de finalización 
      * Datos reales
      * Debe usar el bundle.js
-    */
+    */ 
     if (process.env.PRUEBAS == 'true') {
       /**
      * modelo pruebas. Se debe configurar en fichero .env el servidor mailing de la aplicación (habilitados por ip)
@@ -152,6 +155,7 @@ if (process.env.DEV == 'true') {
     // Hacer visible req.session en las vistas
     //se debe sobrescribir con el texto correspondiente en el router del trámite
     res.locals.barraInicioText = "TRÁMITE";
+    res.locals.admin = admin;
     next();
   });
 }

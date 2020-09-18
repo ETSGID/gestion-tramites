@@ -6,8 +6,15 @@ const routerGestionTitulos = require('./gestion-titulos/routerPas');
 const routerGestionCertificados = require('./gestion-certificados/routerPas');
 const routerEvaluacionCurricular = require('./evaluacion-curricular/routerPas');
 
-router.get(`/`, function (req, res, next) {
+router.get(`/`, async function (req, res, next) {
     req.session.tramite = null;
+    let permisos = await permisoController.getAllPermisos();
+    let emailUser = req.session.user.mailPrincipal;
+    if (permisos.length === 0) { // vacio, crea permiso admin
+        req.params.email = res.locals.admin;
+        req.params.tramite = 'admin';
+        req.session.permisos = await permisoController.crearPermiso(req, res, next);
+    }
     res.render("pagina-principal", {
         barraInicioText: "LISTA DE TRÁMITES DISPONIBLES ONLINE",
         tramites: enums.tramites
@@ -28,17 +35,32 @@ router.get('/permisos', async function (req, res, next) {
     if (accion == 'crear') {
         req.params.email = email;
         req.params.tramite = tramite;
-        req.session.permisos = await permisoController.crearPermiso(req,res,next);
+        req.session.permisos = await permisoController.crearPermiso(req, res, next);
     } else if (accion == 'eliminar') {
         req.params.email = email;
         req.params.tramite = tramite;
-        req.session.permisos = await permisoController.eliminarPermiso(req,res,next);
+        req.session.permisos = await permisoController.eliminarPermiso(req, res, next);
     } else {
-        req.session.permisos = await permisoController.getAllPermisos();
-        res.render("permisos", {
-            barraInicioText: "GESTOR DE PERMISOS",
-            tramites: enums.tramites
-        })
+        let permisos = await permisoController.getAllPermisos();
+        let emailUser = req.session.user.mailPrincipal;
+        req.session.permisos = permisos;
+        let tienePermiso = false;
+        for (var i = 0; i < permisos.length; i++) {
+            if (emailUser === permisos[i].email) {
+                tienePermiso = true;
+                break;
+            }
+        }
+        if (tienePermiso) {
+            res.render("permisos", {
+                barraInicioText: "GESTOR DE PERMISOS",
+                tramites: enums.tramites
+            })
+        } else {
+            res.render("noPermiso", {
+                barraInicioText: "GESTOR DE PERMISOS"
+            })
+        }
     }
 });
 
@@ -52,7 +74,7 @@ router.use(`/${enums.tramites.gestionCertificados[0]}`, function (req, res, next
     next();
 }, routerGestionCertificados);
 
-router.use(`/${enums.tramites.evaluacionCurricular[0]}`, function(req,res,next){
+router.use(`/${enums.tramites.evaluacionCurricular[0]}`, function (req, res, next) {
     req.session.tramite = enums.tramites.evaluacionCurricular[0];
     next();
 }, routerEvaluacionCurricular);

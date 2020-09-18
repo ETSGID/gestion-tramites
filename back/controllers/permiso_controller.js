@@ -1,4 +1,5 @@
 let models = require('../models');
+const enums = require('../enums');
 
 exports.getAllPermisos = async function (req, res, next) {
     try {
@@ -42,10 +43,14 @@ exports.crearPermiso = async function (req, res, next) {
                 email: req.params.email,
                 tramite: req.params.tramite
             });
-            res.render("confirmacionPermiso", {
-                barraInicioText: "GESTOR DE PERMISOS",
-                mensaje: 'El permiso indicado se ha creado correctamente.'
-            });
+             if(req.params.tramite === 'admin'){
+                return permiso;
+            }else {
+                res.render("confirmacionPermiso", {
+                    barraInicioText: "GESTOR DE PERMISOS",
+                    mensaje: 'El permiso indicado se ha creado correctamente.'
+                });
+            } 
         } else {
             res.render("confirmacionPermiso", {
                 barraInicioText: "GESTOR DE PERMISOS",
