@@ -97,6 +97,7 @@ export default class App extends React.Component {
               tienePermiso: true,
               loading: null,
             })
+            break;
           } else {
             this.setState({
               tienePermiso: false,
