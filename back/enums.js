@@ -50,9 +50,10 @@ exports.estadosEvaluacionCurricular = {
 
 exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
+    /*
     "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
     "evaluacionCurricular": ["evaluacion-curricular", "Solicitud de evaluación curricular"],
-    /*
+    
     "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
     "anulacionMatriculas": ["anulacion-matricula","Anulación de Matrícula"],
     "cancelacionAsignaturas":["cancelacion-asignaturas", "Cancelación de Asignaturas"],
