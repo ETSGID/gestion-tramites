@@ -4,6 +4,10 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Permisos', [
       {
+        email: 'secretario.etsit@upm.es',
+        tramite: 'admin'
+      },
+      {
         email: 'elena.garcia.leal@upm.es',
         tramite: 'gestion-certificados'
       }, 
