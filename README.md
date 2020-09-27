@@ -59,6 +59,7 @@ EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es>
 EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
 EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
 EMAIL_PASS= #contraseña de zz.mailer.sys2
+EMAIL_ADMIN= #email del administrador de los permisos
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -102,6 +103,7 @@ EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es>
 EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
 EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
 EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
+EMAIL_ADMIN= #email del administrador de los permisos
 ```
 - Consideraciones:
 	- En local no se pueden utilizar las apis externas, por lo que se usan maquetas de datos **(DEV=true)**
