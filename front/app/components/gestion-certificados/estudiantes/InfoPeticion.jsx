@@ -53,6 +53,8 @@ export default class InfoPeticion extends React.Component {
                     <b>Resumen</b>
                     <ul>
                         <li>Estado Actual: {this.props.peticion.estadoPeticionTexto}</li>
+                        <li>Tipo de certificado: {this.props.peticion.tipoCertificado}</li>
+                        <li>Plan de estudios: {this.props.peticion.planCodigo}</li>
                         <li>Última actualización: {this.props.peticion.fecha || "Petición no registrada todavía"}</li>
                         <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
                         <li>Certificado recogido: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_RECOGIDO ? "Sí" : "No"}</li>

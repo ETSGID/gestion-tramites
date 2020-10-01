@@ -160,10 +160,18 @@ export default class App extends React.Component {
     let formData = new FormData();
     this.setState({
       loading: true,
+      selected: null
     });
+    let aux;
     let peticion = {};
-    var aux = index ? index : peticionesNuevas.length;
-    paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
+    if(index){ // actualizar peticion
+      aux = index;
+      peticion = peticionesNuevas[index];
+    } else { // crear nueva peticion
+      aux = peticionesNuevas.length;
+      paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
+    } 
+    console.log('peticion a tratar:',peticion);
     formData.append("body", JSON.stringify({ peticion: peticion, paramsToUpdate: paramsToUpdate }));
     axios.post(urljoin(apiBaseUrl, "api/peticionCambioEstado"), formData, {
       headers: {
@@ -171,6 +179,11 @@ export default class App extends React.Component {
       }
     })
       .then((response) => {
+        //ver si ya existe o no y hacer if
+        console.log('respuesta',response);
+        /*if(!response.data){
+          console.log('vacio');
+        } else {
         let res = response.data;
         peticionesNuevas.push(res);
         peticionesNuevas[aux].estadoPeticion = response.data.estadoPeticion || response.data[1][0].estadoPeticion;
@@ -183,11 +196,12 @@ export default class App extends React.Component {
           showConsulta: false,
           showInicio: true
         })
+      }
         if (this.state.peticiones.length > 0) {
           this.setState({
             disableConsulta: false
           })
-        }
+        }*/
       })
       .catch((error) => {
         this.setState({

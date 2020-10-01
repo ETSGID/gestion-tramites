@@ -34,14 +34,26 @@ export default class Titulos extends React.Component {
             text: 'idTabla',
             hidden: true
         }, {
-            dataField: 'irispersonaluniqueid',
-            text: 'DNI',
+            dataField: 'edupersonuniqueid',
+            text: 'Unique ID',
             filter: textFilter(),
             sort: true,
         },
         {
             dataField: 'nombreCompleto',
             text: 'Nombre',
+            filter: textFilter(),
+            sort: true,
+        },
+        {
+            dataField: 'planCodigo',
+            text: 'Plan',
+            filter: textFilter(),
+            sort: true,
+        },
+        {
+            dataField: 'tipoCertificado',
+            text: 'Tipo de certificado',
             filter: textFilter(),
             sort: true,
         },

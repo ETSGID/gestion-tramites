@@ -9,6 +9,7 @@ module.exports = function (sequelize, DataTypes) {
             },
             planCodigo: {
                 type: DataTypes.STRING,
+                primaryKey: true
             },
             planNombre: {
                 type: DataTypes.STRING
@@ -22,6 +23,10 @@ module.exports = function (sequelize, DataTypes) {
             },
             apellido: {
                 type: DataTypes.STRING
+            },
+            tipoCertificado:{
+                type: DataTypes.STRING,
+                primaryKey: true
             },
             descuento:{
                 type : DataTypes.INTEGER

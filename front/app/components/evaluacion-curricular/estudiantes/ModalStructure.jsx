@@ -28,12 +28,7 @@ export default class ModalStructure extends React.Component {
           handleClose={this.handleClose}
         >
         </InfoPeticion>
-    }
-    else {
-      // switch (estadosEvaluacionCurricular[this.props.peticion.estadoPeticionTexto]) {
-        
-      //     break;
-      }
+    } //else si hay acciones para el alumno
     return (
       <Modal show={true} onHide={this.handleClose}>
         <Modal.Header closeButton>
