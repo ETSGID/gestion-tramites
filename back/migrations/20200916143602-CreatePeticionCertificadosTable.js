@@ -24,6 +24,10 @@ module.exports = {
       apellido: {
         type: Sequelize.STRING
       },
+      tipoCertificado:{
+        type: Sequelize.STRING,
+        primaryKey: true
+      },
       descuento: {
         type: Sequelize.INTEGER
       },
