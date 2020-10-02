@@ -32,7 +32,7 @@ const getAllPeticionAlumno = async function (edupersonuniqueid) {
 
 
 //devuelve todas las peticiones de un alumno
-const getPeticionAlumno = async function (edupersonuniqueid,planCodigo,tipoCertificado) {
+const getPeticionAlumno = async function (edupersonuniqueid, planCodigo, tipoCertificado) {
     try {
         let peticion = await models.PeticionCertificado.findOne({
             where: {
@@ -49,7 +49,7 @@ const getPeticionAlumno = async function (edupersonuniqueid,planCodigo,tipoCerti
 
 }
 
-const updatePeticionAlumno = async function (edupersonuniqueid,planCodigo,tipoCertificado, paramsToUpdate) {
+const updatePeticionAlumno = async function (edupersonuniqueid, planCodigo, tipoCertificado, paramsToUpdate) {
     try {
         let peticion = await models.PeticionCertificado.update(paramsToUpdate, {
             where: {
@@ -76,7 +76,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 tipoCertificado: tipoCertificado
             }
         });
-        if (!peticion){
+        if (peticion === null) {
             respuesta = await models.PeticionCertificado.create({
                 edupersonuniqueid: edupersonuniqueid,
                 email: mail,
@@ -89,10 +89,9 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 tipoCertificado: tipoCertificado
             })
         } else {
-            return respuesta;
+            respuesta = null;
         }
-         
-        return peticion
+        return respuesta
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -276,11 +275,11 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
             toPAS = process.env.EMAIL_PRUEBAS;
         }
-       /* let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
-        //solo se envia cuando el alumno tiene algo que enviar
-        if (req.filesBuffer) {
-            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
-        }*/
+        /* let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+         //solo se envia cuando el alumno tiene algo que enviar
+         if (req.filesBuffer) {
+             let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+         }*/
         let respuesta;
         if (estadoNuevo === estadosCertificado.PEDIDO && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
             respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.plan, req.body.paramsToUpdate.descuento, req.body.paramsToUpdate.tipo)

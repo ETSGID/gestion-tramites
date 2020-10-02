@@ -68,7 +68,7 @@ export default class Certificados extends React.Component {
             formatter: (cellContent, row) => {
                 switch (estadosCertificado[row.estadoPeticionTexto]) {
                     case estadosCertificado.PETICION_CANCELADA:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false)}>Solicitar Certificado</Button>)
+                        return (<span>Su petición ha sido cancelada. Si desea reiniciar el proceso, haga click en el botón de solicitar un certificado.</span>)
                     case estadosCertificado.ESPERA_PAGO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false)}>Confirmar pago</Button>)
                     case estadosCertificado.CERTIFICADO_DISPONIBLE:

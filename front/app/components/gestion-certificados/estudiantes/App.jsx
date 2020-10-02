@@ -69,13 +69,13 @@ export default class App extends React.Component {
     }
     let aux;
     let peticion = {};
-    if(index !== null){ // actualizar peticion
+    if (index !== null) { // actualizar peticion
       aux = index;
       peticion = peticionesNuevas[index];
     } else { // crear nueva peticion
       aux = peticionesNuevas.length;
       paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
-    } 
+    }
     formData.append("body", JSON.stringify({ peticion: peticion, paramsToUpdate: paramsToUpdate }));
     axios.post(urljoin(apiBaseUrl, "api/peticionCambioEstado"), formData, {
       headers: {
@@ -84,25 +84,34 @@ export default class App extends React.Component {
     })
       .then((response) => {
         let res = response.data;
-        if(index == null){
-          peticionesNuevas.push(res);
-        } else {
-        peticionesNuevas[aux].descuento = response.data[1][0].descuento
-        peticionesNuevas[aux].formaPago = response.data[1][0].formaPago
-        peticionesNuevas[aux].estadoPeticion = response.data[1][0].estadoPeticion
-        peticionesNuevas[aux].fecha = response.data[1][0].fecha
-        peticionesNuevas[aux].receptor = response.data[1][0].receptor
-        peticionesNuevas[aux].localizacionFisica = response.data[1][0].localizacionFisica
-        peticionesNuevas[aux].textCancel = response.data[1][0].textCancel
+        if (res === null) { // ya existe esa peticion
+          this.setState({
+            loading: null,
+            showForm: false
+          })
+          alert('Usted ya ha solicitado el certificado seleccionado. Si considera que ha habido algún error, mande un CAU en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/');
         }
-        this.setState({
-          peticiones: peticionesNuevas,
-          selected: null,
-          info: null,
-          loading: null,
-          plansCargado: true,
-          showForm: false
-        })
+        else {
+          if (index == null) {
+            peticionesNuevas.push(res);
+          } else {
+            peticionesNuevas[aux].descuento = response.data[1][0].descuento
+            peticionesNuevas[aux].formaPago = response.data[1][0].formaPago
+            peticionesNuevas[aux].estadoPeticion = response.data[1][0].estadoPeticion
+            peticionesNuevas[aux].fecha = response.data[1][0].fecha
+            peticionesNuevas[aux].receptor = response.data[1][0].receptor
+            peticionesNuevas[aux].localizacionFisica = response.data[1][0].localizacionFisica
+            peticionesNuevas[aux].textCancel = response.data[1][0].textCancel
+          }
+          this.setState({
+            peticiones: peticionesNuevas,
+            selected: null,
+            info: null,
+            loading: null,
+            plansCargado: true,
+            showForm: false
+          })
+        }
       })
       .catch((error) => {
         this.setState({
