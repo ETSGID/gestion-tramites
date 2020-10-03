@@ -110,12 +110,14 @@ EMAIL_ADMIN= #email del administrador de los permisos
 	- **(DEV=true)** no  pasa por el cas y crea un **usario inventado** (Fernando Fernández Fernández) con los roles (**FA**): PAS y Alumno 
 	- En local no se puede usar la cuenta de correo ``zz.mailer.sys2``, pero sí se puede usar el correo de tipo @upm.es o @alumnos.upm.es con las credenciales del usuario.
 	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
-	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
+	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.Para ejecutar las migraciones y seeders con los comandos del package.json, es necesario indicar el **DB_PORT** en el que se conecta la base de datos: si la db está en el propio host, exportar la variable de DB_PORT=5432, si está en el contenedor docker, indicar el puerto con el que se mapea.
 	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
 ##### Comandos necesarios
 ```shell
 cd back
 npm install #instala los paquetes
+npm run migrations #si se desean correr las migraciones de la bbdd
+npm run seeders #si se desean correr los seeders de la bbdd
 npm start
 ```
 
@@ -131,7 +133,7 @@ cd back
 # la url debe ser la de la base de datos
 
 # ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:5432/$POSTGRES_DB
+node_modules/.bin/sequelize db:migrate --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
 
 # ejemplo sin variables de entorno
 node_modules/.bin/sequelize db:migrate --url postgres://postgres:1234@localhost:5432/gestion_tramites
@@ -142,7 +144,7 @@ cd back
 # la url debe ser la de la base de datos
 
 # ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:5432/$POSTGRES_DB
+node_modules/.bin/sequelize db:migrate:undo --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
 
 # ejemplo sin variables de entorno
 node_modules/.bin/sequelize db:migrate:undo --url postgres://postgres:1234@localhost:5432/gestion_tramites
@@ -154,7 +156,7 @@ cd back
 # la url debe ser la de la base de datos
 
 # ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:5432/$POSTGRES_DB
+node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
 
 # ejemplo sin variables de entorno
 node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://postgres:1234@localhost:5432/gestion_tramites
