@@ -50,8 +50,7 @@ export default class CursoForm extends React.Component {
       paramsToUpdate.asignaturaCodigo = this.asignaturaElegida.value;
       paramsToUpdate.justificacion = this.texto.value;
       paramsToUpdate.tipo = "curso";
-      if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
-        console.log("confirmado", paramsToUpdate);
+      if (confirm(`¿Está seguro que quiere pedir esta evaluación curricular?`)) {
         this.props.cambioEstadoClick(null,paramsToUpdate); // index null porque no existe en la tabla, nueva peticion
       }
     }

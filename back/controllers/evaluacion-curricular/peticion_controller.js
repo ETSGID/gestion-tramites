@@ -63,21 +63,34 @@ const updatePeticionAlumno = async function (edupersonuniqueid, asignaturaCodigo
 
 const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, justificacion) {
     try {
-        let peticion = await models.PeticionEvaluacionCurricular.create({
-            edupersonuniqueid: edupersonuniqueid,
-            email: mail,
-            nombre: nombre,
-            apellido: apellido,
-            planCodigo: planCodigo,
-            planNombre: planNombre,
-            estadoPeticion: estadosEvaluacionCurricular.SOLICITUD_PENDIENTE,
-            asignaturaNombre: asignaturaNombre,
-            asignaturaCodigo: asignaturaCodigo,
-            tipo: tipo,
-            justificacion: justificacion,
-            fecha: new Date()
-        })
-        return peticion
+        let respuesta = {};
+        let peticion = await models.PeticionEvaluacionCurricular.findOne({
+            where: {
+                edupersonuniqueid: edupersonuniqueid,
+                planCodigo: planCodigo,
+                tipo: tipo,
+                asignaturaCodigo: asignaturaCodigo
+            }
+        });
+        if (peticion === null) {
+            respuesta = await models.PeticionEvaluacionCurricular.create({
+                edupersonuniqueid: edupersonuniqueid,
+                email: mail,
+                nombre: nombre,
+                apellido: apellido,
+                planCodigo: planCodigo,
+                planNombre: planNombre,
+                estadoPeticion: estadosEvaluacionCurricular.SOLICITUD_PENDIENTE,
+                asignaturaNombre: asignaturaNombre,
+                asignaturaCodigo: asignaturaCodigo,
+                tipo: tipo,
+                justificacion: justificacion,
+                fecha: new Date()
+            })
+        } else {
+            respuesta = null;
+        }
+        return respuesta
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -180,7 +193,7 @@ const getEstadoTramite = async function () {
     }
 }
 
-const updateEstadoTramite = async function (paramsToUpdate){
+const updateEstadoTramite = async function (paramsToUpdate) {
     try {
         let estados = models.EstadoEvaluacionCurricular.update(paramsToUpdate, {
             where: {
@@ -294,7 +307,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         if (req.body.cancel) {
             estadoNuevo = req.body.paramsToUpdate.cancelNewState === -1 ? estadosEvaluacionCurricular.SOLICITUD_CANCELADA : estadosEvaluacionCurricular.EVALUACION_DENEGADA;
             paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel
-            textoAdicional = estadoNuevo === estadosEvaluacionCurricular.EVALUACION_DENEGADA ? "Nombre: "+req.body.peticion.nombre+"\nApellido:"+req.body.peticion.apellido+"\nAsignatura: "+req.body.peticion.asignaturaNombre+" ("+req.body.peticion.asignaturaCodigo+")\nTitulación: "+req.body.peticion.planNombre+" ("+req.body.peticion.planCodigo+")\nFecha reunión comisión: "+req.body.paramsToUpdate.fecha+"\nMotivo:"+req.body.paramsToUpdate.motivo : req.body.paramsToUpdate.textCancel
+            textoAdicional = estadoNuevo === estadosEvaluacionCurricular.EVALUACION_DENEGADA ? "Nombre: " + req.body.peticion.nombre + "\nApellido:" + req.body.peticion.apellido + "\nAsignatura: " + req.body.peticion.asignaturaNombre + " (" + req.body.peticion.asignaturaCodigo + ")\nTitulación: " + req.body.peticion.planNombre + " (" + req.body.peticion.planCodigo + ")\nFecha reunión comisión: " + req.body.paramsToUpdate.fecha + "\nMotivo:" + req.body.paramsToUpdate.motivo : req.body.paramsToUpdate.textCancel
         } else {// si crear o actualizar peticion
             // console.log("db peticion:",peticion)
             // console.log("body peticion:",req.body.peticion);
@@ -310,7 +323,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     break;
                 case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                     estadoNuevo = estadosEvaluacionCurricular.EVALUACION_APROBADA;
-                    textoAdicional = "Nombre: "+req.body.peticion.nombre+"\nApellido:"+req.body.peticion.apellido+"\nAsignatura: "+req.body.peticion.asignaturaNombre+" ("+req.body.peticion.asignaturaCodigo+")\nTitulación: "+req.body.peticion.planNombre+" ("+req.body.peticion.planCodigo+")\nFecha reunión comisión: "+req.body.paramsToUpdate.fecha+"\nMotivo:"+req.body.paramsToUpdate.motivo;
+                    textoAdicional = "Nombre: " + req.body.peticion.nombre + "\nApellido:" + req.body.peticion.apellido + "\nAsignatura: " + req.body.peticion.asignaturaNombre + " (" + req.body.peticion.asignaturaCodigo + ")\nTitulación: " + req.body.peticion.planNombre + " (" + req.body.peticion.planCodigo + ")\nFecha reunión comisión: " + req.body.paramsToUpdate.fecha + "\nMotivo:" + req.body.paramsToUpdate.motivo;
                     break;
                 case estadosEvaluacionCurricular.EVALUACION_APROBADA:
                 case estadosEvaluacionCurricular.EVALUACION_DENEGADA:

@@ -55,7 +55,7 @@ export default class TitulacionForm extends React.Component {
       paramsToUpdate.asignaturaCodigo = this.asignaturaElegida.value;
       paramsToUpdate.justificacion = this.texto.value;
       paramsToUpdate.tipo = "titulacion";
-      if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
+      if (confirm(`¿Está seguro que quiere pedir la evaluación curricular?`)) {
         this.props.cambioEstadoClick(null,paramsToUpdate); // index null porque no existe en la tabla, nueva peticion
       }
     }
