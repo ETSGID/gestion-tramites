@@ -26,7 +26,7 @@ export default class FormTituloRecoger extends React.Component {
     }else {
       if (confirm(`Confirmar la recogida del certificado académico por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}).`)) {
         let paramsToUpdate = {}
-        paramsToUpdate.receptor = this.state.checkReceptor == 1 ? null : this.state.textReceptor.trim();
+        paramsToUpdate.receptor = this.state.checkReceptor == 1 ? 'Titular' : this.state.textReceptor.trim();
         this.props.cambioEstadoClick(paramsToUpdate)
       }
     }
@@ -36,7 +36,7 @@ export default class FormTituloRecoger extends React.Component {
     return (
       <div>
         <Modal.Body>
-          Confirmar la recogida del certificado académico por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
+          Confirmar la recogida del certificado académico por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.edupersonuniqueid}).
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">

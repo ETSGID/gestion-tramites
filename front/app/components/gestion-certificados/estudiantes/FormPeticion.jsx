@@ -7,44 +7,64 @@ const descuento = require('../../../../../back/enums').descuento
 export default class FormPeticion extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { checkDescuento: descuento.NO, disabledFile: "disabled" }
+    this.state = { 
+      checkDescuento: descuento.NO, 
+      disabledFile: "disabled",
+      tipo: 'asignaturas español con nota media'
+    }
     this.fileInputDescuento = React.createRef();
-    this.fileInputDNI = React.createRef();
+    this.fileInputCert = React.createRef();
+    this.planElegido = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeDescuentos = this.handleChangeDescuentos.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleChangeTipo = this.handleChangeTipo.bind(this);
   }
   handleChangeDescuentos(e) {
     let disabledFile = e.currentTarget.value == descuento.NO ? "disabled" : ""
     this.setState({ checkDescuento: e.currentTarget.value, disabledFile: disabledFile })
   }
 
+  handleChangeTipo(e){
+    this.setState({
+      tipo: e.currentTarget.value});
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     let paramsToUpdate = {
-      descuento: this.state.checkDescuento
+      descuento: this.state.checkDescuento,
+      tipo: this.state.tipo,
+      plan: this.planElegido.value
     }
-    if (!this.fileInputDNI.current.files[0]) {
-      alert("Debe adjuntar su documento oficial de identidad (DNI/PASAPORTE), no se admite NIE")
+    if (!this.fileInputCert.current.files[0]) {
+      alert("Debe adjuntar la solicitud de certificado debidamente cumplimentada.")
     }
-    else if (!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) {
+    else if ((!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) || (this.state.tipo === 'renovacion familia numerosa' && !this.fileInputDescuento.current.files[0])) {
       alert("Debe adjuntar la acreditación de familia numerosa");
     } else {
-      paramsToUpdate.file = this.fileInputDNI.current.files[0]
+      paramsToUpdate.file = this.fileInputCert.current.files[0]
       //solo se pasa en este caso
       if (this.state.checkDescuento != descuento.NO) {
         paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
       if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
-        this.props.cambioEstadoClick(paramsToUpdate)
+        this.props.cambioEstadoClick(null,paramsToUpdate)
       }
     }
   }
+
+  handleClose(){
+    this.props.handleClose();
+  }
+  
+
 
   render() {
     return (
       <div>
         <Modal.Body>
-          Usted va a solicitar un certificado académico. A día: {this.props.peticion.fecha}
+          {/* Usted va a solicitar un certificado académico. A día: {this.props.peticion.fecha} */}
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">
@@ -57,7 +77,7 @@ export default class FormPeticion extends React.Component {
                 Adjunte su documento de solicitud de certificado cumplimentado:
               </Form.Label>
 
-              <input type="file" ref={this.fileInputDNI} />
+              <input type="file" ref={this.fileInputCert} />
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
               Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
               </Tooltip>}>
@@ -65,6 +85,76 @@ export default class FormPeticion extends React.Component {
               <FontAwesomeIcon icon={faInfoCircle}/>
               </span>
             </OverlayTrigger>
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Selecciona plan de estudios:</Form.Label>
+                <Form.Control as="select" ref={select => this.planElegido = select}>
+                  {this.props.planes.map((plan, index) => (<option key={index} value={plan.idplan}>{plan.nombre}</option>))}
+                </Form.Control>
+              </Form.Group>
+
+            <Form.Group>
+              <Form.Label as="legend">
+                <b>Tipos de certificado</b>
+              </Form.Label>
+              <Form.Check
+                type="radio"
+                label="Asignaturas en español con nota media"
+                defaultChecked
+                value={'asignaturas español con nota media'}
+                name="formTipo"
+                onChange={this.handleChangeTipo}
+              />
+              <Form.Check
+                type="radio"
+                label="Asignaturas en inglés con nota media"
+                name="formTipo"
+                value={'asignaturas ingles con nota media'}
+                onChange={this.handleChangeTipo}
+              />
+              <Form.Check
+                type="radio"
+                label="ECTS en inglés (sin nota media)"
+                name="formTipo"
+                value={'ECTS inglés'}
+                onChange={this.handleChangeTipo}
+              />
+               <Form.Check
+                type="radio"
+                label="Percentiles en inglés (sin nota media)"
+                name="formTipo"
+                value={'percentiles inglés'}
+                onChange={this.handleChangeTipo}
+              />
+              <Form.Check
+                type="radio"
+                label="Renovación título familia numerosa"
+                name="formTipo"
+                value={'renovacion familia numerosa'}
+                onChange={this.handleChangeTipo}
+              />
+              <Form.Check
+                type="radio"
+                label="Ficha informativa"
+                name="formTipo"
+                value={'ficha inforamtiva'}
+                onChange={this.handleChangeTipo}
+              />
+              <Form.Check
+                type="radio"
+                label="Hace constar..."
+                name="formTipo"
+                value={'hace constar'}
+                onChange={this.handleChangeTipo}
+              />
+              <Form.Check
+                type="radio"
+                label="Otro"
+                name="formTipo"
+                value={'otro'}
+                onChange={this.handleChangeTipo}
+              />
             </Form.Group>
 
             <Form.Group>
@@ -107,10 +197,10 @@ export default class FormPeticion extends React.Component {
             </Form.Group>
           </Form >
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button>
+        { <Modal.Footer>
+          <Button variant="secondary" onClick={this.handleClose}>Cancelar</Button>
           <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Enviar</Button>
-        </Modal.Footer>
+        </Modal.Footer> }
       </div>
     );
   }

@@ -7,10 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import ModalStructure from './ModalStructure';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 export default class Titulos extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            page: 1,
+            sizePerPage: 50
+        }
         this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
         this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     }
@@ -34,14 +39,26 @@ export default class Titulos extends React.Component {
             text: 'idTabla',
             hidden: true
         }, {
-            dataField: 'irispersonaluniqueid',
-            text: 'DNI',
+            dataField: 'edupersonuniqueid',
+            text: 'Unique ID',
             filter: textFilter(),
             sort: true,
         },
         {
             dataField: 'nombreCompleto',
             text: 'Nombre',
+            filter: textFilter(),
+            sort: true,
+        },
+        {
+            dataField: 'planCodigo',
+            text: 'Plan',
+            filter: textFilter(),
+            sort: true,
+        },
+        {
+            dataField: 'tipoCertificado',
+            text: 'Tipo de certificado',
             filter: textFilter(),
             sort: true,
         },
@@ -101,7 +118,7 @@ export default class Titulos extends React.Component {
                     case estadosCertificado.CERTIFICADO_DISPONIBLE:
                         return (<span>No acción asociada</span>)
                     case estadosCertificado.CERTIFICADO_RECOGIDO:
-                            return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
+                        return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
@@ -133,6 +150,10 @@ export default class Titulos extends React.Component {
         return (
             <div>
                 <BootstrapTable
+                    remote={
+                        { filter: true },
+                        { pagination: true }
+                    }
                     bootstrap4
                     wrapperClasses="table-responsive"
                     keyField="idTabla"
@@ -141,6 +162,7 @@ export default class Titulos extends React.Component {
                     defaultSorted={defaultSorted}
                     striped={true}
                     filter={filterFactory()}
+                    pagination={paginationFactory({ page: this.state.page, sizePerPage: this.state.sizePerPage, totalSize: this.props.numberPeticiones })}
                 />
                 {modal}
             </div>

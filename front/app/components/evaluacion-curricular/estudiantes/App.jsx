@@ -36,7 +36,7 @@ export default class App extends React.Component {
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     this.getPeticiones = this.getPeticiones.bind(this);
-    this.getEstadoTramite = this.getEstadoTramite.bind(this);
+
   }
 
   componentDidMount() {
@@ -86,7 +86,6 @@ export default class App extends React.Component {
           error.response.data.error || '' : ''}`)
       })
     this.getPeticiones();
-    this.getEstadoTramite();
   }
 
   getPeticiones() {
@@ -110,10 +109,6 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
-  }
-
-  getEstadoTramite() {
-
   }
 
   handleClick(servicio) {
@@ -160,10 +155,19 @@ export default class App extends React.Component {
     let formData = new FormData();
     this.setState({
       loading: true,
+      selected: null
     });
+    let aux;
     let peticion = {};
-    var aux = index ? index : peticionesNuevas.length;
-    paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
+    if (index) { // actualizar peticion
+      console.log('actualizar');
+      aux = index;
+      peticion = peticionesNuevas[index];
+    } else { // crear nueva peticion
+      console.log('crear');
+      aux = peticionesNuevas.length;
+      paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
+    }
     formData.append("body", JSON.stringify({ peticion: peticion, paramsToUpdate: paramsToUpdate }));
     axios.post(urljoin(apiBaseUrl, "api/peticionCambioEstado"), formData, {
       headers: {
@@ -172,17 +176,33 @@ export default class App extends React.Component {
     })
       .then((response) => {
         let res = response.data;
-        peticionesNuevas.push(res);
-        peticionesNuevas[aux].estadoPeticion = response.data.estadoPeticion || response.data[1][0].estadoPeticion;
-        peticionesNuevas[aux].fecha = response.data.fecha || response.data[1][0].fecha;
-        this.setState({
-          peticiones: peticionesNuevas,
-          loading: null,
-          showCurso: false,
-          showTitulacion: false,
-          showConsulta: false,
-          showInicio: true
-        })
+        if (res === null) { // ya existe esa peticion
+          this.setState({
+            loading: null,
+            showCurso: false,
+            showTitulacion: false,
+            showConsulta: false,
+            showInicio: true
+          })
+          alert('Usted ya ha solicitado la evaluación curricular seleccionada. Si considera que ha habido algún error, mande un CAU en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/');
+        }
+        else {
+          if (index == null) {
+            peticionesNuevas.push(res);
+          } else {
+            peticionesNuevas[aux].estadoPeticion = response.data.estadoPeticion || response.data[1][0].estadoPeticion;
+            peticionesNuevas[aux].fecha = response.data.fecha || response.data[1][0].fecha;
+            peticionesNuevas[aux].textCancel = response.data[1][0].textCancel
+          }
+          this.setState({
+            peticiones: peticionesNuevas,
+            loading: null,
+            showCurso: false,
+            showTitulacion: false,
+            showConsulta: false,
+            showInicio: true
+          })
+        }
         if (this.state.peticiones.length > 0) {
           this.setState({
             disableConsulta: false

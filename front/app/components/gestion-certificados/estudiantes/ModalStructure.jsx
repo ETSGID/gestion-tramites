@@ -18,7 +18,7 @@ export default class ModalStructure extends React.Component {
   }
 
   handleClose() {
-    this.props.handleClose(null)
+    this.props.handleClose()
   }
 
   render() {
@@ -31,26 +31,13 @@ export default class ModalStructure extends React.Component {
         >
         </InfoPeticion>
     }
-    else {
-      switch (estadosCertificado[this.props.peticion.estadoPeticionTexto]) {
-        case estadosCertificado.NO_PEDIDO:
-        case estadosCertificado.PETICION_CANCELADA:
-          form = <FormPeticion
-            peticion={this.props.peticion}
-            handleClose={this.handleClose}
-            cambioEstadoClick={this.cambioEstadoClick}
-          >
-          </FormPeticion>
-          break;
-        case estadosCertificado.ESPERA_PAGO:
+    else if (estadosCertificado[this.props.peticion.estadoPeticionTexto] == estadosCertificado.ESPERA_PAGO){
           form = <FormPago
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
           </FormPago>
-          break;
-      }
     }
     return (
       <Modal show={true} onHide={this.handleClose}>

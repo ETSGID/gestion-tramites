@@ -11,6 +11,7 @@ export default class FormPago extends React.Component {
     this.fileInput = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlechangeFormaPago = this.handlechangeFormaPago.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   handlechangeFormaPago(e) {
     let disabledFile = e.currentTarget.value == formaPago.ONLINE ? "disabled" : ""
@@ -34,6 +35,10 @@ export default class FormPago extends React.Component {
       }
       this.props.cambioEstadoClick(paramsToUpdate)
     }
+  }
+
+  handleClose(){
+    this.props.handleClose();
   }
 
   render() {
@@ -75,7 +80,7 @@ export default class FormPago extends React.Component {
           </Form >
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button>
+          <Button variant="secondary" onClick={this.handleClose}>Cancelar</Button>
           <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Enviar</Button>
         </Modal.Footer>
       </div>
