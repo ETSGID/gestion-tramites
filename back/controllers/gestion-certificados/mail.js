@@ -63,9 +63,10 @@ exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, tex
     switch (estadoActual) {
         case estadosCertificado.PEDIDO:
             send = true;
-            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.givenname} ${session.user.sn}. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
+            text = `Se adjunta la información de descuentos aplicables de ${session.user.givenname} ${session.user.sn}. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`solicitud_certificado_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
+            filesname.push(`dni_alumno.pdf`);
             break;
         case estadosCertificado.PAGO_REALIZADO:
             send = true;

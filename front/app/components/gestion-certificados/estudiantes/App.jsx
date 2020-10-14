@@ -67,6 +67,9 @@ export default class App extends React.Component {
     if (paramsToUpdate.file2) {
       formData.append("file2", paramsToUpdate.file2)
     }
+    if (paramsToUpdate.file3) {
+      formData.append("file3", paramsToUpdate.file3)
+    }
     let aux;
     let peticion = {};
     if (index !== null) { // actualizar peticion

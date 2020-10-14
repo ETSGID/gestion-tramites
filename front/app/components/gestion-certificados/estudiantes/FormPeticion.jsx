@@ -14,6 +14,7 @@ export default class FormPeticion extends React.Component {
     }
     this.fileInputDescuento = React.createRef();
     this.fileInputCert = React.createRef();
+    this.fileDNI = React.createRef();
     this.planElegido = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeDescuentos = this.handleChangeDescuentos.bind(this);
@@ -37,6 +38,9 @@ export default class FormPeticion extends React.Component {
       tipo: this.state.tipo,
       plan: this.planElegido.value
     }
+    if (!this.fileDNI.current.files[0]) {
+      alert("Debe adjuntar una copia de su DNI.")
+    }
     if (!this.fileInputCert.current.files[0]) {
       alert("Debe adjuntar la solicitud de certificado debidamente cumplimentada.")
     }
@@ -48,6 +52,7 @@ export default class FormPeticion extends React.Component {
       if (this.state.checkDescuento != descuento.NO) {
         paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
+      paramsToUpdate.file3 = this.fileDNI.current.files[0]
       if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
         this.props.cambioEstadoClick(null,paramsToUpdate)
       }
@@ -86,7 +91,20 @@ export default class FormPeticion extends React.Component {
               </span>
             </OverlayTrigger>
             </Form.Group>
-
+            <Form.Group>
+              <Form.Label as="legend">
+                Adjunte una copia de su DNI escaneado por las dos caras:
+                <br/>
+              </Form.Label>
+              <input type="file" ref={this.fileDNI} />
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+              </Tooltip>}>
+              <span className="d-inline-block">
+              <FontAwesomeIcon icon={faInfoCircle}/>
+              </span>
+            </OverlayTrigger>
+            </Form.Group>
             <Form.Group>
                 <Form.Label>Selecciona plan de estudios:</Form.Label>
                 <Form.Control as="select" ref={select => this.planElegido = select}>
