@@ -16,7 +16,7 @@ exports.estadosTitulo = {
 
 exports.estadosCertificado = {
     "NO_PEDIDO": 1,
-    "PEDIDO": 2,
+    "SOLICITUD_ENVIADA": 2,
     "ESPERA_PAGO": 3,
     "PAGO_REALIZADO": 4,
     "PAGO_CONFIRMADO": 5,
