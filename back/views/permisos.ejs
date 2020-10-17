@@ -41,6 +41,15 @@
         </table><br>
         <input type="search" id="searchBox" placeholder="Búsqueda...">
         </p>
+        <h5>Actualizar administrador</h5>
+        <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email deseado y pulse el botón de actualizar:</p>
+        <form formaction="<%-context%>/permisos" method="POST">
+            <div class="form-group">
+                <input type="email" class="form-control" name="email" placeholder="ejemplo@upm.es">
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+        </form><br>
+        <h5>Gestionar permisos</h5>
         <p>
             Tanto si desea crear un nuevo permiso como eliminarlo, rellene el siguiente formulario con el email de la
             persona en cuestión y el trámite correspondiente:
