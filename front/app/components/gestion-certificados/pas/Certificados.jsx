@@ -1,15 +1,15 @@
 
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, selectFilter  } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import ModalStructure from './ModalStructure';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 
-export default class Titulos extends React.Component {
+export default class Certificados extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -18,12 +18,30 @@ export default class Titulos extends React.Component {
         }
         this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
         this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
+        this.handleTableChange = this.handleTableChange.bind(this);
     }
     cambioEstadoClick(paramsToUpdate) {
         this.props.cambioEstadoClick(this.props.selected, paramsToUpdate)
     }
     cambioSelectedClick(index, cancel, info) {
         this.props.cambioSelectedClick(index, cancel, info)
+    }
+
+    handleTableChange(type, { page, sizePerPage, filters }) {
+        this.setState({
+            page: page,
+            sizePerPage: sizePerPage
+        })
+        const filters2 = {};
+
+        setTimeout(() => {
+            // Handle column filters
+            for (const filter in filters) {
+                filters2[filter] = filters[filter].filterVal;
+            }
+            //call the api
+            this.props.findPeticiones(page, sizePerPage, filters2);
+        }, 1000);
     }
     render() {
         let peticiones = this.props.peticiones.map((peticion, index) => {
@@ -34,6 +52,27 @@ export default class Titulos extends React.Component {
             peticion.nombreCompleto = peticion.apellido + " " + peticion.nombre
             return peticion
         })
+        const planSelect = {};
+        this.props.plans.forEach((plan, index) => {
+            planSelect[plan.id] = plan.nombre
+        })
+
+        const estadoSelect = {};
+        for (const estado in estadosCertificado) {
+            estadoSelect[estado] = estado
+        }
+
+        const tipoSelect = {
+            asignaturas_español_nota_media: "Asignaturas en español con nota media",
+            asignaturas_ingles_nota_media: "Asignaturas en inglés con nota media",
+            ects_ingles:"ECTS en inglés (sin nota media)",
+            percentiles_ingles:"Percentiles en inglés (sin nota media)",
+            renovacion_familia_numerosa:"Renovación título familia numerosa",
+            ficha_informativa:"Ficha informativa",
+            hace_constar:"Hace constar",
+            otro:"Otro"
+        };
+
         const columns = [{
             dataField: 'idTabla',
             text: 'idTabla',
@@ -41,43 +80,54 @@ export default class Titulos extends React.Component {
         }, {
             dataField: 'edupersonuniqueid',
             text: 'Unique ID',
-            filter: textFilter(),
-            sort: true,
+            filter: textFilter()
         },
         {
-            dataField: 'nombreCompleto',
+            dataField: 'nombre',
             text: 'Nombre',
             filter: textFilter(),
-            sort: true,
+        },
+        {
+            dataField: 'apellido',
+            text: 'Apellidos',
+            filter: textFilter(),
         },
         {
             dataField: 'planCodigo',
+            text: 'Plan Codigo',
+            hidden: true
+        },
+        {
+            dataField: 'planNombre',
             text: 'Plan',
-            filter: textFilter(),
-            sort: true,
+            filter: selectFilter({
+                options: planSelect
+            })
         },
         {
             dataField: 'tipoCertificado',
             text: 'Tipo de certificado',
-            filter: textFilter(),
-            sort: true,
+            filter: selectFilter({
+                options: tipoSelect
+            })
         },
         {
             dataField: 'estadoPeticionTexto',
             text: 'Estado petición',
-            sort: true,
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 return (
                     <span>{row.estadoPeticionTexto}</span>
                 )
-            }
-
+            },
+            filter: selectFilter({
+                options: estadoSelect
+            })
         },
         {
             dataField: 'fecha',
             text: 'Última Actualización',
-            sort: true,
+            sort:true
         },
         {
             dataField: 'accion',
@@ -85,7 +135,7 @@ export default class Titulos extends React.Component {
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 switch (row.estadoPeticion) {
-                    case estadosCertificado.PEDIDO:
+                    case estadosCertificado.SOLICITUD_ENVIADA:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Carta de pago</Button>)
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Pago confirmado</Button>)
@@ -105,7 +155,7 @@ export default class Titulos extends React.Component {
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 switch (row.estadoPeticion) {
-                    case estadosCertificado.PEDIDO:
+                    case estadosCertificado.SOLICITUD_ENVIADA:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.ESPERA_PAGO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
@@ -163,6 +213,8 @@ export default class Titulos extends React.Component {
                     striped={true}
                     filter={filterFactory()}
                     pagination={paginationFactory({ page: this.state.page, sizePerPage: this.state.sizePerPage, totalSize: this.props.numberPeticiones })}
+                    onTableChange={this.handleTableChange}
+
                 />
                 {modal}
             </div>
