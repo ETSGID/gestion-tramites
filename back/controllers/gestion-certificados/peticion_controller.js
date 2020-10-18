@@ -100,10 +100,77 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
 
 
 //devuelve toda las peticiones de todos los alumnos
-const getAllPeticionPas = async function () {
+const getAllPeticionPas = async function (page, sizePerPage, filters){
     try {
-        let peticiones = await models.PeticionCertificado.findAll();
-        return peticiones || [];
+        const offset = 0 + (page - 1) * sizePerPage;
+        const where = {}
+        const whereAnd = []
+        if (filters) {
+            if (filters.edupersonuniqueid) {
+                whereAnd.push({
+                    edupersonuniqueid: {
+                        [Op.iLike]: `%${filters.edupersonuniqueid}%`
+                    }
+                })
+            }
+            if (filters.nombre) {
+                whereAnd.push(Sequelize.where(
+                    Sequelize.fn('unaccent', Sequelize.col('nombre')), {
+                    [Op.iLike]: Sequelize.fn('unaccent', `%${filters.nombre}%`)
+                }))
+            }
+            if (filters.apellido) {
+                whereAnd.push(Sequelize.where(
+                    Sequelize.fn('unaccent', Sequelize.col('apellido')), {
+                    [Op.iLike]: Sequelize.fn('unaccent', `%${filters.apellido}%`)
+                }))
+            }
+            if (filters.planNombre) {
+                //aunque sea planNombre en realidad la clave es el codigo del plan
+                //ya que procede de un select
+                whereAnd.push({
+                    planCodigo: filters.planNombre
+                })
+            }
+            if (filters.estadoPeticionTexto) {
+                whereAnd.push({
+                    estadoPeticion: estadosCertificado[filters.estadoPeticionTexto]
+                })
+            }
+
+            if (filters.tipoCertificado) {
+                whereAnd.push({
+                    tipoCertificado: filters.tipoCertificado
+                })
+            }
+        }
+        if (whereAnd.length > 0) {
+            where[Op.and] = whereAnd
+        }
+        let { count, rows } = await models.PeticionCertificado.findAndCountAll({
+            where,
+            offset,
+            limit: sizePerPage,
+            order: [
+                ['fecha', 'DESC']
+            ]
+        });
+
+        let plans = await planController.findAllPlans();
+        plans.forEach(plan => {
+            if (!plan.nombre) {
+                plan.nombre = plan.id;
+            }
+        })
+        rows.forEach(peticion => {
+            const plan = plans.find(p => p.id === peticion.planCodigo);
+            peticion.planNombre = '';
+            if (plan) {
+                peticion.planNombre = plan.nombre || '';
+            }
+        })
+
+        return { numberPeticiones: count, peticiones: rows, plans: plans };
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -146,7 +213,11 @@ exports.getInfoAlumno = async function (req, res, next) {
 //devuelve todas peticiones de los alumnos
 exports.getInfoAllPas = async function (req, res, next) {
     try {
-        respuesta = await getAllPeticionPas()
+        respuesta = await getAllPeticionPas(
+            req.query.page,
+            req.query.sizePerPage,
+            JSON.parse(req.query.filters)
+        )
         res.json(respuesta)
     } catch (error) {
         console.log(error)
