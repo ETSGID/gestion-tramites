@@ -51,9 +51,9 @@ export default class FormPeticion extends React.Component {
       paramsToUpdate.file = this.fileInputCert.current.files[0]
       //solo se pasa en este caso
       if (this.state.checkDescuento != descuento.NO) {
-        paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
+        paramsToUpdate.file3 = this.fileInputDescuento.current.files[0]
       }
-      paramsToUpdate.file3 = this.fileDNI.current.files[0]
+      paramsToUpdate.file2 = this.fileDNI.current.files[0]
       if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
         this.props.cambioEstadoClick(null, paramsToUpdate)
       }
@@ -121,7 +121,7 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Asignaturas en español con nota media"
                 defaultChecked
-                value={'asignaturas español con nota media'}
+                value={'asignaturas_español_nota_media'}
                 name="formTipo"
                 onChange={this.handleChangeTipo}
               />
@@ -129,35 +129,35 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Asignaturas en inglés con nota media"
                 name="formTipo"
-                value={'asignaturas ingles con nota media'}
+                value={'asignaturas_ingles_nota_media'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="ECTS en inglés (sin nota media)"
                 name="formTipo"
-                value={'ECTS inglés'}
+                value={'ects_ingles'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="Percentiles en inglés (sin nota media)"
                 name="formTipo"
-                value={'percentiles inglés'}
+                value={'percentiles_ingles'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="Renovación título familia numerosa"
                 name="formTipo"
-                value={'renovacion familia numerosa'}
+                value={'renovacion_familia_numerosa'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check className="d-inline-block"
                 type="radio"
                 label="Ficha informativa"
                 name="formTipo"
-                value={'ficha inforamtiva'}
+                value={'ficha_informativa'}
                 onChange={this.handleChangeTipo}
               /> <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >
                 Sin nota media, para surtir efectos dentro de la UPM.
@@ -170,7 +170,7 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Hace constar..."
                 name="formTipo"
-                value={'hace constar'}
+                value={'hace_constar'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
