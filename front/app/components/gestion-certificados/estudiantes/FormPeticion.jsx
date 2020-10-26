@@ -10,7 +10,7 @@ export default class FormPeticion extends React.Component {
     this.state = {
       checkDescuento: descuento.NO,
       disabledFile: "disabled",
-      tipo: 'asignaturas español con nota media'
+      tipo: 'asignaturas_español_nota_media'
     }
     this.fileInputDescuento = React.createRef();
     this.fileInputCert = React.createRef();
@@ -45,7 +45,7 @@ export default class FormPeticion extends React.Component {
     if (!this.fileInputCert.current.files[0]) {
       alert("Debe adjuntar la solicitud de certificado debidamente cumplimentada.")
     }
-    else if ((!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) || (this.state.tipo === 'renovacion familia numerosa' && !this.fileInputDescuento.current.files[0])) {
+    else if ((!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) || (this.state.tipo === 'renovacion_familia_numerosa' && !this.fileInputDescuento.current.files[0])) {
       alert("Debe adjuntar la acreditación de familia numerosa");
     } else {
       paramsToUpdate.file = this.fileInputCert.current.files[0]
