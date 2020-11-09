@@ -15,43 +15,28 @@ export default class FormInfoRequisitos extends React.Component {
   }
 
   render() {
-    let textRequisitos = "";
-    if (this.props.tipo === "titulacion") {
-      textRequisitos = <ul>
-        <li>
-          Asignaturas matriculadas este curso:
-    </li>
-        <li>
-          Asignaturas suspensas:
-    </li>
-        <li>
-          ECTS superados en toda la titulación:
-    </li>
-        <li>
-          Últimas convocatorias de la asignatura:
-    </li>
-        <li>
-          TFT:
-    </li>
-      </ul>;
-    }
-    else {
+    let textRequisitos =
+    <div>
+    <b>Datos del alumno</b>
+     <ul>
+     <li>Año de inicio de estudios:</li>
+     <li>Asignaturas suspendidas 2 veces:</li>
+     <li>Asignaturas suspendidas 3 veces:</li>
+     <li>Asignaturas matriculadas el curso anterior:</li>
+     <li>Asignaturas matriculadas el curso actual:</li>
+     <li>Nota media:</li>
+     <li>Estado del TFT:</li>
+     </ul>
+      <b>Datos de la asignatura solicitada</b>
+      <ul>
+     <li>Número de veces suspensa en el curso anterior:</li>
+     <li>Número de veces suspensa en el curso actual:</li>
+     <li>Número de veces suspensa en total:</li>
+     <li>Fecha de última convocatoria:</li>
+     <li>Información de las dos últimas convocatorias:</li>
+      </ul>
+      </div>;
 
-      textRequisitos = <ul>
-        <li>
-          Asignaturas suspensas del curso:
-</li>
-        <li>
-         ECTS superados este curso :
-</li>
-        <li>
-         Nota media:
-</li>
-        <li>
-          Últimas convocatorias de la asignatura:
-</li>
-      </ul>;
-    }
     return (
       <div>
         <Modal.Body>

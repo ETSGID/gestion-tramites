@@ -6,6 +6,10 @@
 const { CronJob } = require('cron');
 let planController = require('../controllers/plan_controller')
 
+// cargar planes al iniciar la app
+async () => {
+    await planController.createOrUpdatePlans();
+}
 
 // ejemplo cada 10 segundos: '*/10 * * * * *'
 

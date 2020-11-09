@@ -10,7 +10,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
     let text = `Su solicitud de certificado académico ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
     let filesname = [];
     switch (estadoActual) {
-        case estadosCertificado.PEDIDO:
+        case estadosCertificado.SOLICITUD_ENVIADA:
             send = true;
             text += `Su petición acaba de registrarse. En breve se le mandará la información de pago del mismo.`
             break;
@@ -61,10 +61,11 @@ exports.sendEmailToPas = async function (estadoActual, from, to, planCodigo, tex
     let text;
     let filesname = [];
     switch (estadoActual) {
-        case estadosCertificado.PEDIDO:
+        case estadosCertificado.SOLICITUD_ENVIADA:
             send = true;
-            text = `Se adjunta la infromación de descuentos aplicables de ${session.user.givenname} ${session.user.sn}. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
+            text = `Se adjunta la información de descuentos aplicables de ${session.user.givenname} ${session.user.sn}. La dirección de contacto del alumno es ${session.user.mailPrincipal}.`
             filesname.push(`solicitud_certificado_alumno.pdf`);
+            filesname.push(`dni_alumno.pdf`);
             filesname.push(`informacion_descuentos.pdf`);
             break;
         case estadosCertificado.PAGO_REALIZADO:

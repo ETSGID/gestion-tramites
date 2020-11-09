@@ -83,7 +83,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 nombre: nombre,
                 apellido: apellido,
                 planCodigo: planCodigo,
-                estadoPeticion: estadosCertificado.PEDIDO,
+                estadoPeticion: estadosCertificado.SOLICITUD_ENVIADA,
                 descuento: descuento,
                 fecha: new Date(),
                 tipoCertificado: tipoCertificado
@@ -100,10 +100,77 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
 
 
 //devuelve toda las peticiones de todos los alumnos
-const getAllPeticionPas = async function () {
+const getAllPeticionPas = async function (page, sizePerPage, filters){
     try {
-        let peticiones = await models.PeticionCertificado.findAll();
-        return peticiones || [];
+        const offset = 0 + (page - 1) * sizePerPage;
+        const where = {}
+        const whereAnd = []
+        if (filters) {
+            if (filters.edupersonuniqueid) {
+                whereAnd.push({
+                    edupersonuniqueid: {
+                        [Op.iLike]: `%${filters.edupersonuniqueid}%`
+                    }
+                })
+            }
+            if (filters.nombre) {
+                whereAnd.push(Sequelize.where(
+                    Sequelize.fn('unaccent', Sequelize.col('nombre')), {
+                    [Op.iLike]: Sequelize.fn('unaccent', `%${filters.nombre}%`)
+                }))
+            }
+            if (filters.apellido) {
+                whereAnd.push(Sequelize.where(
+                    Sequelize.fn('unaccent', Sequelize.col('apellido')), {
+                    [Op.iLike]: Sequelize.fn('unaccent', `%${filters.apellido}%`)
+                }))
+            }
+            if (filters.planNombre) {
+                //aunque sea planNombre en realidad la clave es el codigo del plan
+                //ya que procede de un select
+                whereAnd.push({
+                    planCodigo: filters.planNombre
+                })
+            }
+            if (filters.estadoPeticionTexto) {
+                whereAnd.push({
+                    estadoPeticion: estadosCertificado[filters.estadoPeticionTexto]
+                })
+            }
+
+            if (filters.tipoCertificado) {
+                whereAnd.push({
+                    tipoCertificado: filters.tipoCertificado
+                })
+            }
+        }
+        if (whereAnd.length > 0) {
+            where[Op.and] = whereAnd
+        }
+        let { count, rows } = await models.PeticionCertificado.findAndCountAll({
+            where,
+            offset,
+            limit: sizePerPage,
+            order: [
+                ['fecha', 'DESC']
+            ]
+        });
+
+        let plans = await planController.findAllPlans();
+        plans.forEach(plan => {
+            if (!plan.nombre) {
+                plan.nombre = plan.id;
+            }
+        })
+        rows.forEach(peticion => {
+            const plan = plans.find(p => p.id === peticion.planCodigo);
+            peticion.planNombre = '';
+            if (plan) {
+                peticion.planNombre = plan.nombre || '';
+            }
+        })
+
+        return { numberPeticiones: count, peticiones: rows, plans: plans };
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -146,7 +213,11 @@ exports.getInfoAlumno = async function (req, res, next) {
 //devuelve todas peticiones de los alumnos
 exports.getInfoAllPas = async function (req, res, next) {
     try {
-        respuesta = await getAllPeticionPas()
+        respuesta = await getAllPeticionPas(
+            req.query.page,
+            req.query.sizePerPage,
+            JSON.parse(req.query.filters)
+        )
         res.json(respuesta)
     } catch (error) {
         console.log(error)
@@ -162,7 +233,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
     var busboy = new Busboy({
         headers: req.headers,
         limits: {
-            files: 2, //limite 2 files
+            files: 3, //limite 2 files
             fileSize: 1024 * 1000 //limite 1MB
         }
     });
@@ -239,13 +310,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             switch (peticion.estadoPeticion) {
                 case estadosCertificado.NO_PEDIDO:
                 case estadosCertificado.PETICION_CANCELADA:
-                    estadoNuevo = estadosCertificado.PEDIDO;
+                    estadoNuevo = estadosCertificado.SOLICITUD_ENVIADA;
                     paramsToUpdate.descuento = req.body.paramsToUpdate.descuento
                     paramsToUpdate.textCancel = null;
                     paramsToUpdate.tipoCertificado = req.body.paramsToUpdate.tipo
                     paramsToUpdate.planCodigo = req.body.paramsToUpdate.plan;
                     break;
-                case estadosCertificado.PEDIDO:
+                case estadosCertificado.SOLICITUD_ENVIADA:
                     estadoNuevo = estadosCertificado.ESPERA_PAGO;
                     break;
                 case estadosCertificado.ESPERA_PAGO:
@@ -275,13 +346,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
             toPAS = process.env.EMAIL_PRUEBAS;
         }
-         let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
          //solo se envia cuando el alumno tiene algo que enviar
          if (req.filesBuffer) {
              let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
          }
         let respuesta;
-        if (estadoNuevo === estadosCertificado.PEDIDO && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
+        if (estadoNuevo === estadosCertificado.SOLICITUD_ENVIADA && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
             respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.plan, req.body.paramsToUpdate.descuento, req.body.paramsToUpdate.tipo)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado, paramsToUpdate)

@@ -20,6 +20,9 @@ router.get(`/`, async function (req, res, next) {
         tramites: enums.tramites
     })
 });
+router.post('/permisos', async function (req, res, next) {
+    await permisoController.updateAdmin(req,res,next)
+});
 
 router.get('/permisos', async function (req, res, next) {
     var queryString = req.originalUrl;

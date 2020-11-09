@@ -44,7 +44,7 @@ export default class ModalStructure extends React.Component {
     }
     else {
       switch (estadosCertificado[this.props.peticion.estadoPeticionTexto]) {
-        case estadosCertificado.PEDIDO:
+        case estadosCertificado.SOLICITUD_ENVIADA:
           form =
             <FormInfoPago
               peticion={this.props.peticion}

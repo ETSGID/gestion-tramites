@@ -7,13 +7,14 @@ const descuento = require('../../../../../back/enums').descuento
 export default class FormPeticion extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      checkDescuento: descuento.NO, 
+    this.state = {
+      checkDescuento: descuento.NO,
       disabledFile: "disabled",
-      tipo: 'asignaturas español con nota media'
+      tipo: 'asignaturas_español_nota_media'
     }
     this.fileInputDescuento = React.createRef();
     this.fileInputCert = React.createRef();
+    this.fileDNI = React.createRef();
     this.planElegido = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeDescuentos = this.handleChangeDescuentos.bind(this);
@@ -25,9 +26,10 @@ export default class FormPeticion extends React.Component {
     this.setState({ checkDescuento: e.currentTarget.value, disabledFile: disabledFile })
   }
 
-  handleChangeTipo(e){
+  handleChangeTipo(e) {
     this.setState({
-      tipo: e.currentTarget.value});
+      tipo: e.currentTarget.value
+    });
   }
 
   handleSubmit(event) {
@@ -37,27 +39,31 @@ export default class FormPeticion extends React.Component {
       tipo: this.state.tipo,
       plan: this.planElegido.value
     }
+    if (!this.fileDNI.current.files[0]) {
+      alert("Debe adjuntar una copia de su DNI.")
+    }
     if (!this.fileInputCert.current.files[0]) {
       alert("Debe adjuntar la solicitud de certificado debidamente cumplimentada.")
     }
-    else if ((!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) || (this.state.tipo === 'renovacion familia numerosa' && !this.fileInputDescuento.current.files[0])) {
+    else if ((!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) || (this.state.tipo === 'renovacion_familia_numerosa' && !this.fileInputDescuento.current.files[0])) {
       alert("Debe adjuntar la acreditación de familia numerosa");
     } else {
       paramsToUpdate.file = this.fileInputCert.current.files[0]
       //solo se pasa en este caso
       if (this.state.checkDescuento != descuento.NO) {
-        paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
+        paramsToUpdate.file3 = this.fileInputDescuento.current.files[0]
       }
+      paramsToUpdate.file2 = this.fileDNI.current.files[0]
       if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
-        this.props.cambioEstadoClick(null,paramsToUpdate)
+        this.props.cambioEstadoClick(null, paramsToUpdate)
       }
     }
   }
 
-  handleClose(){
+  handleClose() {
     this.props.handleClose();
   }
-  
+
 
 
   render() {
@@ -69,30 +75,43 @@ export default class FormPeticion extends React.Component {
             <Form.Group>
               <Form.Label as="legend">
                 Por favor descargue el siguiente documento de solicitud y cumpliméntelo con los datos requeridos:
-                <br/>
+                <br />
                 <a href="http://www.etsit.upm.es/fileadmin/documentos/servicios/secretaria/archivos/Nuevos_impresos/Instancia_solicitud_certificado_academico.pdf" target="_blank">
-                Descargar solicitud en formato pdf
+                  Descargar solicitud en formato pdf
                 </a>
-                <br/>                
+                <br />
                 Adjunte su documento de solicitud de certificado cumplimentado:
               </Form.Label>
 
               <input type="file" ref={this.fileInputCert} />
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+                Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
               </Tooltip>}>
-              <span className="d-inline-block">
-              <FontAwesomeIcon icon={faInfoCircle}/>
-              </span>
-            </OverlayTrigger>
+                <span className="d-inline-block">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
+              </OverlayTrigger>
             </Form.Group>
-
             <Form.Group>
-                <Form.Label>Selecciona plan de estudios:</Form.Label>
-                <Form.Control as="select" ref={select => this.planElegido = select}>
-                  {this.props.planes.map((plan, index) => (<option key={index} value={plan.idplan}>{plan.nombre}</option>))}
-                </Form.Control>
-              </Form.Group>
+              <Form.Label as="legend">
+                Adjunte una copia de su DNI escaneado por las dos caras:
+                <br />
+              </Form.Label>
+              <input type="file" ref={this.fileDNI} />
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+                Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+              </Tooltip>}>
+                <span className="d-inline-block">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
+              </OverlayTrigger>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Selecciona plan de estudios:</Form.Label>
+              <Form.Control as="select" ref={select => this.planElegido = select}>
+                {this.props.planes.map((plan, index) => (<option key={index} value={plan.idplan}>{plan.nombre}</option>))}
+              </Form.Control>
+            </Form.Group>
 
             <Form.Group>
               <Form.Label as="legend">
@@ -102,7 +121,7 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Asignaturas en español con nota media"
                 defaultChecked
-                value={'asignaturas español con nota media'}
+                value={'asignaturas_español_nota_media'}
                 name="formTipo"
                 onChange={this.handleChangeTipo}
               />
@@ -110,42 +129,48 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Asignaturas en inglés con nota media"
                 name="formTipo"
-                value={'asignaturas ingles con nota media'}
+                value={'asignaturas_ingles_nota_media'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="ECTS en inglés (sin nota media)"
                 name="formTipo"
-                value={'ECTS inglés'}
+                value={'ects_ingles'}
                 onChange={this.handleChangeTipo}
               />
-               <Form.Check
+              <Form.Check
                 type="radio"
                 label="Percentiles en inglés (sin nota media)"
                 name="formTipo"
-                value={'percentiles inglés'}
+                value={'percentiles_ingles'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="Renovación título familia numerosa"
                 name="formTipo"
-                value={'renovacion familia numerosa'}
+                value={'renovacion_familia_numerosa'}
                 onChange={this.handleChangeTipo}
               />
-              <Form.Check
+              <Form.Check className="d-inline-block"
                 type="radio"
                 label="Ficha informativa"
                 name="formTipo"
-                value={'ficha inforamtiva'}
+                value={'ficha_informativa'}
                 onChange={this.handleChangeTipo}
-              />
+              /> <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >
+                Sin nota media, para surtir efectos dentro de la UPM.
+              </Tooltip>}>
+                <span className="d-inline-block">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
+              </OverlayTrigger>
               <Form.Check
                 type="radio"
                 label="Hace constar..."
                 name="formTipo"
-                value={'hace constar'}
+                value={'hace_constar'}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
@@ -188,19 +213,19 @@ export default class FormPeticion extends React.Component {
               </Form.Label>
               <input type="file" disabled={this.state.disabledFile} ref={this.fileInputDescuento} />
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-              Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
+                Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
               </Tooltip>}>
-              <span className="d-inline-block">
-              <FontAwesomeIcon icon={faInfoCircle}/>
-              </span>
-            </OverlayTrigger>
+                <span className="d-inline-block">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
+              </OverlayTrigger>
             </Form.Group>
           </Form >
         </Modal.Body>
         { <Modal.Footer>
           <Button variant="secondary" onClick={this.handleClose}>Cancelar</Button>
           <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Enviar</Button>
-        </Modal.Footer> }
+        </Modal.Footer>}
       </div>
     );
   }

@@ -43,14 +43,14 @@ exports.crearPermiso = async function (req, res, next) {
                 email: req.params.email,
                 tramite: req.params.tramite
             });
-             if(req.params.tramite === 'admin'){
+            if (req.params.tramite === 'admin') {
                 return permiso;
-            }else {
+            } else {
                 res.render("confirmacionPermiso", {
                     barraInicioText: "GESTOR DE PERMISOS",
                     mensaje: 'El permiso indicado se ha creado correctamente.'
                 });
-            } 
+            }
         } else {
             res.render("confirmacionPermiso", {
                 barraInicioText: "GESTOR DE PERMISOS",
@@ -83,6 +83,27 @@ exports.eliminarPermiso = async function (req, res, next) {
                 mensaje: 'El permiso que intenta eliminar no existe.'
             });
         }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.updateAdmin = async function (req, res, next) {
+    try {
+        let permiso = await models.Permiso.update({
+            email: req.body.email
+        },
+            {
+                where: {
+                    tramite: 'admin'
+                },
+                returning: true,
+            });
+        res.render("confirmacionPermiso", {
+            barraInicioText: "GESTOR DE PERMISOS",
+            mensaje: 'El email del administrador se ha actualizado correctamente.'
+        });
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
