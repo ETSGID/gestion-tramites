@@ -233,7 +233,7 @@ exports.configureMultiPartFormData = async function (req, res, next) {
     var busboy = new Busboy({
         headers: req.headers,
         limits: {
-            files: 3, //limite 2 files
+            files: 2, //limite 2 files
             fileSize: 1024 * 1000 //limite 1MB
         }
     });
