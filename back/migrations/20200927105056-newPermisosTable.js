@@ -12,15 +12,6 @@ module.exports = {
       // Anadir columna
       await queryInterface.addColumn(
         'Permisos',
-        'id',
-        { type: Sequelize.INTEGER,
-          autoIncrement: true,
-          primaryKey: true
-        },
-        { transaction: t }
-      )
-      await queryInterface.addColumn(
-        'Permisos',
         'email',
         Sequelize.STRING,
         { transaction: t }
@@ -34,6 +25,11 @@ module.exports = {
         { transaction: t }
       )
 
+      // Pk compuesta
+      await queryInterface.sequelize.query('ALTER TABLE "Permisos" ADD CONSTRAINT "rol" PRIMARY KEY ("email", "tramite")',
+      { transaction:t
+      })
+  
       await t.commit();
     } catch (error) {
       console.error(error);
@@ -49,7 +45,15 @@ module.exports = {
       // Reverting commands
       await queryInterface.removeColumn('Permisos', 'email', { transaction: t });
       await queryInterface.removeColumn('Permisos', 'tramite', { transaction: t });
-     
+      await queryInterface.bulkDelete('Permisos', null, {transaction: t});
+      await queryInterface.addColumn(
+        'Permisos',
+        'id',{
+          type:  Sequelize.STRING,
+          primaryKey: true
+        },
+        { transaction: t }
+      )
       await t.commit();
     } catch (error) {
 
