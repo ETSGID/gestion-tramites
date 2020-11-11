@@ -303,7 +303,9 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         }
         let paramsToUpdate = {};
         let estadoNuevo;
-        let textoAdicional;
+        let textoAdicional; 
+        let emailToPas = false;
+        let emailToAlumno = false;
         if (req.body.cancel) {
             estadoNuevo = estadosCertificado.PETICION_CANCELADA;
             paramsToUpdate.textCancel = req.body.paramsToUpdate.textCancel
@@ -312,6 +314,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             paramsToUpdate.descuento = null;
             paramsToUpdate.receptor = null;
             paramsToUpdate.localizacionFisica = null;
+            emailToAlumno = true;
         } else {
             if (peticion.estadoPeticion !== estadosCertificado[req.body.peticion.estadoPeticionTexto]) throw "Intenta cambiar un estado que no puede";
             switch (peticion.estadoPeticion) {
@@ -323,30 +326,32 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     paramsToUpdate.tipoCertificado = req.body.paramsToUpdate.tipo
                     paramsToUpdate.planCodigo = req.body.paramsToUpdate.plan;
                     paramsToUpdate.planNombre = await planController.getName(req.body.paramsToUpdate.plan);
+                    emailToPas = true;
+                    emailToAlumno = true;
                     break;
                 case estadosCertificado.SOLICITUD_ENVIADA:
                     estadoNuevo = estadosCertificado.ESPERA_PAGO;
+                    emailToAlumno = true;
                     break;
                 case estadosCertificado.ESPERA_PAGO:
                     estadoNuevo = estadosCertificado.PAGO_REALIZADO;
                     paramsToUpdate.formaPago = req.body.paramsToUpdate.formaPago
+                    emailToPas = true;
                     break;
                 case estadosCertificado.PAGO_REALIZADO:
                     estadoNuevo = estadosCertificado.PAGO_CONFIRMADO;
+                    emailToAlumno = true;
                     break;
                 case estadosCertificado.PAGO_CONFIRMADO:
-                    estadoNuevo = estadosCertificado.CERTIFICADO_DISPONIBLE;
-                    break;
-                case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                    estadoNuevo = estadosCertificado.CERTIFICADO_RECOGIDO;
-                    paramsToUpdate.receptor = req.body.paramsToUpdate.receptor;
-                    paramsToUpdate.localizacionFisica = req.body.paramsToUpdate.localizacionFisica;
+                    estadoNuevo = estadosCertificado.CERTIFICADO_ENVIADO;
+                    emailToAlumno = true;
                     break;
                 default:
                     throw "Intenta cambiar un estado que no puede";
             }
         }
         paramsToUpdate.estadoPeticion = estadoNuevo;
+        // enviar emails
         let toAlumno = peticion.email || req.session.user.mailPrincipal; //si no existe la peticion sera el correo el que se pasa por email
         let toPAS = process.env.EMAIL_SECRETARIA;
         let from = process.env.EMAIL_SENDER;
@@ -354,11 +359,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
             toPAS = process.env.EMAIL_PRUEBAS;
         }
-        let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
-         //solo se envia cuando el alumno tiene algo que enviar
-         if (req.filesBuffer) {
-             let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
-         }
+        if(emailToAlumno){
+            let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+        }
+        if(emailToPas){
+            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session, paramsToUpdate.formaPago)
+        }
+        
         let respuesta;
         if (estadoNuevo === estadosCertificado.SOLICITUD_ENVIADA && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
             respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, req.body.paramsToUpdate.tipo)

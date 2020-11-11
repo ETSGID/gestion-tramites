@@ -56,8 +56,6 @@ export default class InfoPeticion extends React.Component {
                         {descuentoText}
                         {formaPagoText}
                         <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
-                        <li>Certificado recogido: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_RECOGIDO ? "Sí" : "No"}</li>
-                        {receptor}
                         {cancelado}
                     </ul>
                 </Modal.Body>

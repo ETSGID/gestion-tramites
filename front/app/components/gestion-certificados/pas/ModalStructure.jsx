@@ -3,8 +3,7 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import FormInfoPago from './FormInfoPago';
 import FormConfirmarPago from './FormConfirmarPago';
-import FormCertificadoListo from './FormCertificadoListo';
-import FormCertificadoRecoger from './FormCertificadoRecoger';
+import FormCertificadoEnviado from './FormCertificadoEnviado';
 import FormCancel from './FormCancel';
 import InfoPeticion from './InfoPeticion';
 
@@ -63,36 +62,20 @@ export default class ModalStructure extends React.Component {
             </FormConfirmarPago>
           break;
         case estadosCertificado.PAGO_CONFIRMADO:
-          form = <FormCertificadoListo
+          form = <FormCertificadoEnviado
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
-          </FormCertificadoListo>
+          </FormCertificadoEnviado>
           break;
-        case estadosCertificado.ESPERA_CERTIFICADO:
-          form = <FormCertificadoListo
+        case estadosCertificado.CERTIFICADO_ENVIADO:
+          form = <FormCertificadoEnviado
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
-          </FormCertificadoListo>
-          break;
-        case estadosCertificado.CERTIFICADO_DISPONIBLE:
-          form = <FormCertificadoRecoger
-            peticion={this.props.peticion}
-            handleClose={this.handleClose}
-            cambioEstadoClick={this.cambioEstadoClick}
-          >
-          </FormCertificadoRecoger>
-          break;
-        case estadosCertificado.CERTIFICADO_RECOGIDO:
-          form = <FormCertificadoRecoger
-            peticion={this.props.peticion}
-            handleClose={this.handleClose}
-            cambioEstadoClick={this.cambioEstadoClick}
-          >
-          </FormCertificadoRecoger>
+          </FormCertificadoEnviado>
           break;
         default:
           break;

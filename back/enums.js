@@ -20,8 +20,7 @@ exports.estadosCertificado = {
     "ESPERA_PAGO": 3,
     "PAGO_REALIZADO": 4,
     "PAGO_CONFIRMADO": 5,
-    "CERTIFICADO_DISPONIBLE": 7,
-    "CERTIFICADO_RECOGIDO": 8,
+    "CERTIFICADO_ENVIADO": 7,
     "PETICION_CANCELADA": -1
 }
 

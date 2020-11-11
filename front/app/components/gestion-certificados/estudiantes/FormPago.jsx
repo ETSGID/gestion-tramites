@@ -31,7 +31,7 @@ export default class FormPago extends React.Component {
     }else{
       //solo se pasa en este caso
       if(this.state.checkFormaPago != formaPago.ONLINE){
-        paramsToUpdate.file = this.fileInput.current.files[0]
+        paramsToUpdate.file1 = this.fileInput.current.files[0]
       }
       this.props.cambioEstadoClick(paramsToUpdate)
     }
@@ -45,7 +45,8 @@ export default class FormPago extends React.Component {
     return (
       <div>
         <Modal.Body>
-          Usted va a confirmar el pago del certicado académico solicitado el día: {this.props.peticion.fecha}, posteriormente será comprobado por personal de la universidad.
+          Usted va a confirmar el pago del certicado académico solicitado, posteriormente será comprobado por el personal de la universidad.
+          <br/><br/>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">

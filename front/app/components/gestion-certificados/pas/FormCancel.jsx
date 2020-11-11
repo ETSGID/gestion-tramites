@@ -27,12 +27,12 @@ export default class FormCancel extends React.Component {
         return (
             <div>
                 <Modal.Body>
-                    Va a cancelar la petición del certificado académico solicitado el día {this.props.peticion.fecha} por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.edupersonuniqueid}).
+                    Va a cancelar la petición del certificado académico solicitado por el alumno. Se le notificará al email de contacto del alumno.
                     <br />
                     <br />
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Group>
-                            <Form.Label>Indique motivo de cancelación de la petición de certificado académico</Form.Label>
+                            <Form.Label>Indique el motivo de la cancelación:</Form.Label>
                             <Form.Control onChange={this.handleChangeTextCancel} as="textarea" rows="3" />
                         </Form.Group>
                     </Form >

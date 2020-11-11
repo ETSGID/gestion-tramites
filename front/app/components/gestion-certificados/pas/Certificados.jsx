@@ -145,9 +145,7 @@ export default class Certificados extends React.Component {
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Pago confirmado</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado Ac. listo</Button>)
-                    case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado Ac. recogido</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Enviar certificado</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
@@ -167,13 +165,7 @@ export default class Certificados extends React.Component {
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<span>No acción asociada</span>)
-                    case estadosCertificado.ESPERA_CERTIFICADO:
-                        return (<span>No acción asociada</span>)
-                    case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<span>No acción asociada</span>)
-                    case estadosCertificado.CERTIFICADO_RECOGIDO:
-                        return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
+                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }

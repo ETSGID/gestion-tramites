@@ -11,13 +11,9 @@ export default class InfoPeticion extends React.Component {
     }
 
     render() {
-        let receptor = <li>Receptor: El certificado académico no ha sido recogido todavía</li>
         let cancelado;
         let formaPagoText;
         let descuentoText;
-        if (estadosCertificado.CERTIFICADO_RECOGIDO == this.props.peticion.estadoPeticion) {
-            receptor = this.props.peticion.receptor ? <li>Receptor: {this.props.peticion.receptor}</li> : <li>Receptor: Recogido por el titular</li>
-        }
         if (estadosCertificado.PETICION_CANCELADA == this.props.peticion.estadoPeticion) {
             cancelado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>
         }
@@ -52,12 +48,10 @@ export default class InfoPeticion extends React.Component {
                 <Modal.Body>
                     <b>Resumen</b>
                     <ul>
+                        <li>Email de contacto: {this.props.peticion.email}</li>
                         {descuentoText}
                         {formaPagoText}
                         <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
-                        <li>Certificado recogido: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_RECOGIDO ? "Sí" : "No"}</li>
-                        {receptor}
-                        <li>Localización física: {this.props.peticion.localizacionFisica || "No definida"}</li>
                         {cancelado}
                     </ul>
                 </Modal.Body>
