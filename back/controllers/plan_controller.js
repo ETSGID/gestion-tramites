@@ -45,5 +45,21 @@ async function findAllPlans(){
     }
 }
 
+async function getName(id){
+    try{
+        let nombrePlan = await models.Plan.findOne({
+            attributes: ['nombre'],
+            where: {
+                id: id
+            }
+        });
+        return nombrePlan.nombre;
+    } catch (error){
+        console.log(error);
+        return [];
+    }
+}
+
 exports.createOrUpdatePlans = createOrUpdatePlans;
 exports.findAllPlans = findAllPlans;
+exports.getName = getName;

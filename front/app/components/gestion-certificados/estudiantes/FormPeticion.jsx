@@ -84,7 +84,7 @@ export default class FormPeticion extends React.Component {
             <Form.Group>
               <Form.Label>Selecciona plan de estudios:</Form.Label>
               <Form.Control as="select" ref={select => this.planElegido = select}>
-                {this.props.planes.map((plan, index) => (<option key={index} value={plan.idplan}>{plan.nombre}</option>))}
+                {this.props.planes.map((plan, index) => (<option key={index} value={plan.id}>{plan.id} - {plan.nombre}</option>))}
               </Form.Control>
             </Form.Group>
 

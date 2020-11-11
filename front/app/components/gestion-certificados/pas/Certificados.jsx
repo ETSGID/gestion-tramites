@@ -54,7 +54,7 @@ export default class Certificados extends React.Component {
         })
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
-            planSelect[plan.id] = plan.nombre
+            planSelect[plan.id] = plan.id + ' - '+ plan.nombre;
         })
 
         const estadoSelect = {};

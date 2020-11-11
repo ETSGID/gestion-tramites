@@ -66,7 +66,7 @@ const updatePeticionAlumno = async function (edupersonuniqueid, planCodigo, tipo
     }
 }
 
-const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, descuento, tipoCertificado) {
+const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, descuento, tipoCertificado) {
     try {
         let respuesta = {};
         let peticion = await models.PeticionCertificado.findOne({
@@ -83,6 +83,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 nombre: nombre,
                 apellido: apellido,
                 planCodigo: planCodigo,
+                planNombre: planNombre,
                 estadoPeticion: estadosCertificado.SOLICITUD_ENVIADA,
                 descuento: descuento,
                 fecha: new Date(),
@@ -201,7 +202,13 @@ exports.getInfoAlumno = async function (req, res, next) {
     try {
         let respuesta = {};
         respuesta.peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid);
-        respuesta.planes = await getPlanesAlumno(req.session.edupersonuniqueid);
+        let planes = await planController.findAllPlans();
+        planes.forEach(plan => {
+            if (!plan.nombre) {
+                plan.nombre = plan.id;
+            }
+        });
+        respuesta.planes = planes;
         res.json(respuesta)
     } catch (error) {
         console.log(error)
@@ -315,6 +322,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     paramsToUpdate.textCancel = null;
                     paramsToUpdate.tipoCertificado = req.body.paramsToUpdate.tipo
                     paramsToUpdate.planCodigo = req.body.paramsToUpdate.plan;
+                    paramsToUpdate.planNombre = await planController.getName(req.body.paramsToUpdate.plan);
                     break;
                 case estadosCertificado.SOLICITUD_ENVIADA:
                     estadoNuevo = estadosCertificado.ESPERA_PAGO;
@@ -353,7 +361,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
          }
         let respuesta;
         if (estadoNuevo === estadosCertificado.SOLICITUD_ENVIADA && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, req.body.paramsToUpdate.plan, req.body.paramsToUpdate.descuento, req.body.paramsToUpdate.tipo)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, req.body.paramsToUpdate.tipo)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado, paramsToUpdate)
         }
