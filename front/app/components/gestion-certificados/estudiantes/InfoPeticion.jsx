@@ -19,17 +19,17 @@ export default class InfoPeticion extends React.Component {
             receptor = this.props.peticion.receptor ? <li>Receptor: {this.props.peticion.receptor}</li> : <li>Receptor: Recogido por el titular</li>
         }
         if (estadosCertificado.PETICION_CANCELADA == this.props.peticion.estadoPeticion) {
-            cancelado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>
+            cancelado = <li>Motivo de cancelación: {this.props.peticion.textCancel}</li>
         }
         switch (this.props.peticion.formaPago) {
             case formaPago.ONLINE:
-                formaPagoText = <li>Forma pago: Online</li>
+                formaPagoText = <li>Forma de pago: Online</li>
                 break;
             case formaPago.CARTA_PAGO:
-                formaPagoText = <li>Forma pago: Carta de pago</li>
+                formaPagoText = <li>Forma de pago: Carta de pago</li>
                 break;
             default:
-                formaPagoText = <li>Forma pago: No se ha especificado todavía</li>
+                formaPagoText = <li>Forma de pago: No se ha especificado todavía</li>
                 break;
         }
         switch (this.props.peticion.descuento) {
@@ -50,16 +50,13 @@ export default class InfoPeticion extends React.Component {
         return (
             <div>
                 <Modal.Body>
-                    <b>Resumen</b>
+                    <b>Información extra</b>
                     <ul>
-                        <li>Estado Actual: {this.props.peticion.estadoPeticionTexto}</li>
-                        <li>Tipo de certificado: {this.props.peticion.tipoCertificado}</li>
-                        <li>Plan de estudios: {this.props.peticion.planCodigo} - {this.props.peticion.planNombre}</li>
-                        <li>Última actualización: {this.props.peticion.fecha || "Petición no registrada todavía"}</li>
-                        <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
-                        <li>Certificado recogido: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_RECOGIDO ? "Sí" : "No"}</li>
+                        <li>Email de contacto: {this.props.peticion.email}</li>
                         {descuentoText}
                         {formaPagoText}
+                        <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
+                        <li>Certificado recogido: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_RECOGIDO ? "Sí" : "No"}</li>
                         {receptor}
                         {cancelado}
                     </ul>

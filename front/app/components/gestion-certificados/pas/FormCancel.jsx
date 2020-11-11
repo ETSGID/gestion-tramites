@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-export default class Formcancel extends React.Component {
+export default class FormCancel extends React.Component {
     constructor(props) {
         super(props);
         this.state = { textCancel: "" }
@@ -27,7 +27,7 @@ export default class Formcancel extends React.Component {
         return (
             <div>
                 <Modal.Body>
-                    Va a cancelar la petición del certificado académico solicitado el día {this.props.peticion.fecha} por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
+                    Va a cancelar la petición del certificado académico solicitado el día {this.props.peticion.fecha} por parte de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.edupersonuniqueid}).
                     <br />
                     <br />
                     <Form onSubmit={this.handleSubmit}>

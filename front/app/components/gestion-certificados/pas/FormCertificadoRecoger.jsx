@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 
-export default class FormTituloRecoger extends React.Component {
+export default class FormCertificadoRecoger extends React.Component {
   constructor(props) {
     super(props);
     this.state = { checkReceptor: 1, disabledTextReceptor: "disabled", textReceptor: ""}
@@ -24,7 +24,7 @@ export default class FormTituloRecoger extends React.Component {
     if (this.state.checkReceptor != 1 && this.state.textReceptor.trim() == "") {
       alert("Debe indicar el receptor (embajada, tercero autorizado, etc.)");
     }else {
-      if (confirm(`Confirmar la recogida del certificado académico por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.irispersonaluniqueid}).`)) {
+      if (confirm(`Confirmar la recogida del certificado académico por parte de ${this.props.peticion.nombre} ${this.props.peticion.apellido} (${this.props.peticion.edupersonuniqueid}).`)) {
         let paramsToUpdate = {}
         paramsToUpdate.receptor = this.state.checkReceptor == 1 ? 'Titular' : this.state.textReceptor.trim();
         this.props.cambioEstadoClick(paramsToUpdate)

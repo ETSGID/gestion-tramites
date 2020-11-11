@@ -94,12 +94,12 @@ export default class Certificados extends React.Component {
         },
         {
             dataField: 'planCodigo',
-            text: 'Plan Codigo',
+            text: 'Código del plan',
             hidden: true
         },
         {
             dataField: 'planNombre',
-            text: 'Plan',
+            text: 'Nombre del plan',
             filter: selectFilter({
                 options: planSelect
             })
@@ -109,7 +109,12 @@ export default class Certificados extends React.Component {
             text: 'Tipo de certificado',
             filter: selectFilter({
                 options: tipoSelect
-            })
+            }),
+            formatter:(cellContent, row) => {
+                return (
+                    <p>{row.tipoCertificado.replace(/_/g," ")}</p>
+                )
+            }
         },
         {
             dataField: 'estadoPeticionTexto',
@@ -140,9 +145,9 @@ export default class Certificados extends React.Component {
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Pago confirmado</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado A. listo</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado Ac. listo</Button>)
                     case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado A. recogido</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado Ac. recogido</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
