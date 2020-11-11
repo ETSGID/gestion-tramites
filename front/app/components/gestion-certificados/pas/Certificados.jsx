@@ -69,8 +69,8 @@ export default class Certificados extends React.Component {
             percentiles_ingles:"Percentiles en inglés (sin nota media)",
             renovacion_familia_numerosa:"Renovación título familia numerosa",
             ficha_informativa:"Ficha informativa",
-            hace_constar:"Hace constar",
-            otro:"Otro"
+           // hace_constar:"Hace constar",
+           // otro:"Otro"
         };
 
         const columns = [{

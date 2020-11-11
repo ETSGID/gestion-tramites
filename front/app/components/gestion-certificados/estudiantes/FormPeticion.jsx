@@ -141,20 +141,14 @@ export default class FormPeticion extends React.Component {
                   <FontAwesomeIcon icon={faInfoCircle} />
                 </span>
               </OverlayTrigger>
-              <Form.Check
-                type="radio"
-                label="Hace constar..."
-                name="formTipo"
-                value={'hace_constar'}
-                onChange={this.handleChangeTipo}
-              />
-              <Form.Check
+              
+              {/* <Form.Check
                 type="radio"
                 label="Otro"
                 name="formTipo"
                 value={'otro'}
                 onChange={this.handleChangeTipo}
-              />
+              /> */}
             </Form.Group>
 
             <Form.Group>
