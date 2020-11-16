@@ -54,7 +54,7 @@ export default class Certificados extends React.Component {
         })
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
-            planSelect[plan.id] = plan.nombre
+            planSelect[plan.id] = plan.id + ' - '+ plan.nombre;
         })
 
         const estadoSelect = {};
@@ -69,8 +69,8 @@ export default class Certificados extends React.Component {
             percentiles_ingles:"Percentiles en inglés (sin nota media)",
             renovacion_familia_numerosa:"Renovación título familia numerosa",
             ficha_informativa:"Ficha informativa",
-            hace_constar:"Hace constar",
-            otro:"Otro"
+           // hace_constar:"Hace constar",
+           // otro:"Otro"
         };
 
         const columns = [{
@@ -94,12 +94,12 @@ export default class Certificados extends React.Component {
         },
         {
             dataField: 'planCodigo',
-            text: 'Plan Codigo',
+            text: 'Código del plan',
             hidden: true
         },
         {
             dataField: 'planNombre',
-            text: 'Plan',
+            text: 'Nombre del plan',
             filter: selectFilter({
                 options: planSelect
             })
@@ -109,7 +109,12 @@ export default class Certificados extends React.Component {
             text: 'Tipo de certificado',
             filter: selectFilter({
                 options: tipoSelect
-            })
+            }),
+            formatter:(cellContent, row) => {
+                return (
+                    <p>{row.tipoCertificado.replace(/_/g," ")}</p>
+                )
+            }
         },
         {
             dataField: 'estadoPeticionTexto',
@@ -140,9 +145,7 @@ export default class Certificados extends React.Component {
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Pago confirmado</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado A. listo</Button>)
-                    case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Certificado A. recogido</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Enviar certificado</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
@@ -162,13 +165,7 @@ export default class Certificados extends React.Component {
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<span>No acción asociada</span>)
-                    case estadosCertificado.ESPERA_CERTIFICADO:
-                        return (<span>No acción asociada</span>)
-                    case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<span>No acción asociada</span>)
-                    case estadosCertificado.CERTIFICADO_RECOGIDO:
-                        return (<Button variant="warning" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Reinicar proceso</Button>)
+                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }

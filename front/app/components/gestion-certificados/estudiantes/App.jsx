@@ -61,14 +61,11 @@ export default class App extends React.Component {
       loading: true
     });
     //sino había file se queda a null
-    if (paramsToUpdate.file) {
-      formData.append("file", paramsToUpdate.file);
+    if (paramsToUpdate.file1) {
+      formData.append("file1", paramsToUpdate.file1)
     }
     if (paramsToUpdate.file2) {
       formData.append("file2", paramsToUpdate.file2)
-    }
-    if (paramsToUpdate.file3) {
-      formData.append("file3", paramsToUpdate.file3)
     }
     let aux;
     let peticion = {};

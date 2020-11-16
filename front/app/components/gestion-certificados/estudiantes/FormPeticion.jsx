@@ -13,7 +13,6 @@ export default class FormPeticion extends React.Component {
       tipo: 'asignaturas_español_nota_media'
     }
     this.fileInputDescuento = React.createRef();
-    this.fileInputCert = React.createRef();
     this.fileDNI = React.createRef();
     this.planElegido = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -42,19 +41,15 @@ export default class FormPeticion extends React.Component {
     if (!this.fileDNI.current.files[0]) {
       alert("Debe adjuntar una copia de su DNI.")
     }
-    if (!this.fileInputCert.current.files[0]) {
-      alert("Debe adjuntar la solicitud de certificado debidamente cumplimentada.")
-    }
     else if ((!this.fileInputDescuento.current.files[0] && this.state.checkDescuento != descuento.NO) || (this.state.tipo === 'renovacion_familia_numerosa' && !this.fileInputDescuento.current.files[0])) {
       alert("Debe adjuntar la acreditación de familia numerosa");
     } else {
-      paramsToUpdate.file = this.fileInputCert.current.files[0]
       //solo se pasa en este caso
       if (this.state.checkDescuento != descuento.NO) {
-        paramsToUpdate.file3 = this.fileInputDescuento.current.files[0]
+        paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
-      paramsToUpdate.file2 = this.fileDNI.current.files[0]
-      if (confirm(`¿Está seguro que quiere pedir el  certificado académico?`)) {
+      paramsToUpdate.file1 = this.fileDNI.current.files[0]
+      if (confirm(`¿Está seguro que quiere pedir el certificado académico?`)) {
         this.props.cambioEstadoClick(null, paramsToUpdate)
       }
     }
@@ -74,26 +69,6 @@ export default class FormPeticion extends React.Component {
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">
-                Por favor descargue el siguiente documento de solicitud y cumpliméntelo con los datos requeridos:
-                <br />
-                <a href="http://www.etsit.upm.es/fileadmin/documentos/servicios/secretaria/archivos/Nuevos_impresos/Instancia_solicitud_certificado_academico.pdf" target="_blank">
-                  Descargar solicitud en formato pdf
-                </a>
-                <br />
-                Adjunte su documento de solicitud de certificado cumplimentado:
-              </Form.Label>
-
-              <input type="file" ref={this.fileInputCert} />
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-                Solo pueden adjuntarse archivos con formato pdf y de tamaño máximo 1MB.
-              </Tooltip>}>
-                <span className="d-inline-block">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
-              </OverlayTrigger>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label as="legend">
                 Adjunte una copia de su DNI escaneado por las dos caras:
                 <br />
               </Form.Label>
@@ -109,7 +84,7 @@ export default class FormPeticion extends React.Component {
             <Form.Group>
               <Form.Label>Selecciona plan de estudios:</Form.Label>
               <Form.Control as="select" ref={select => this.planElegido = select}>
-                {this.props.planes.map((plan, index) => (<option key={index} value={plan.idplan}>{plan.nombre}</option>))}
+                {this.props.planes.map((plan, index) => (<option key={index} value={plan.id}>{plan.id} - {plan.nombre}</option>))}
               </Form.Control>
             </Form.Group>
 
@@ -166,20 +141,14 @@ export default class FormPeticion extends React.Component {
                   <FontAwesomeIcon icon={faInfoCircle} />
                 </span>
               </OverlayTrigger>
-              <Form.Check
-                type="radio"
-                label="Hace constar..."
-                name="formTipo"
-                value={'hace_constar'}
-                onChange={this.handleChangeTipo}
-              />
-              <Form.Check
+              
+              {/* <Form.Check
                 type="radio"
                 label="Otro"
                 name="formTipo"
                 value={'otro'}
                 onChange={this.handleChangeTipo}
-              />
+              /> */}
             </Form.Group>
 
             <Form.Group>

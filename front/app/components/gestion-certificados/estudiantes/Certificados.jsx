@@ -40,11 +40,20 @@ export default class Certificados extends React.Component {
         },
         {
             dataField: 'planCodigo',
-            text: 'Plan'
+            text: 'Código del plan'
+        },
+        {
+            dataField: 'planNombre',
+            text: 'Nombre del plan'
         },
         {
             dataField: 'tipoCertificado',
-            text: 'Tipo de certificado'
+            text: 'Tipo de certificado',
+            formatter:(cellContent, row) => {
+                return (
+                    <p>{row.tipoCertificado.replace(/_/g," ")}</p>
+                )
+            }
         },
         {
             dataField: 'estadoPeticionTexto',
@@ -68,13 +77,13 @@ export default class Certificados extends React.Component {
             formatter: (cellContent, row) => {
                 switch (estadosCertificado[row.estadoPeticionTexto]) {
                     case estadosCertificado.PETICION_CANCELADA:
-                        return (<span>Su petición ha sido cancelada. Si desea reiniciar el proceso, haga click en el botón de solicitar un certificado.</span>)
+                        return (<span>Su petición ha sido cancelada. Si desea reiniciar el proceso, haga click en el botón de solicitar un certificado. Para consultar el motivo, seleccione el icono de información.</span>)
                     case estadosCertificado.ESPERA_PAGO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false)}>Confirmar pago</Button>)
-                    case estadosCertificado.CERTIFICADO_DISPONIBLE:
-                        return (<span>Su certificado académico ya está disponible, pase a buscarlo.</span>)
-                    case estadosCertificado.CERTIFICADO_RECOGIDO:
-                        return (<span>Su certificado académico ya ha sido recogido.</span>)
+                    case estadosCertificado.PAGO_CONFIRMADO:
+                        return (<span>Se está generando su certificado académico. Se le notificará cuando esté listo.</span>)
+                        case estadosCertificado.CERTIFICADO_ENVIADO:
+                        return (<span>Su certificado académico ya está disponible y se le ha sido enviado al email de contacto. Si no lo ha recibido correctamente, contacte con secretaría.</span>)
                     default:
                         return (<span>Su solicitud está siendo procesada por secretaría.</span>)
                 }

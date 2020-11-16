@@ -3,8 +3,7 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import FormInfoPago from './FormInfoPago';
 import FormConfirmarPago from './FormConfirmarPago';
-import FormTituloListo from './FormCertificadoListo';
-import FormTituloRecoger from './FormCertificadoRecoger';
+import FormCertificadoEnviado from './FormCertificadoEnviado';
 import FormCancel from './FormCancel';
 import InfoPeticion from './InfoPeticion';
 
@@ -63,36 +62,20 @@ export default class ModalStructure extends React.Component {
             </FormConfirmarPago>
           break;
         case estadosCertificado.PAGO_CONFIRMADO:
-          form = <FormTituloListo
+          form = <FormCertificadoEnviado
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
-          </FormTituloListo>
+          </FormCertificadoEnviado>
           break;
-        case estadosCertificado.ESPERA_CERTIFICADO:
-          form = <FormTituloListo
+        case estadosCertificado.CERTIFICADO_ENVIADO:
+          form = <FormCertificadoEnviado
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
-          </FormTituloListo>
-          break;
-        case estadosCertificado.CERTIFICADO_DISPONIBLE:
-          form = <FormTituloRecoger
-            peticion={this.props.peticion}
-            handleClose={this.handleClose}
-            cambioEstadoClick={this.cambioEstadoClick}
-          >
-          </FormTituloRecoger>
-          break;
-        case estadosCertificado.CERTIFICADO_RECOGIDO:
-          form = <FormTituloRecoger
-            peticion={this.props.peticion}
-            handleClose={this.handleClose}
-            cambioEstadoClick={this.cambioEstadoClick}
-          >
-          </FormTituloRecoger>
+          </FormCertificadoEnviado>
           break;
         default:
           break;
@@ -102,7 +85,7 @@ export default class ModalStructure extends React.Component {
       <Modal show={true} onHide={this.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {this.props.peticion.nombre} {this.props.peticion.apellido} - {this.props.peticion.tipoCertificado} - {this.props.peticion.planCodigo}
+            Petición de certificado de {(this.props.peticion.nombre).replace(/(\B)[^ ]*/g, l => l.toLowerCase())} {(this.props.peticion.apellido).replace(/(\B)[^ ]*/g, l => l.toLowerCase())} - Plan {this.props.peticion.planCodigo}
           </Modal.Title>
         </Modal.Header>
         {form}
