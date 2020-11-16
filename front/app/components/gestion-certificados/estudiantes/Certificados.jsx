@@ -40,15 +40,15 @@ export default class Certificados extends React.Component {
         },
         {
             dataField: 'planCodigo',
-            text: 'Código del plan'
+            text: 'Plan código'
         },
         {
             dataField: 'planNombre',
-            text: 'Nombre del plan'
+            text: 'Plan'
         },
         {
             dataField: 'tipoCertificado',
-            text: 'Tipo de certificado',
+            text: 'Certificado',
             formatter:(cellContent, row) => {
                 return (
                     <p>{row.tipoCertificado.replace(/_/g," ")}</p>
