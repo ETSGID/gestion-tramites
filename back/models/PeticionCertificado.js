@@ -40,10 +40,6 @@ module.exports = function (sequelize, DataTypes) {
             fecha: {
                 type: DataTypes.DATEONLY
             },
-            //si no lo recoge el titular
-            receptor: {
-                type: DataTypes.TEXT
-            },
             textCancel:{
                 type: DataTypes.TEXT
             }
