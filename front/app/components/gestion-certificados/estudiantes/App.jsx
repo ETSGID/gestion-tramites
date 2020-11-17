@@ -3,7 +3,7 @@ import axios from 'axios';
 import Certificados from './Certificados';
 import FormPeticion from './FormPeticion';
 import LoadingOverlay from 'react-loading-overlay';
-import { Alert, Link, Button, Modal } from 'react-bootstrap';
+import { Alert, Button, Modal } from 'react-bootstrap';
 import '../../../../assets/scss/main.scss';
 const tramite = require('../../../../../back/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
@@ -59,7 +59,7 @@ export default class App extends React.Component {
     let formData = new FormData();
     this.setState({
       loading: true,
-      selected:null,
+      selected: null,
       showForm: false
     });
     //sino había file se queda a null
@@ -100,8 +100,6 @@ export default class App extends React.Component {
             peticionesNuevas[aux].formaPago = response.data[1][0].formaPago
             peticionesNuevas[aux].estadoPeticion = response.data[1][0].estadoPeticion
             peticionesNuevas[aux].fecha = response.data[1][0].fecha
-            peticionesNuevas[aux].receptor = response.data[1][0].receptor
-            peticionesNuevas[aux].localizacionFisica = response.data[1][0].localizacionFisica
             peticionesNuevas[aux].textCancel = response.data[1][0].textCancel
           }
           this.setState({
