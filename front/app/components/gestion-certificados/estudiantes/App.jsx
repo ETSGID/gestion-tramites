@@ -58,7 +58,9 @@ export default class App extends React.Component {
     //para mandar el archivo hace falta crear un FormData
     let formData = new FormData();
     this.setState({
-      loading: true
+      loading: true,
+      selected:null,
+      showForm: false
     });
     //sino había file se queda a null
     if (paramsToUpdate.file1) {
@@ -86,8 +88,7 @@ export default class App extends React.Component {
         let res = response.data;
         if (res === null) { // ya existe esa peticion
           this.setState({
-            loading: null,
-            showForm: false
+            loading: null
           })
           alert('Usted ya ha solicitado el certificado seleccionado. Si considera que ha habido algún error, mande un CAU en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/');
         }
