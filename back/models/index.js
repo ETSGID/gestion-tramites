@@ -11,11 +11,9 @@ sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + proces
 // Importar la definicion de las tablas 
 
 let PeticionTitulo = require('./PeticionTitulo')(sequelize, Sequelize);
-let PeticionEvaluacionCurricular = require('./PeticionEvaluacionCurricular')(sequelize, Sequelize);
 let PeticionCertificado = require('./PeticionCertificado')(sequelize, Sequelize);
 let Permiso = require('./Permiso')(sequelize, Sequelize);
 let Plan = require('./Plan')(sequelize, Sequelize);
-let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequelize, Sequelize);
 
 
 (async () => {
@@ -40,11 +38,9 @@ let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequeli
 //Exportamos modelos
 
 exports.PeticionTitulo = PeticionTitulo;
-exports.PeticionEvaluacionCurricular = PeticionEvaluacionCurricular;
 exports.PeticionCertificado = PeticionCertificado;
 exports.Permiso = Permiso;
 exports.Plan = Plan;
-exports.EstadoEvaluacionCurricular = EstadoEvaluacionCurricular;
 
 
 exports.sequelize = sequelize;
