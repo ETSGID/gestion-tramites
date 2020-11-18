@@ -54,7 +54,7 @@ export default class Certificados extends React.Component {
         })
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
-            planSelect[plan.id] = plan.id + ' - '+ plan.nombre;
+            planSelect[plan.id] = plan.nombre +' ('+plan.id+')';
         })
 
         const estadoSelect = {};
@@ -92,21 +92,21 @@ export default class Certificados extends React.Component {
             text: 'Apellidos',
             filter: textFilter(),
         },
-        {
-            dataField: 'planCodigo',
-            text: 'Código del plan',
-            hidden: true
-        },
+
         {
             dataField: 'planNombre',
-            text: 'Nombre del plan',
+            text: 'Plan',
             filter: selectFilter({
                 options: planSelect
             })
         },
         {
+            dataField: 'planCodigo',
+            text: 'Plan código'
+        },
+        {
             dataField: 'tipoCertificado',
-            text: 'Tipo de certificado',
+            text: 'Certificado',
             filter: selectFilter({
                 options: tipoSelect
             }),
@@ -164,9 +164,7 @@ export default class Certificados extends React.Component {
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
-                    case estadosCertificado.PAGO_CONFIRMADO:
-                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
-                    default:
+                   default:
                         return (<span>No acción asociada</span>)
                 }
             }

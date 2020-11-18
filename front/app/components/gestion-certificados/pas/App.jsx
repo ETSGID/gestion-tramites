@@ -18,6 +18,7 @@ export default class App extends React.Component {
     this.state = {
       peticiones: [],
       plans: [],
+      plansCargado: false,
       selected: null,
       cancel: null,
       info: null,
@@ -146,7 +147,7 @@ export default class App extends React.Component {
     let certificados = "Cargando..."
     if (!this.state.tienePermiso) {
       certificados = <NoPermiso />
-    } else {
+    } else if (this.state.plansCargado){
       certificados = <Certificados
         selected={this.state.selected}
         cancel={this.state.cancel}

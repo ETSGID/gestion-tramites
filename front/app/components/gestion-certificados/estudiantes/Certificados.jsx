@@ -40,15 +40,15 @@ export default class Certificados extends React.Component {
         },
         {
             dataField: 'planCodigo',
-            text: 'Código del plan'
+            text: 'Plan código'
         },
         {
             dataField: 'planNombre',
-            text: 'Nombre del plan'
+            text: 'Plan'
         },
         {
             dataField: 'tipoCertificado',
-            text: 'Tipo de certificado',
+            text: 'Certificado',
             formatter:(cellContent, row) => {
                 return (
                     <p>{row.tipoCertificado.replace(/_/g," ")}</p>
@@ -77,7 +77,8 @@ export default class Certificados extends React.Component {
             formatter: (cellContent, row) => {
                 switch (estadosCertificado[row.estadoPeticionTexto]) {
                     case estadosCertificado.PETICION_CANCELADA:
-                        return (<span>Su petición ha sido cancelada. Si desea reiniciar el proceso, haga click en el botón de solicitar un certificado. Para consultar el motivo, seleccione el icono de información.</span>)
+                        return (<div><span>Su petición ha sido cancelada. Para consultar el motivo, seleccione el icono de información.</span>
+                        <Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false)}>Solicitar de nuevo</Button></div>)
                     case estadosCertificado.ESPERA_PAGO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false)}>Confirmar pago</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
@@ -107,6 +108,7 @@ export default class Certificados extends React.Component {
                     handleClose={this.handleClose}
                     info={this.props.info}
                     cambioEstadoClick={this.cambioEstadoClick}
+                    planes={this.props.planes}
                 >
                 </ModalStructure>
         }

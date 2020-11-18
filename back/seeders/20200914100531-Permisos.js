@@ -46,7 +46,7 @@ module.exports = {
           tramite: 'gestion-titulos'
         },
         {
-          email: 'sabel.poza@upm.es',
+          email: 'isabel.poza@upm.es',
           tramite: 'gestion-titulos'
         },
         {

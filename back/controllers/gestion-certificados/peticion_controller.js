@@ -312,8 +312,6 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             textoAdicional = req.body.paramsToUpdate.textCancel
             paramsToUpdate.formaPago = null;
             paramsToUpdate.descuento = null;
-            paramsToUpdate.receptor = null;
-            paramsToUpdate.localizacionFisica = null;
             emailToAlumno = true;
         } else {
             if (peticion.estadoPeticion !== estadosCertificado[req.body.peticion.estadoPeticionTexto]) throw "Intenta cambiar un estado que no puede";

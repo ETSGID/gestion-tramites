@@ -48,10 +48,17 @@ export default class InfoPeticion extends React.Component {
                 <Modal.Body>
                     <b>Resumen</b>
                     <ul>
-                        <li>Email de contacto: {this.props.peticion.email}</li>
+                    <li>Alumno: {this.props.peticion.nombre} {this.props.peticion.apellido}</li>
+                        <li>Email: {this.props.peticion.email}</li>
+                        <li>Unique ID: {this.props.peticion.edupersonuniqueid}</li>
+                        <li>Plan: {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})</li>
+                        <li>Tipo de certificado: {this.props.peticion.tipoCertificado.replace(/_/g," ")}</li>
+                        <li>Estado Actual: {this.props.peticion.estadoPeticionTexto}</li>
+                        <li>Última actualización: {this.props.peticion.fecha}</li>
                         {descuentoText}
                         {formaPagoText}
                         <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
+                        <li>Certificado enviado: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_ENVIADO ? "Sí" : "No"}</li>
                         {cancelado}
                     </ul>
                 </Modal.Body>
