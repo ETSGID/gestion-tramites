@@ -40,11 +40,7 @@ exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
     /*
     "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
-<<<<<<< HEAD
-    "evaluacionCurricular": ["evaluacion-curricular", "Solicitud de evaluación curricular"],
-=======
     /*"evaluacionCurricular": ["evaluacion-curricular", "Solicitud de evaluación curricular"],
->>>>>>> gestion-certificados
     
     "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
     "anulacionMatriculas": ["anulacion-matricula","Anulación de Matrícula"],

@@ -5,11 +5,7 @@ echo "Executing migrations..."
 npm run migrations
 echo "Executing seeders..."
 npm run seeders
-<<<<<<< HEAD
-npm start 
-=======
 npm start
->>>>>>> gestion-certificados
 echo "all Done."
 exit 0
 
