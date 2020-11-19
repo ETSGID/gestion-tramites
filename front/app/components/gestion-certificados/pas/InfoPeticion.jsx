@@ -11,25 +11,21 @@ export default class InfoPeticion extends React.Component {
     }
 
     render() {
-        let receptor = <li>Receptor: El certificado académico no ha sido recogido todavía</li>
         let cancelado;
         let formaPagoText;
         let descuentoText;
-        if (estadosCertificado.TITULO_RECOGIDO == this.props.peticion.estadoPeticion) {
-            receptor = this.props.peticion.receptor ? <li>Receptor: {this.props.peticion.receptor}</li> : <li>Receptor: Recogido por el titular</li>
-        }
         if (estadosCertificado.PETICION_CANCELADA == this.props.peticion.estadoPeticion) {
             cancelado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>
         }
         switch (this.props.peticion.formaPago) {
             case formaPago.ONLINE:
-                formaPagoText = <li>Forma pago: Online</li>
+                formaPagoText = <li>Forma de pago: Online</li>
                 break;
             case formaPago.CARTA_PAGO:
-                formaPagoText = <li>Forma pago: Carta de pago</li>
+                formaPagoText = <li>Forma de pago: Carta de pago</li>
                 break;
             default:
-                formaPagoText = <li>Forma pago: No se ha especificado todavía</li>
+                formaPagoText = <li>Forma de pago: No se ha especificado todavía</li>
                 break;
         }
         switch (this.props.peticion.descuento) {
@@ -52,16 +48,17 @@ export default class InfoPeticion extends React.Component {
                 <Modal.Body>
                     <b>Resumen</b>
                     <ul>
-                        <li>Plan: {this.props.peticion.planCodigo}</li>
-                        <li>{this.props.peticion.nombreCompleto}</li>
+                    <li>Alumno: {this.props.peticion.nombre} {this.props.peticion.apellido}</li>
+                        <li>Email: {this.props.peticion.email}</li>
+                        <li>Unique ID: {this.props.peticion.edupersonuniqueid}</li>
+                        <li>Plan: {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})</li>
+                        <li>Tipo de certificado: {this.props.peticion.tipoCertificado.replace(/_/g," ")}</li>
                         <li>Estado Actual: {this.props.peticion.estadoPeticionTexto}</li>
-                        <li>Última actualización: {this.props.peticion.fecha || "Petición no registrada todavía"}</li>
-                        <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
-                        <li>Certificado recogido: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_RECOGIDO ? "Sí" : "No"}</li>
+                        <li>Última actualización: {this.props.peticion.fecha}</li>
                         {descuentoText}
                         {formaPagoText}
-                        {receptor}
-                        <li>Localización física: {this.props.peticion.localizacionFisica || "No definida"}</li>
+                        <li>Pago confirmado: {this.props.peticion.estadoPeticion >= estadosCertificado.PAGO_CONFIRMADO ? "Sí" : "No"}</li>
+                        <li>Certificado enviado: {this.props.peticion.estadoPeticion >= estadosCertificado.CERTIFICADO_ENVIADO ? "Sí" : "No"}</li>
                         {cancelado}
                     </ul>
                 </Modal.Body>

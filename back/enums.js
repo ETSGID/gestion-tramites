@@ -16,12 +16,11 @@ exports.estadosTitulo = {
 
 exports.estadosCertificado = {
     "NO_PEDIDO": 1,
-    "PEDIDO": 2,
+    "SOLICITUD_ENVIADA": 2,
     "ESPERA_PAGO": 3,
     "PAGO_REALIZADO": 4,
     "PAGO_CONFIRMADO": 5,
-    "CERTIFICADO_DISPONIBLE": 7,
-    "CERTIFICADO_RECOGIDO": 8,
+    "CERTIFICADO_ENVIADO": 7,
     "PETICION_CANCELADA": -1
 }
 
@@ -36,23 +35,16 @@ exports.formaPago = {
     "CARTA_PAGO": 2
 }
 
-// EV. CURRICULAR
-exports.estadosEvaluacionCurricular = {
-    "NO_PEDIDO": 1,
-    "SOLICITUD_PENDIENTE": 2,
-    "EVALUACION_PENDIENTE": 3,
-    "EVALUACION_DENEGADA": 4,
-    "EVALUACION_APROBADA": 5,
-    "EVALUACION_FINALIZADA": 6,
-    "SOLICITUD_CANCELADA": -1
-}
-
 
 exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],
     /*
     "gestionCertificados": ["gestion-certificados", "Petición de certificados académicos"],
+<<<<<<< HEAD
     "evaluacionCurricular": ["evaluacion-curricular", "Solicitud de evaluación curricular"],
+=======
+    /*"evaluacionCurricular": ["evaluacion-curricular", "Solicitud de evaluación curricular"],
+>>>>>>> gestion-certificados
     
     "tituloDuplicado": ["titulo-duplicado", "Título Académico Duplicado"],
     "anulacionMatriculas": ["anulacion-matricula","Anulación de Matrícula"],

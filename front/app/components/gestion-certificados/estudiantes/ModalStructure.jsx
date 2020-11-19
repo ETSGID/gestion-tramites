@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import FormPeticion from './FormPeticion';
+import { Modal } from 'react-bootstrap';
+import FormRestart from './FormRestart';
 import FormPago from './FormPago';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 import InfoPeticion from './InfoPeticion';
@@ -18,7 +18,7 @@ export default class ModalStructure extends React.Component {
   }
 
   handleClose() {
-    this.props.handleClose(null)
+    this.props.handleClose()
   }
 
   render() {
@@ -31,32 +31,26 @@ export default class ModalStructure extends React.Component {
         >
         </InfoPeticion>
     }
-    else {
-      switch (estadosCertificado[this.props.peticion.estadoPeticionTexto]) {
-        case estadosCertificado.NO_PEDIDO:
-        case estadosCertificado.PETICION_CANCELADA:
-          form = <FormPeticion
-            peticion={this.props.peticion}
-            handleClose={this.handleClose}
-            cambioEstadoClick={this.cambioEstadoClick}
-          >
-          </FormPeticion>
-          break;
-        case estadosCertificado.ESPERA_PAGO:
+    else if (estadosCertificado[this.props.peticion.estadoPeticionTexto] == estadosCertificado.ESPERA_PAGO){
           form = <FormPago
             peticion={this.props.peticion}
             handleClose={this.handleClose}
             cambioEstadoClick={this.cambioEstadoClick}
           >
           </FormPago>
-          break;
-      }
+    } else if(estadosCertificado[this.props.peticion.estadoPeticionTexto] == estadosCertificado.PETICION_CANCELADA){
+      form = <FormRestart
+        peticion={this.props.peticion}
+        handleClose={this.handleClose}
+        cambioEstadoClick={this.cambioEstadoClick}
+      >
+      </FormRestart>
     }
     return (
       <Modal show={true} onHide={this.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            Petición certificado
+            Petición de certificado
           </Modal.Title>
         </Modal.Header>
         {form}

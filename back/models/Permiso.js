@@ -3,16 +3,13 @@
 module.exports = function (sequelize, DataTypes) {
     let Permiso = sequelize.define('Permiso',
         {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
             email: {
-                type: DataTypes.STRING
+                type: DataTypes.STRING,
+                primaryKey: true
             },
             tramite: {
-                type: DataTypes.STRING
+                type: DataTypes.STRING,
+                primaryKey: true
             },
         },
         {

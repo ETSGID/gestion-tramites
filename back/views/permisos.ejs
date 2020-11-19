@@ -25,8 +25,10 @@
 
     <div class="textoInicio">
         <p>
-            A continuación, se muestra la lista de permisos activados:
-            <br>
+            <b>Si quiere volver a la página inicial de gestión de trámites, pinche  <a href="<%=context%>" >aquí</a>.</b>
+            <br><br>A continuación, se muestra la lista de permisos activados:
+            <br><br>
+            <input id="searchBox" placeholder="Búsqueda...">
         <table id="table" class="table hover">
             <tr>
                 <th>Email</th>
@@ -39,8 +41,17 @@
             <% }) %>
             </tr>
         </table><br>
-        <input type="search" id="searchBox" placeholder="Búsqueda...">
         </p>
+        <h5>Actualizar administrador</h5>
+        <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email deseado y
+            pulse el botón de actualizar:</p>
+        <form formaction="<%-context%>/permisos" method="POST">
+            <div class="form-group">
+                <input type="email" class="form-control" name="email" placeholder="ejemplo@upm.es">
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+        </form><br>
+        <h5>Gestionar permisos</h5>
         <p>
             Tanto si desea crear un nuevo permiso como eliminarlo, rellene el siguiente formulario con el email de la
             persona en cuestión y el trámite correspondiente:
@@ -73,14 +84,14 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Enviar</button>
-            <a href="<%=context%>" class="btn btn-primary">Volver atrás</a>
+            <a href="<%=context%>" class="btn btn-danger">Volver atrás</a>
         </form>
-
+        <br>
     </div>
 </body>
 <script>
     let options = {
-        numberPerPage: 5, //Cantidad de datos por pagina
+        numberPerPage: 10, //Cantidad de datos por pagina
         goBar: false, //Barra donde puedes digitar el numero de la pagina al que quiere ir
         pageCounter: false, //Contador de paginas, en cual estas, de cuantas paginas
     };

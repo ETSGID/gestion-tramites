@@ -3,8 +3,12 @@ let router = express.Router();
 const enums = require('../enums');
 let permisoController = require('../controllers/permiso_controller');
 const routerGestionTitulos = require('./gestion-titulos/routerPas');
+<<<<<<< HEAD
 //const routerGestionCertificados = require('./gestion-certificados/routerPas');
 //const routerEvaluacionCurricular = require('./evaluacion-curricular/routerPas');
+=======
+const routerGestionCertificados = require('./gestion-certificados/routerPas');
+>>>>>>> gestion-certificados
 
 router.get(`/`, async function (req, res, next) {
     req.session.tramite = null;
@@ -19,6 +23,9 @@ router.get(`/`, async function (req, res, next) {
         barraInicioText: "LISTA DE TRÁMITES DISPONIBLES ONLINE",
         tramites: enums.tramites
     })
+});
+router.post('/permisos', async function (req, res, next) {
+    await permisoController.updateAdmin(req,res,next)
 });
 
 router.get('/permisos', async function (req, res, next) {
@@ -74,9 +81,12 @@ router.use(`/${enums.tramites.gestionCertificados[0]}`, function (req, res, next
     next();
 }, routerGestionCertificados);
 
+<<<<<<< HEAD
 router.use(`/${enums.tramites.evaluacionCurricular[0]}`, function (req, res, next) {
     req.session.tramite = enums.tramites.evaluacionCurricular[0];
     next();
 }, routerEvaluacionCurricular);
 */
+=======
+>>>>>>> gestion-certificados
 module.exports = router;

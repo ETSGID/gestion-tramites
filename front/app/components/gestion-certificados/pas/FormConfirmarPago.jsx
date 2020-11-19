@@ -28,8 +28,8 @@ export default class FormConfirmarPago extends React.Component {
     return (
       <div>
         <Modal.Body>
-          Debe confirmar el pago del certificado académico solicitado por {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.irispersonaluniqueid}).
-          <br/>
+          Debe confirmar el pago del certificado académico solicitado. Se le notificará al email de contacto del alumno.
+          <br/> <br/>
           La modalidad seleccionada de pago ha sido <b>{formaPagoText}</b>.
         </Modal.Body>
         <Modal.Footer>

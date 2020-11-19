@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import Certificados from './Certificados';
+import FormPeticion from './FormPeticion';
 import LoadingOverlay from 'react-loading-overlay';
-import {Alert, Link, Button} from 'react-bootstrap';
+import { Alert, Button, Modal } from 'react-bootstrap';
 import '../../../../assets/scss/main.scss';
 const tramite = require('../../../../../back/enums').tramites.gestionCertificados;
 let urljoin = require('url-join');
@@ -16,13 +17,17 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       peticiones: [],
+      planes: [],
       selected: null,
       info: null,
-      loading: null
+      loading: null,
+      plansCargado: false,
+      showForm: false
     };
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     this.solicitarCertificado = this.solicitarCertificado.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -32,7 +37,8 @@ export default class App extends React.Component {
     axios.get(urljoin(apiBaseUrl, "api/peticiones"))
       .then((response) => {
         this.setState({
-          peticiones: response.data,
+          peticiones: response.data.peticiones,
+          planes: response.data.planes,
           loading: null
         })
       })
@@ -41,50 +47,79 @@ export default class App extends React.Component {
           loading: null
         })
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '': ''}`)
+          error.response.data.error || '' : ''}`)
       })
 
   }
 
-
   cambioEstadoClick(index, paramsToUpdate) {
+    //index null si nueva peticion
     let peticionesNuevas = this.state.peticiones.slice()
     //para mandar el archivo hace falta crear un FormData
     let formData = new FormData();
+    this.setState({
+      loading: true,
+      selected: null,
+      showForm: false
+    });
     //sino había file se queda a null
-    if (paramsToUpdate.file) {
-      formData.append("file", paramsToUpdate.file);
+    if (paramsToUpdate.file1) {
+      formData.append("file1", paramsToUpdate.file1)
     }
     if (paramsToUpdate.file2) {
       formData.append("file2", paramsToUpdate.file2)
     }
-    this.setState({
-      loading: true,
-      selected: null
-    })
-    formData.append("body", JSON.stringify({ peticion: peticionesNuevas[index], paramsToUpdate: paramsToUpdate }))
+    let aux;
+    let peticion = {};
+    if (index !== null) { // actualizar peticion
+      aux = index;
+      peticion = peticionesNuevas[index];
+    } else { // crear nueva peticion
+      aux = peticionesNuevas.length;
+      paramsToUpdate.contadorPeticiones = peticionesNuevas.length;
+    }
+    formData.append("body", JSON.stringify({ peticion: peticion, paramsToUpdate: paramsToUpdate }));
     axios.post(urljoin(apiBaseUrl, "api/peticionCambioEstado"), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
       .then((response) => {
-        peticionesNuevas[index].estadoPeticion = response.data.estadoPeticion || response.data[1][0].estadoPeticion
-        peticionesNuevas[index].fecha = response.data.fecha || response.data[1][0].fecha
-        this.setState({
-          peticiones: peticionesNuevas,
-          selected: null,
-          info: null,
-          loading: null
-        })
+        let res = response.data;
+        if (res === null) { // ya existe esa peticion
+          this.setState({
+            loading: null
+          })
+          alert('Usted ya ha solicitado el certificado seleccionado. Si considera que ha habido algún error, mande un CAU en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/');
+        }
+        else {
+          if (index == null) {
+            peticionesNuevas.push(res);
+          } else {
+            peticionesNuevas[aux].descuento = response.data[1][0].descuento
+            peticionesNuevas[aux].formaPago = response.data[1][0].formaPago
+            peticionesNuevas[aux].estadoPeticion = response.data[1][0].estadoPeticion
+            peticionesNuevas[aux].fecha = response.data[1][0].fecha
+            peticionesNuevas[aux].textCancel = response.data[1][0].textCancel
+          }
+          this.setState({
+            peticiones: peticionesNuevas,
+            selected: null,
+            info: null,
+            loading: null,
+            plansCargado: true,
+            showForm: false
+          })
+        }
       })
       .catch((error) => {
         this.setState({
           loading: null
         })
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '': ''}`)
+          error.response.data.error || '' : ''}`)
       })
+
   }
 
   cambioSelectedClick(index, info) {
@@ -94,15 +129,23 @@ export default class App extends React.Component {
     })
   }
 
-  solicitarCertificado(){
-
-
+  handleClose() {
+    this.setState({
+      showForm: false,
+      selected: null,
+      info: null
+    })
   }
 
+  solicitarCertificado() {
+    this.setState({
+      showForm: true
+    })
+  }
+
+
+
   render() {
- 
-
-
     return (
       <div>
         <div className="cuerpo">
@@ -114,21 +157,38 @@ export default class App extends React.Component {
             spinner
             text='Cargando'
           >
-
-          <Alert variant ="info">
-          Antes de solicitar los certificados de notas, comprobar que se hayan incorporado todas las calificaciones a su expediente en Politécnica Virtual.
+            <Alert variant="info">
+              Antes de solicitar los certificados de notas, comprobar que se hayan incorporado todas las calificaciones a su expediente en Politécnica Virtual.
           </Alert>
+            <span />
+            <Button
+              size="lg"
+              style={{ marginBottom: "15px" }}
+              onClick={() => this.solicitarCertificado()}
+            >Solicitar certificado académico</Button>
 
-          <span/>
-
+            {this.state.showForm &&
+              <Modal show={true} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>
+                    Solicitud de certificado
+                  </Modal.Title>
+                </Modal.Header>
+                <FormPeticion
+                  handleClose={this.handleClose}
+                  cambioEstadoClick={this.cambioEstadoClick}
+                  planes={this.state.planes}
+                />
+              </Modal >
+            }
             <Certificados
               selected={this.state.selected}
               info={this.state.info}
               peticiones={this.state.peticiones}
               cambioEstadoClick={this.cambioEstadoClick}
               cambioSelectedClick={this.cambioSelectedClick}
-            >
-            </Certificados>
+              handleClose={this.handleClose}
+            />
           </LoadingOverlay>
         </div>
       </div>

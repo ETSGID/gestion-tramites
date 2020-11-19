@@ -202,7 +202,7 @@
              *
              * Tambien se encarga de agregar el boton de "gotopage" y "pagecounter"
              **/
-            let buttons = "<input type='button' value='← prev' class='paginate_control_prev' onclick='paginate.sort("+(currentPage - 1)+")' "+prevDisabled+">";
+            let buttons = "<input type='button' value='←' class='paginate_control_prev' onclick='paginate.sort("+(currentPage - 1)+")' "+prevDisabled+">";
             let buttonNumberOfPage = "<input type='button' value='" + currentPage + ' - ' + numberOfPage + "' disabled>";
 
             for (let $i=1; $i<=numberOfPage;$i++){
@@ -213,7 +213,7 @@
                 }
             }
 
-            let nextButton = "<input type='button' value='next →' class='paginate_control_next' onclick='paginate.sort("+(currentPage + 1)+")' "+nextDisabled+">";
+            let nextButton = "<input type='button' value='→' class='paginate_control_next' onclick='paginate.sort("+(currentPage + 1)+")' "+nextDisabled+">";
             buttons +=  nextButton;
 
             if(settings.pageCounter)
@@ -325,7 +325,6 @@
             const filter = document.querySelector(filterSettings.el).value.toUpperCase();
             const trs = document.querySelectorAll( settings.el + ' tr:not(.header)');
             trs.forEach(tr => tr.style.display = [...tr.children].find(td => td.innerHTML.toUpperCase().includes(filter)) ? '' : 'none');
-
             if(filter.length == 0 && settings.hasPagination){
                 setNumberPerPage(_lignePaginate.getConstNumberPerPage());
                 _lignePaginate.sort(1);

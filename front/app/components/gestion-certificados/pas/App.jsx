@@ -17,6 +17,8 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       peticiones: [],
+      plans: [],
+      plansCargado: false,
       selected: null,
       cancel: null,
       info: null,
@@ -26,16 +28,30 @@ export default class App extends React.Component {
     this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     this.checkPermisos = this.checkPermisos.bind(this);
+    this.findPeticiones = this.findPeticiones.bind(this);
   }
+
   componentDidMount() {
+    this.findPeticiones(1, 50, null);
     this.checkPermisos();
+  }
+
+  findPeticiones(page, sizePerPage, filters) {
     this.setState({
       loading: true
     })
-    axios.get(urljoin(apiBaseUrl, "api/peticiones"))
+   axios.get(urljoin(apiBaseUrl, "api/peticiones"), {
+      params: {
+        'page': page,
+        'sizePerPage': sizePerPage,
+        'filters': JSON.stringify(filters)
+      }
+    })
       .then((response) => {
         this.setState({
-          peticiones: response.data,
+          peticiones: response.data.peticiones,
+          plans: response.data.plans,
+          plansCargado: true,
           loading: null
         })
       })
@@ -46,7 +62,7 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
-  }
+    }
 
   cambioEstadoClick(index, paramsToUpdate) {
     let peticionesNuevas = this.state.peticiones.slice()
@@ -131,14 +147,16 @@ export default class App extends React.Component {
     let certificados = "Cargando..."
     if (!this.state.tienePermiso) {
       certificados = <NoPermiso />
-    } else {
+    } else if (this.state.plansCargado){
       certificados = <Certificados
         selected={this.state.selected}
         cancel={this.state.cancel}
         info={this.state.info}
         peticiones={this.state.peticiones}
+        plans={this.state.plans}
         cambioEstadoClick={this.cambioEstadoClick}
         cambioSelectedClick={this.cambioSelectedClick}
+        findPeticiones={this.findPeticiones}
       >
       </Certificados>
     }

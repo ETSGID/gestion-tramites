@@ -11,6 +11,7 @@ export default class FormPago extends React.Component {
     this.fileInput = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlechangeFormaPago = this.handlechangeFormaPago.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   handlechangeFormaPago(e) {
     let disabledFile = e.currentTarget.value == formaPago.ONLINE ? "disabled" : ""
@@ -30,17 +31,22 @@ export default class FormPago extends React.Component {
     }else{
       //solo se pasa en este caso
       if(this.state.checkFormaPago != formaPago.ONLINE){
-        paramsToUpdate.file = this.fileInput.current.files[0]
+        paramsToUpdate.file1 = this.fileInput.current.files[0]
       }
       this.props.cambioEstadoClick(paramsToUpdate)
     }
+  }
+
+  handleClose(){
+    this.props.handleClose();
   }
 
   render() {
     return (
       <div>
         <Modal.Body>
-          Usted va a confirmar el pago del certicado académico solicitado el día: {this.props.peticion.fecha}, posteriormente será comprobado por personal de la universidad.
+          Usted va a confirmar el pago del certicado académico solicitado, posteriormente será comprobado por el personal de la universidad.
+          <br/><br/>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label as="legend">
@@ -75,7 +81,7 @@ export default class FormPago extends React.Component {
           </Form >
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button>
+          <Button variant="secondary" onClick={this.handleClose}>Cancelar</Button>
           <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Enviar</Button>
         </Modal.Footer>
       </div>
