@@ -21,7 +21,7 @@ let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequeli
 (async () => {
     try {
         // En producción ya no sincronizar, hacer mejor migraciones
-        await sequelize.sync();
+        //await sequelize.sync();
         await sequelize.authenticate();
         console.log("Connected to the database")
         // actualizar o crear planes
