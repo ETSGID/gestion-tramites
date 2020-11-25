@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
+const tiposCertificado = require('../../../../../back/enums').tiposCertificado;
 import ModalStructure from './ModalStructure';
 import FormPeticion from './FormPeticion';
 
@@ -29,6 +30,7 @@ export default class Certificados extends React.Component {
     render() {
         let peticiones = this.props.peticiones.map((peticion, index) => {
             peticion.idTabla = index;
+            peticion.nombreCertificado = Object.keys(tiposCertificado).find(k => tiposCertificado[k] === peticion.tipoCertificado);
             peticion.estadoPeticionTexto = Object.keys(estadosCertificado).find(k => estadosCertificado[k] === peticion.estadoPeticion) || "NO_PEDIDO"
             peticion.accion = peticion.estadoPeticionTexto
             return peticion
@@ -47,11 +49,11 @@ export default class Certificados extends React.Component {
             text: 'Plan'
         },
         {
-            dataField: 'tipoCertificado',
-            text: 'Certificado',
+            dataField: 'nombreCertificado',
+            text: 'Tipo certificado',
             formatter:(cellContent, row) => {
                 return (
-                    <p>{row.tipoCertificado.replace(/_/g," ")}</p>
+                    <p>{row.nombreCertificado}</p>
                 )
             }
         },

@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
+const tiposCertificado = require('../../../../../back/enums').tiposCertificado;
 import ModalStructure from './ModalStructure';
 
 export default class Certificados extends React.Component {
@@ -47,6 +48,7 @@ export default class Certificados extends React.Component {
         let peticiones = this.props.peticiones.map((peticion, index) => {
             peticion.idTabla = index;
             peticion.estadoPeticionTexto = Object.keys(estadosCertificado).find(k => estadosCertificado[k] === peticion.estadoPeticion) || "NO_PEDIDO"
+            peticion.nombreCertificado = Object.keys(tiposCertificado).find(k => tiposCertificado[k] === peticion.tipoCertificado);
             peticion.accion = peticion.estadoPeticion
             peticion.accion2 = peticion.estadoPeticion
             peticion.nombreCompleto = peticion.apellido + " " + peticion.nombre
@@ -61,18 +63,11 @@ export default class Certificados extends React.Component {
         for (const estado in estadosCertificado) {
             estadoSelect[estado] = estado
         }
-
-        const tipoSelect = {
-            asignaturas_español_nota_media: "Asignaturas en español con nota media",
-            asignaturas_ingles_nota_media: "Asignaturas en inglés con nota media",
-            ects_ingles:"ECTS en inglés (sin nota media)",
-            percentiles_ingles:"Percentiles en inglés (sin nota media)",
-            renovacion_familia_numerosa:"Renovación título familia numerosa",
-            ficha_informativa:"Ficha informativa",
-           // hace_constar:"Hace constar",
-           // otro:"Otro"
-        };
-
+        const tipoSelect = {};
+        for (const tipo in tiposCertificado) {
+            tipoSelect[tipo] = tipo
+        }
+        
         const columns = [{
             dataField: 'idTabla',
             text: 'idTabla',
@@ -105,14 +100,14 @@ export default class Certificados extends React.Component {
             text: 'Plan código'
         },
         {
-            dataField: 'tipoCertificado',
+            dataField: 'nombreCertificado',
             text: 'Certificado',
             filter: selectFilter({
                 options: tipoSelect
             }),
             formatter:(cellContent, row) => {
                 return (
-                    <p>{row.tipoCertificado.replace(/_/g," ")}</p>
+                    <p>{row.nombreCertificado}</p>
                 )
             }
         },

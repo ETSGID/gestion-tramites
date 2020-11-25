@@ -35,6 +35,16 @@ exports.formaPago = {
     "CARTA_PAGO": 2
 }
 
+exports.tiposCertificado = {
+    "ASIGNATURAS_ESPAÑOL_CON_NOTA_MEDIA": 1,
+    "ASIGNATURAS_INGLES_CON_NOTA_MEDIA": 2,
+    "ECTS_INGLES": 3,
+    "PERCENTILES_INGLES": 4,
+    "RENOVACION_TITULO_FAMILIA_NUMEROSA": 5,
+    "FICHA_INFORMATIVA": 6,
+    "OTRO": 7
+}
+
 
 exports.tramites = {
     "gestionTitulos": ["gestion-titulos", "Petición de título de grado/máster"],

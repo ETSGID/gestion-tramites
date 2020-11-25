@@ -10,6 +10,7 @@ let mail = require('./mail');
 let planController = require('../plan_controller');
 
 const estadosCertificado = require('../../enums').estadosCertificado;
+const tiposCertificado = require('../../enums').tiposCertificado;
 const base64 = require('../../lib/base64');
 const dni = require('../../lib/dni');
 
@@ -66,7 +67,7 @@ const updatePeticionAlumno = async function (edupersonuniqueid, planCodigo, tipo
     }
 }
 
-const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, descuento, tipoCertificado) {
+const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, descuento, tipoCertificado, nombreCertificadoOtro) {
     try {
         let respuesta = {};
         let peticion = await models.PeticionCertificado.findOne({
@@ -87,7 +88,8 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 estadoPeticion: estadosCertificado.SOLICITUD_ENVIADA,
                 descuento: descuento,
                 fecha: new Date(),
-                tipoCertificado: tipoCertificado
+                tipoCertificado: tipoCertificado,
+                nombreCertificadoOtro: nombreCertificadoOtro
             })
         } else {
             respuesta = null;
@@ -139,9 +141,9 @@ const getAllPeticionPas = async function (page, sizePerPage, filters){
                 })
             }
 
-            if (filters.tipoCertificado) {
+            if (filters.nombreCertificado) {
                 whereAnd.push({
-                    tipoCertificado: filters.tipoCertificado
+                    tipoCertificado:tiposCertificado[filters.nombreCertificado]
                 })
             }
         }
@@ -321,7 +323,8 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     estadoNuevo = estadosCertificado.SOLICITUD_ENVIADA;
                     paramsToUpdate.descuento = req.body.paramsToUpdate.descuento
                     paramsToUpdate.textCancel = null;
-                    paramsToUpdate.tipoCertificado = req.body.paramsToUpdate.tipo
+                    paramsToUpdate.tipoCertificado = req.body.paramsToUpdate.tipoCertificado;
+                    paramsToUpdate.nombreCertificadoOtro = req.body.paramsToUpdate.nombreCertificadoOtro;
                     paramsToUpdate.planCodigo = req.body.paramsToUpdate.plan;
                     paramsToUpdate.planNombre = await planController.getName(req.body.paramsToUpdate.plan);
                     emailToPas = true;
@@ -366,7 +369,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         
         let respuesta;
         if (estadoNuevo === estadosCertificado.SOLICITUD_ENVIADA && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, req.body.paramsToUpdate.tipo)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, paramsToUpdate.tipoCertificado, paramsToUpdate.nombreCertificadoOtro)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado, paramsToUpdate)
         }
