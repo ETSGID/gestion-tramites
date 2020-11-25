@@ -3,13 +3,16 @@
 module.exports = function (sequelize, DataTypes) {
     let PeticionCertificado = sequelize.define('PeticionCertificado',
         {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey : true,
+                autoIncrement: true
+            },
             edupersonuniqueid: {
-                type: DataTypes.STRING,
-                primaryKey : true
+                type: DataTypes.STRING
             },
             planCodigo: {
-                type: DataTypes.STRING,
-                primaryKey: true
+                type: DataTypes.STRING
             },
             planNombre: {
                 type: DataTypes.STRING
@@ -25,8 +28,10 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.STRING
             },
             tipoCertificado:{
-                type: DataTypes.STRING,
-                primaryKey: true
+                type: DataTypes.INTEGER
+            },
+            nombreCertificadoOtro:{
+                type: DataTypes.STRING
             },
             descuento:{
                 type : DataTypes.INTEGER

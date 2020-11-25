@@ -3,13 +3,16 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('PeticionCertificados', {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
       edupersonuniqueid: {
-        type: Sequelize.STRING,
-        primaryKey: true
+        type: Sequelize.STRING
       },
       planCodigo: {
-        type: Sequelize.STRING,
-        primaryKey: true
+        type: Sequelize.STRING
       },
       planNombre: {
         type: Sequelize.STRING
@@ -25,8 +28,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       tipoCertificado:{
-        type: Sequelize.STRING,
-        primaryKey: true
+        type: Sequelize.INTEGER
+      },
+      nombreCertificadoOtro:{
+        type: Sequelize.STRING
       },
       descuento: {
         type: Sequelize.INTEGER
