@@ -33,6 +33,9 @@ module.exports = {
       nombreCertificadoOtro:{
         type: Sequelize.STRING
       },
+      descripcion: {
+        type: Sequelize.TEXT
+      },
       descuento: {
         type: Sequelize.INTEGER
       },

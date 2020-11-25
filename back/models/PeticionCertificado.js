@@ -33,6 +33,9 @@ module.exports = function (sequelize, DataTypes) {
             nombreCertificadoOtro:{
                 type: DataTypes.STRING
             },
+            descripcion: {
+                type: DataTypes.TEXT
+            },
             descuento:{
                 type : DataTypes.INTEGER
             },
