@@ -42,7 +42,7 @@ exports.tiposCertificado = {
     "PERCENTILES_INGLES": 4,
     "RENOVACION_TITULO_FAMILIA_NUMEROSA": 5,
     "FICHA_INFORMATIVA": 6,
-    "OTRO": 7
+    // "OTRO": 7
 }
 
 
