@@ -5,8 +5,13 @@ const planController = require('../controllers/plan_controller');
 //    DATABASE_URL = postgres://user:passwd@host:port/database
 let logs = process.env.DEV === 'true' ? false : false
 let sequelize;
+const dbHost = process.env.DB_HOST  || 'localhost';
+const dbPort = process.env.DB_PORT || '5432';
+const dbUsername = process.env.DB_USERNAME || 'postgres';
+const dbPassword = process.env.DB_PASSWORD || '1234';
+const db = process.env.POSTGRES_DB || 'gestion_tramites';
 
-sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':5432/' + process.env.POSTGRES_DB, { logging: logs });
+sequelize = new Sequelize('postgres://' + dbUsername + ':' + dbPassword + '@' + dbHost + ':' + dbPort  + '/' + db, { logging: logs });
 
 // Importar la definicion de las tablas 
 

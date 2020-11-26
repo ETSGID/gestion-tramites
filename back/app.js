@@ -16,7 +16,7 @@ exports.contextPath2 = contextPath2;
 const local = process.env.DEV;
 exports.local = local;
 
-const admin = process.env.EMAIL_ADMIN;
+
 
 
 //cas autentication
@@ -113,7 +113,6 @@ if (process.env.DEV == 'true') {
     res.locals.barraInicioText = "TRÁMITE";
     res.locals.portalName = 'portal'
     res.locals.pruebasBoolean = false;
-    res.locals.admin = admin;
     next();
   })
 } else {
@@ -155,7 +154,6 @@ if (process.env.DEV == 'true') {
     // Hacer visible req.session en las vistas
     //se debe sobrescribir con el texto correspondiente en el router del trámite
     res.locals.barraInicioText = "TRÁMITE";
-    res.locals.admin = admin;
     next();
   });
 }
