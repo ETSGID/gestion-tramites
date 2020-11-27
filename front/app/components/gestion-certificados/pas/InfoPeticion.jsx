@@ -53,7 +53,6 @@ export default class InfoPeticion extends React.Component {
                     <ul>
                     <li>Alumno: {this.props.peticion.nombre} {this.props.peticion.apellido}</li>
                         <li>Email: {this.props.peticion.email}</li>
-                        <li>Unique ID: {this.props.peticion.edupersonuniqueid}</li>
                         <li>Plan: {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})</li>
                         <li>Tipo de certificado: {nombreCertificado}</li>
                         <li>Estado Actual: {this.props.peticion.estadoPeticionTexto}</li>
