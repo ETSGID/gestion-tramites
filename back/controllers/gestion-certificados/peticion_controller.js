@@ -138,7 +138,7 @@ const getAllPeticionPas = async function (page, sizePerPage, filters){
                     estadoPeticion: estadosCertificado[filters.estadoPeticionTexto]
                 })
             }
-// filtrar por nombre
+
             if (filters.tipoCertificado) {
                 whereAnd.push({
                     tipoCertificado: filters.tipoCertificado
