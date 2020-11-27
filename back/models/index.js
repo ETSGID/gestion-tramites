@@ -5,23 +5,26 @@ const planController = require('../controllers/plan_controller');
 //    DATABASE_URL = postgres://user:passwd@host:port/database
 let logs = process.env.DEV === 'true' ? false : false
 let sequelize;
+const dbHost = process.env.DB_HOST  || 'localhost';
+const dbPort = process.env.DB_PORT || '5432';
+const dbUsername = process.env.DB_USERNAME || 'postgres';
+const dbPassword = process.env.DB_PASSWORD || '1234';
+const db = process.env.POSTGRES_DB || 'gestion_tramites';
 
-sequelize = new Sequelize('postgres://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':5432/' + process.env.POSTGRES_DB, { logging: logs });
+sequelize = new Sequelize('postgres://' + dbUsername + ':' + dbPassword + '@' + dbHost + ':' + dbPort  + '/' + db, { logging: logs });
 
 // Importar la definicion de las tablas 
 
 let PeticionTitulo = require('./PeticionTitulo')(sequelize, Sequelize);
-let PeticionEvaluacionCurricular = require('./PeticionEvaluacionCurricular')(sequelize, Sequelize);
 let PeticionCertificado = require('./PeticionCertificado')(sequelize, Sequelize);
 let Permiso = require('./Permiso')(sequelize, Sequelize);
 let Plan = require('./Plan')(sequelize, Sequelize);
-let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequelize, Sequelize);
 
 
 (async () => {
     try {
         // En producción ya no sincronizar, hacer mejor migraciones
-        //await sequelize.sync();
+        // await sequelize.sync();
         await sequelize.authenticate();
         console.log("Connected to the database")
         // actualizar o crear planes
@@ -40,11 +43,9 @@ let EstadoEvaluacionCurricular = require('./EstadoEvaluacionCurricular')(sequeli
 //Exportamos modelos
 
 exports.PeticionTitulo = PeticionTitulo;
-exports.PeticionEvaluacionCurricular = PeticionEvaluacionCurricular;
 exports.PeticionCertificado = PeticionCertificado;
 exports.Permiso = Permiso;
 exports.Plan = Plan;
-exports.EstadoEvaluacionCurricular = EstadoEvaluacionCurricular;
 
 
 exports.sequelize = sequelize;

@@ -43,6 +43,7 @@ POSTGRES_DB=gestion_tramites #(nombre de DB)
 DB_USERNAME=postgres #(nombre de DB)
 DB_PASSWORD=1234
 DB_HOST=dbtramites
+DB_PORT=5432
 SERVICE=https://pruebas.etsit.upm.es #url servicio sin contexto
 CAS=https://siupruebas.upm.es/cas #url nuevo servidor cas
 SESSION_SECRET=Secreto_para_las_sesiones
@@ -87,6 +88,7 @@ POSTGRES_DB=gestion_tramites #(nombre de DB)
 DB_USERNAME=postgres #(nombre de usuario de DB)
 DB_PASSWORD=1234 #(password de DB)
 DB_HOST=localhost
+DB_PORT=5432
 SERVICE=http://localhost:3000
 CAS=ttps://siupruebas.upm.es/cas
 SESSION_SECRET=Secreto_para_las_sesiones
@@ -110,7 +112,7 @@ EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secret
 	- **(DEV=true)** no  pasa por el cas y crea un **usario inventado** (Fernando Fernández Fernández) con los roles (**FA**): PAS y Alumno 
 	- En local no se puede usar la cuenta de correo ``zz.mailer.sys2``, pero sí se puede usar el correo de tipo @upm.es o @alumnos.upm.es con las credenciales del usuario.
 	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
-	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL. Para ejecutar las migraciones y seeders con los comandos del package.json, es necesario indicar el DB_PORT en el que se conecta la base de datos: si la db está en el propio host, exportar la variable de DB_PORT=5432, si está en el contenedor docker, indicar el puerto con el que se mapea.
+	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
 	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
 ##### Comandos necesarios
 ```shell

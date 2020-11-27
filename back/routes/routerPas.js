@@ -4,14 +4,14 @@ const enums = require('../enums');
 let permisoController = require('../controllers/permiso_controller');
 const routerGestionTitulos = require('./gestion-titulos/routerPas');
 const routerGestionCertificados = require('./gestion-certificados/routerPas');
-const routerEvaluacionCurricular = require('./evaluacion-curricular/routerPas');
+const admin = process.env.EMAIL_ADMIN || 'secretario.etsit@upm.es';
 
 router.get(`/`, async function (req, res, next) {
     req.session.tramite = null;
     let permisos = await permisoController.getAllPermisos();
     let emailUser = req.session.user.mailPrincipal;
     if (permisos.length === 0) { // vacio, crea permiso admin
-        req.params.email = res.locals.admin;
+        req.params.email = admin;
         req.params.tramite = 'admin';
         req.session.permisos = await permisoController.crearPermiso(req, res, next);
     }
@@ -76,10 +76,5 @@ router.use(`/${enums.tramites.gestionCertificados[0]}`, function (req, res, next
     req.session.tramite = enums.tramites.gestionCertificados[0];
     next();
 }, routerGestionCertificados);
-
-router.use(`/${enums.tramites.evaluacionCurricular[0]}`, function (req, res, next) {
-    req.session.tramite = enums.tramites.evaluacionCurricular[0];
-    next();
-}, routerEvaluacionCurricular);
 
 module.exports = router;
