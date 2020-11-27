@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Modal, Button, Form, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 const descuento = require('../../../../../back/enums').descuento
+const tiposCertificado = require('../../../../../back/enums').tiposCertificado;
 
 export default class FormPeticion extends React.Component {
   constructor(props) {
@@ -10,7 +11,8 @@ export default class FormPeticion extends React.Component {
     this.state = {
       checkDescuento: descuento.NO,
       disabledFile: "disabled",
-      tipo: 'asignaturas_español_nota_media'
+      tipoCertificado: "1",
+      otroChecked: false
     }
     this.fileInputDescuento = React.createRef();
     this.fileDNI = React.createRef();
@@ -26,8 +28,10 @@ export default class FormPeticion extends React.Component {
   }
 
   handleChangeTipo(e) {
+    let otroChecked = e.currentTarget.value === "7" ? true : false;
     this.setState({
-      tipo: e.currentTarget.value
+      tipoCertificado: e.currentTarget.value,
+      otroChecked: otroChecked
     });
   }
 
@@ -35,7 +39,7 @@ export default class FormPeticion extends React.Component {
     event.preventDefault();
     let paramsToUpdate = {
       descuento: this.state.checkDescuento,
-      tipo: this.state.tipo,
+      tipoCertificado: this.state.tipoCertificado,
       plan: this.planElegido.value
     }
     if (!this.fileDNI.current.files[0]) {
@@ -48,7 +52,10 @@ export default class FormPeticion extends React.Component {
       if (this.state.checkDescuento != descuento.NO) {
         paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
-      paramsToUpdate.file1 = this.fileDNI.current.files[0]
+      if(paramsToUpdate.tipoCertificado === "7"){
+        paramsToUpdate.nombreCertificadoOtro = this.textoTitulo.value;
+      }
+      paramsToUpdate.file1 = this.fileDNI.current.files[0];
       if (confirm(`¿Está seguro que quiere pedir el certificado académico?`)) {
         this.props.cambioEstadoClick(null, paramsToUpdate)
       }
@@ -96,7 +103,7 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Asignaturas en español con nota media"
                 defaultChecked
-                value={'asignaturas_español_nota_media'}
+                value={tiposCertificado.ASIGNATURAS_ESPAÑOL_CON_NOTA_MEDIA}
                 name="formTipo"
                 onChange={this.handleChangeTipo}
               />
@@ -104,35 +111,35 @@ export default class FormPeticion extends React.Component {
                 type="radio"
                 label="Asignaturas en inglés con nota media"
                 name="formTipo"
-                value={'asignaturas_ingles_nota_media'}
+                value={tiposCertificado.ASIGNATURAS_INGLES_CON_NOTA_MEDIA}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="ECTS en inglés (sin nota media)"
                 name="formTipo"
-                value={'ects_ingles'}
+                value={tiposCertificado.ECTS_INGLES}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="Percentiles en inglés (sin nota media)"
                 name="formTipo"
-                value={'percentiles_ingles'}
+                value={tiposCertificado.PERCENTILES_INGLES}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check
                 type="radio"
                 label="Renovación título familia numerosa"
                 name="formTipo"
-                value={'renovacion_familia_numerosa'}
+                value={tiposCertificado.RENOVACION_TITULO_FAMILIA_NUMEROSA}
                 onChange={this.handleChangeTipo}
               />
               <Form.Check className="d-inline-block"
                 type="radio"
                 label="Ficha informativa"
                 name="formTipo"
-                value={'ficha_informativa'}
+                value={tiposCertificado.FICHA_INFORMATIVA}
                 onChange={this.handleChangeTipo}
               /> <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >
                 Sin nota media, para surtir efectos dentro de la UPM.
@@ -141,15 +148,30 @@ export default class FormPeticion extends React.Component {
                   <FontAwesomeIcon icon={faInfoCircle} />
                 </span>
               </OverlayTrigger>
-              
-              {/* <Form.Check
+              </Form.Group>
+               <br></br>
+              <Form.Check className="d-inline-block"
                 type="radio"
                 label="Otro"
                 name="formTipo"
-                value={'otro'}
+                value={tiposCertificado.OTRO}
+                checked={this.state.otroChecked}
                 onChange={this.handleChangeTipo}
-              /> */}
-            </Form.Group>
+              /> <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >
+                Adjunte la acreditación de familia numerosa en el apartado inferior si usted opta a descuento. Secretaría decidirá si el certificado solicitado requiere pago o no.
+              </Tooltip>}>
+                <span className="d-inline-block">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
+              </OverlayTrigger>
+            {this.state.otroChecked && <Form.Group >
+                <Form.Label>Indique un nombre para el tipo de certificado (Ej: TFT matriculado):</Form.Label>
+                <Form.Control maxLength={20} minLength={1} as="textarea" rows="1" ref={textarea => this.textoTitulo = textarea} onChange={this.cuentaCaracteres} />
+                <Form.Text muted>
+                  {20 - this.state.contadorCaracteresTitulo} caracteres restantes
+                </Form.Text>
+              </Form.Group>
+            } 
 
             <Form.Group>
               <Form.Label as="legend">

@@ -35,15 +35,14 @@ exports.formaPago = {
     "CARTA_PAGO": 2
 }
 
-// EV. CURRICULAR
-exports.estadosEvaluacionCurricular = {
-    "NO_PEDIDO": 1,
-    "SOLICITUD_PENDIENTE": 2,
-    "EVALUACION_PENDIENTE": 3,
-    "EVALUACION_DENEGADA": 4,
-    "EVALUACION_APROBADA": 5,
-    "EVALUACION_FINALIZADA": 6,
-    "SOLICITUD_CANCELADA": -1
+exports.tiposCertificado = {
+    "ASIGNATURAS_ESPAÑOL_CON_NOTA_MEDIA": 1,
+    "ASIGNATURAS_INGLES_CON_NOTA_MEDIA": 2,
+    "ECTS_INGLES": 3,
+    "PERCENTILES_INGLES": 4,
+    "RENOVACION_TITULO_FAMILIA_NUMEROSA": 5,
+    "FICHA_INFORMATIVA": 6,
+     "OTRO": 7
 }
 
 

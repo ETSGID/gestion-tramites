@@ -3,6 +3,7 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 const estadosCertificado = require('../../../../../back/enums').estadosCertificado;
 const descuento = require('../../../../../back/enums').descuento;
 const formaPago = require('../../../../../back/enums').formaPago;
+const tiposCertificado = require('../../../../../back/enums').tiposCertificado;
 
 export default class InfoPeticion extends React.Component {
     constructor(props) {
@@ -17,6 +18,8 @@ export default class InfoPeticion extends React.Component {
         if (estadosCertificado.PETICION_CANCELADA == this.props.peticion.estadoPeticion) {
             cancelado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>
         }
+        let nombreCertificado = Object.keys(tiposCertificado).find(k => tiposCertificado[k] === this.props.peticion.tipoCertificado);
+            
         switch (this.props.peticion.formaPago) {
             case formaPago.ONLINE:
                 formaPagoText = <li>Forma de pago: Online</li>
@@ -52,7 +55,7 @@ export default class InfoPeticion extends React.Component {
                         <li>Email: {this.props.peticion.email}</li>
                         <li>Unique ID: {this.props.peticion.edupersonuniqueid}</li>
                         <li>Plan: {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})</li>
-                        <li>Tipo de certificado: {this.props.peticion.tipoCertificado.replace(/_/g," ")}</li>
+                        <li>Tipo de certificado: {nombreCertificado}</li>
                         <li>Estado Actual: {this.props.peticion.estadoPeticionTexto}</li>
                         <li>Última actualización: {this.props.peticion.fecha}</li>
                         {descuentoText}
