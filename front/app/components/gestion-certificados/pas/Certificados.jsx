@@ -75,7 +75,7 @@ export default class Certificados extends React.Component {
         }, {
             dataField: 'edupersonuniqueid',
             text: 'Unique ID',
-            filter: textFilter()
+            hidden: true
         },
         {
             dataField: 'nombre',
