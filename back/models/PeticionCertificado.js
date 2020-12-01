@@ -36,6 +36,9 @@ module.exports = function (sequelize, DataTypes) {
             descripcion: {
                 type: DataTypes.TEXT
             },
+            requierePago: {
+                type: DataTypes.BOOLEAN // O BOOLEAN
+            },
             descuento:{
                 type : DataTypes.INTEGER
             },

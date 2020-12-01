@@ -52,9 +52,13 @@ export default class Certificados extends React.Component {
             dataField: 'nombreCertificado',
             text: 'Tipo certificado',
             formatter:(cellContent, row) => {
+                if(row.nombreCertificado === "OTRO"){
+                    return (
+                        <p>{row.nombreCertificado} - {row.nombreCertificadoOtro}</p>)
+                } else {
                 return (
-                    <p>{row.nombreCertificado}</p>
-                )
+                    <p>{row.nombreCertificado}</p>)
+                }
             }
         },
         {
@@ -87,7 +91,13 @@ export default class Certificados extends React.Component {
                         return (<span>Se está generando su certificado académico. Se le notificará cuando esté listo.</span>)
                         case estadosCertificado.CERTIFICADO_ENVIADO:
                         return (<span>Su certificado académico ya está disponible y se le ha sido enviado al email de contacto. Si no lo ha recibido correctamente, contacte con secretaría.</span>)
-                    default:
+                        case estadosCertificado.PAGO_VALORADO:
+                            if (row.requierePago) {
+                                return (<span>Su certificado requiere pago. Se está generando la carta de pago.</span>)
+                            } else {
+                                return (<span>Su certificado no requiere pago y está generándose. Se le notificará cuando esté listo.</span>)
+                            }
+                        default:
                         return (<span>Su solicitud está siendo procesada por secretaría.</span>)
                 }
             }

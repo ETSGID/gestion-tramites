@@ -67,7 +67,7 @@ const updatePeticionAlumno = async function (edupersonuniqueid, planCodigo, tipo
     }
 }
 
-const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, descuento, tipoCertificado, nombreCertificadoOtro) {
+const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, descuento, tipoCertificado, nombreCertificadoOtro, descripcion, requierePago) {
     try {
         let respuesta = {};
         let peticion = await models.PeticionCertificado.findOne({
@@ -89,7 +89,9 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 descuento: descuento,
                 fecha: new Date(),
                 tipoCertificado: tipoCertificado,
-                nombreCertificadoOtro: nombreCertificadoOtro
+                nombreCertificadoOtro: nombreCertificadoOtro,
+                descripcion: descripcion,
+                requierePago: requierePago
             })
         } else {
             respuesta = null;
@@ -325,13 +327,28 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     paramsToUpdate.textCancel = null;
                     paramsToUpdate.tipoCertificado = req.body.paramsToUpdate.tipoCertificado;
                     paramsToUpdate.nombreCertificadoOtro = req.body.paramsToUpdate.nombreCertificadoOtro;
+                    paramsToUpdate.descripcion = req.body.paramsToUpdate.descripcion;
                     paramsToUpdate.planCodigo = req.body.paramsToUpdate.plan;
                     paramsToUpdate.planNombre = await planController.getName(req.body.paramsToUpdate.plan);
+                    paramsToUpdate.requierePago = true; // o "true"
                     emailToPas = true;
                     emailToAlumno = true;
                     break;
                 case estadosCertificado.SOLICITUD_ENVIADA:
-                    estadoNuevo = estadosCertificado.ESPERA_PAGO;
+                    if(peticion.tipoCertificado === 7){ //tipo OTRO
+                        paramsToUpdate.requierePago = req.body.paramsToUpdate.requierePago;
+                        estadoNuevo = estadosCertificado.PAGO_VALORADO;
+                    } else {
+                        estadoNuevo = estadosCertificado.ESPERA_PAGO;
+                    }
+                    emailToAlumno = true;
+                    break;
+                case estadosCertificado.PAGO_VALORADO:
+                    if(peticion.requierePago){ //ver si boolean o string
+                        estadoNuevo = estadosCertificado.ESPERA_PAGO;
+                    } else {
+                        estadoNuevo = estadosCertificado.CERTIFICADO_ENVIADO;
+                    }
                     emailToAlumno = true;
                     break;
                 case estadosCertificado.ESPERA_PAGO:
@@ -360,16 +377,16 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
             toPAS = process.env.EMAIL_PRUEBAS;
         }
-        if(emailToAlumno){
-            let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
-        }
-        if(emailToPas){
-            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session, paramsToUpdate.formaPago)
-        }
+        // if(emailToAlumno){
+        //     let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
+        // }
+        // if(emailToPas){
+        //     let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session, paramsToUpdate.formaPago)
+        // }
         
         let respuesta;
         if (estadoNuevo === estadosCertificado.SOLICITUD_ENVIADA && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
-            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, paramsToUpdate.tipoCertificado, paramsToUpdate.nombreCertificadoOtro)
+            respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, paramsToUpdate.tipoCertificado, paramsToUpdate.nombreCertificadoOtro, paramsToUpdate.descripcion, paramsToUpdate.requierePago)
         } else {
             respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado, paramsToUpdate)
         }

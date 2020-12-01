@@ -1,7 +1,7 @@
 
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, selectFilter  } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -52,11 +52,12 @@ export default class Certificados extends React.Component {
             peticion.accion = peticion.estadoPeticion
             peticion.accion2 = peticion.estadoPeticion
             peticion.nombreCompleto = peticion.apellido + " " + peticion.nombre
+            peticion.requierePago = peticion.requierePago
             return peticion
         })
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
-            planSelect[plan.id] = plan.nombre +' ('+plan.id+')';
+            planSelect[plan.id] = plan.nombre + ' (' + plan.id + ')';
         })
 
         const estadoSelect = {};
@@ -67,7 +68,7 @@ export default class Certificados extends React.Component {
         for (const tipo in tiposCertificado) {
             tipoSelect[tipo] = tipo
         }
-        
+
         const columns = [{
             dataField: 'idTabla',
             text: 'idTabla',
@@ -105,10 +106,15 @@ export default class Certificados extends React.Component {
             filter: selectFilter({
                 options: tipoSelect
             }),
-            formatter:(cellContent, row) => {
+            formatter: (cellContent, row) => {
+                if(row.nombreCertificado === "OTRO"){
+                    return (
+                        <p>{row.nombreCertificado} - {row.nombreCertificadoOtro}</p>)
+                } else {
                 return (
-                    <p>{row.nombreCertificado}</p>
-                )
+                    <p>{row.nombreCertificado}</p>)
+                }
+                
             }
         },
         {
@@ -127,7 +133,7 @@ export default class Certificados extends React.Component {
         {
             dataField: 'fecha',
             text: 'Última Actualización',
-            sort:true
+            sort: true
         },
         {
             dataField: 'accion',
@@ -136,7 +142,17 @@ export default class Certificados extends React.Component {
             formatter: (cellContent, row) => {
                 switch (row.estadoPeticion) {
                     case estadosCertificado.SOLICITUD_ENVIADA:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Carta de pago</Button>)
+                        if (row.tipoCertificado === 7) {
+                            return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Valorar pago</Button>)
+                        } else {
+                            return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Carta de pago</Button>)
+                        }
+                    case estadosCertificado.PAGO_VALORADO:
+                        if (row.requierePago) {
+                            return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Carta de pago</Button>)
+                        } else {
+                            return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Enviar certificado</Button>)
+                        }
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Pago confirmado</Button>)
                     case estadosCertificado.PAGO_CONFIRMADO:
@@ -159,7 +175,9 @@ export default class Certificados extends React.Component {
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.PAGO_REALIZADO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
-                   default:
+                    case estadosCertificado.PAGO_VALORADO:
+                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
+                    default:
                         return (<span>No acción asociada</span>)
                 }
             }

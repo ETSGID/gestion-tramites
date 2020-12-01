@@ -6,6 +6,7 @@ import FormConfirmarPago from './FormConfirmarPago';
 import FormCertificadoEnviado from './FormCertificadoEnviado';
 import FormCancel from './FormCancel';
 import InfoPeticion from './InfoPeticion';
+import FormValorarPago from './FormValorarPago';
 
 export default class ModalStructure extends React.Component {
   constructor(props) {
@@ -26,24 +27,44 @@ export default class ModalStructure extends React.Component {
     let form;
     if (this.props.cancel) {
       form =
-      <FormCancel
-        peticion={this.props.peticion}
-        handleClose={this.handleClose}
-        cambioEstadoClick={this.cambioEstadoClick}
-      >
-      </FormCancel>
+        <FormCancel
+          peticion={this.props.peticion}
+          handleClose={this.handleClose}
+          cambioEstadoClick={this.cambioEstadoClick}
+        >
+        </FormCancel>
     }
-    else if(this.props.info){
+    else if (this.props.info) {
       form =
-      <InfoPeticion
-        peticion={this.props.peticion}
-        handleClose={this.handleClose}
-      >
-      </InfoPeticion>
+        <InfoPeticion
+          peticion={this.props.peticion}
+          handleClose={this.handleClose}
+        >
+        </InfoPeticion>
     }
     else {
       switch (estadosCertificado[this.props.peticion.estadoPeticionTexto]) {
         case estadosCertificado.SOLICITUD_ENVIADA:
+        if(this.props.peticion.tipoCertificado === 7){
+          form =
+            <FormValorarPago
+              peticion={this.props.peticion}
+              handleClose={this.handleClose}
+              cambioEstadoClick={this.cambioEstadoClick}
+            >
+            </FormValorarPago>
+        } else {
+          form =
+          <FormInfoPago
+            peticion={this.props.peticion}
+            handleClose={this.handleClose}
+            cambioEstadoClick={this.cambioEstadoClick}
+          >
+          </FormInfoPago>
+        }
+          break;
+        case estadosCertificado.PAGO_VALORADO:
+          if(this.props.peticion.requierePago){
           form =
             <FormInfoPago
               peticion={this.props.peticion}
@@ -51,6 +72,15 @@ export default class ModalStructure extends React.Component {
               cambioEstadoClick={this.cambioEstadoClick}
             >
             </FormInfoPago>
+          } else {
+            form = <FormCertificadoEnviado
+            peticion={this.props.peticion}
+            handleClose={this.handleClose}
+            cambioEstadoClick={this.cambioEstadoClick}
+          >
+          </FormCertificadoEnviado>
+          break;
+          }
           break;
         case estadosCertificado.PAGO_REALIZADO:
           form =
