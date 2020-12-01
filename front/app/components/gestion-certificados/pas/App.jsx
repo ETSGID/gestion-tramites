@@ -90,7 +90,7 @@ export default class App extends React.Component {
         peticionesNuevas[index].receptor = response.data[1][0].receptor
         peticionesNuevas[index].localizacionFisica = response.data[1][0].localizacionFisica
         peticionesNuevas[index].textCancel = response.data[1][0].textCancel
-
+        peticionesNuevas[index].requierePago = response.data[1][0].requierePago
         this.setState({
           peticiones: peticionesNuevas,
           selected: null,
@@ -164,6 +164,7 @@ export default class App extends React.Component {
       <div>
         <div className="cuerpo">
           <h2>Peticiones de certificados de alumnos:</h2>
+          <p><a href="/pas/gestion-tramites/">Volver al listado de trámites</a></p>
           <LoadingOverlay
             active={this.state.loading}
             spinner

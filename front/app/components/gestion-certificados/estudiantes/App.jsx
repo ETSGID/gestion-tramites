@@ -151,6 +151,8 @@ export default class App extends React.Component {
         <div className="cuerpo">
           <h2>Certificados Académicos</h2>
           <p>A continuación se presentan los Certificados Académicos que tenga solicitados. En caso de no tener solicitado ninguno, puede pedirlo haciendo click en el botón "Solicitar certificado académico"</p>
+          <p><a href="/estudiantes/gestion-tramites/">Volver al listado de trámites</a></p>
+            
           <p><b>Se le enviarán notificaciones a través de su correo @alumnos.upm.es</b></p>
           <LoadingOverlay
             active={this.state.loading}
@@ -166,8 +168,7 @@ export default class App extends React.Component {
               style={{ marginBottom: "15px" }}
               onClick={() => this.solicitarCertificado()}
             >Solicitar certificado académico</Button>
-
-            {this.state.showForm &&
+           {this.state.showForm &&
               <Modal show={true} onHide={this.handleClose}>
                 <Modal.Header closeButton>
                   <Modal.Title>
