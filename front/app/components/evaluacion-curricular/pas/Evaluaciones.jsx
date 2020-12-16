@@ -3,12 +3,12 @@ import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { Button } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 import ModalStructure from './ModalStructure';
-import { tramites } from '../../../../../back/enums';
+const helpers = require('../../../../../back/lib/helpers');
 
 export default class Evaluaciones extends React.Component {
     constructor(props) {
@@ -53,7 +53,7 @@ export default class Evaluaciones extends React.Component {
     render() {
         const planSelect = {};
         this.props.plans.forEach((plan, index) => {
-            planSelect[plan.id] = plan.nombre
+            planSelect[plan.id] = plan.nombre + ' (' + plan.id + ')';
         })
 
         const estadoSelect = {};
@@ -61,13 +61,8 @@ export default class Evaluaciones extends React.Component {
             estadoSelect[estado] = estado
         }
 
-        const asignaturaSelect = {};
-        this.props.asignaturas.forEach((asignatura, index) => {
-            asignaturaSelect[asignatura.asignatura] = asignatura.nombre
-        })
-
         const tipoSelect = {
-            titulacion: "Titulacion",
+            titulación: "Titulación",
             curso: "Curso"
         };
 
@@ -86,6 +81,11 @@ export default class Evaluaciones extends React.Component {
         }, {
             dataField: 'edupersonuniqueid',
             text: 'Unique ID',
+            hidden: true
+        },
+        {
+            dataField: 'dni',
+            text: 'DNI',
             filter: textFilter(),
         },
         {
@@ -99,11 +99,6 @@ export default class Evaluaciones extends React.Component {
             filter: textFilter(),
         },
         {
-            dataField: 'planCodigo',
-            text: 'Plan Codigo',
-            hidden: true
-        },
-        {
             dataField: 'planNombre',
             text: 'Plan',
             filter: selectFilter({
@@ -111,16 +106,18 @@ export default class Evaluaciones extends React.Component {
             })
         },
         {
-            dataField: 'asignaturaCodigo',
-            text: 'Asignatura Codigo',
-            hidden: true
+            dataField: 'planCodigo',
+            text: 'Plan Codigo'
         },
         {
             dataField: 'asignaturaNombre',
             text: 'Asignatura',
-            filter: selectFilter({
-                options: asignaturaSelect
-            })
+            filter: textFilter(),
+        },
+        {
+            dataField: 'asignaturaCodigo',
+            text: 'Asignatura Codigo',
+            filter: textFilter(),
         },
         {
             dataField: 'tipo',
@@ -145,7 +142,12 @@ export default class Evaluaciones extends React.Component {
         },
         {
             dataField: 'fecha',
-            text: 'Última Actualización'
+            text: 'Última Actualización',
+            formatter: (cellContent, row) => {
+                return (
+                    <span>{helpers.formatFecha(row.fecha)}</span>
+                )
+            },
         },
         {
             dataField: 'accion',
@@ -153,13 +155,12 @@ export default class Evaluaciones extends React.Component {
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 switch (row.estadoPeticion) {
-                    case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
+                    case estadosEvaluacionCurricular.SOLICITUD_ENVIADA:
                         return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Revisar requisitos</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Reunión tribunal</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Aprobar evaluación</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_APROBADA:
-                    case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
-                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Finalizar proceso</Button>)
+                        return (<Button variant="primary" onClick={() => this.cambioSelectedClick(row.idTabla, false, false)}>Confirmar nota</Button>)    
                     default:
                         return (<span>No acción asociada</span>)
                 }
@@ -172,12 +173,10 @@ export default class Evaluaciones extends React.Component {
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 switch (row.estadoPeticion) {
-                    case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
+                    case estadosEvaluacionCurricular.SOLICITUD_ENVIADA:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Rechazar solicitud</Button>)
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Denegar evaluación</Button>)
-                    case estadosEvaluacionCurricular.EVALUACION_APROBADA:
-                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar proceso</Button>)
                     default:
                         return (<span>No acción asociada</span>)
                 }
@@ -211,20 +210,20 @@ export default class Evaluaciones extends React.Component {
         let estadoTitulacion;
         if (this.props.disableTitulacion) {
             estadoTitulacion = "TRÁMITE DESACTIVADO";
-            botonTitulacion = <Button variant="primary" onClick={() => this.cambioEstadoTramite('titulacion')}> Activar</Button>
+            botonTitulacion = <Button variant="primary"  style={{ marginBottom: "10px", marginLeft:"10px" }} onClick={() => this.cambioEstadoTramite('titulacion')}> Activar</Button>
         } else {
             estadoTitulacion = "TRÁMITE ACTIVADO";
-            botonTitulacion = <Button variant="danger" onClick={() => this.cambioEstadoTramite('titulacion')}> Desactivar</Button>
+            botonTitulacion = <Button variant="danger"  style={{ marginBottom: "10px", marginLeft:"10px" }} onClick={() => this.cambioEstadoTramite('titulacion')}> Desactivar</Button>
         }
 
         let botonCurso;
         let estadoCurso;
         if (this.props.disableCurso) {
             estadoCurso = "TRÁMITE DESACTIVADO";
-            botonCurso = <Button variant="primary" onClick={() => this.cambioEstadoTramite('curso')}> Activar</Button>
+            botonCurso = <Button variant="primary"  style={{ marginBottom: "10px", marginLeft:"10px" }} onClick={() => this.cambioEstadoTramite('curso')}> Activar</Button>
         } else {
             estadoCurso = "TRÁMITE ACTIVADO";
-            botonCurso = <Button variant="danger" onClick={() => this.cambioEstadoTramite('curso')}> Desactivar</Button>
+            botonCurso = <Button variant="danger"   style={{ marginBottom: "10px", marginLeft:"10px" }}onClick={() => this.cambioEstadoTramite('curso')}> Desactivar</Button>
         }
 
        
@@ -232,9 +231,18 @@ export default class Evaluaciones extends React.Component {
 
         return (
             <div>
-            <p>Estado evaluación por titulación: {estadoTitulacion}   {botonTitulacion}</p>
-            <p>Estado evaluación por curso: {estadoCurso}   {botonCurso}</p>
-            
+            <div class="row">
+                <div class="col">
+                Para activar o desactivar cada tipo de evaluación curricular:
+                    <li>Estado evaluación por titulación: {estadoTitulacion}   {botonTitulacion}</li>
+                    <li>Estado evaluación por curso: {estadoCurso}   {botonCurso}</li>
+                </div>
+                <div class="col">
+                <p>Para descargar los informes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarInformes()}> Descargar informes</Button></p>
+                <p>Para descargar el histórico de solicitudes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarHistorico()}> Descargar histórico</Button></p>
+                </div>
+            </div>
+           
              <p></p>
                 <BootstrapTable
                     remote={
@@ -259,7 +267,7 @@ export default class Evaluaciones extends React.Component {
 }
 
 const defaultSorted = [{
-    dataField: 'DNI',
+    dataField: 'fecha',
     order: 'desc'
 }];
 

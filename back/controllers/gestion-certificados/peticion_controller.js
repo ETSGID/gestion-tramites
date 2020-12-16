@@ -70,13 +70,14 @@ const updatePeticionAlumno = async function (edupersonuniqueid, planCodigo, tipo
 const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, descuento, tipoCertificado, nombreCertificadoOtro, descripcion, requierePago) {
     try {
         let respuesta = {};
-        let peticion = await models.PeticionCertificado.findOne({
-            where: {
-                edupersonuniqueid: edupersonuniqueid,
-                planCodigo: planCodigo,
-                tipoCertificado: tipoCertificado
-            }
-        });
+        let peticion = null;
+        //  peticion = await models.PeticionCertificado.findOne({
+        //     where: {
+        //         edupersonuniqueid: edupersonuniqueid,
+        //         planCodigo: planCodigo,
+        //         tipoCertificado: tipoCertificado
+        //     }
+        // });
         if (peticion === null) {
             respuesta = await models.PeticionCertificado.create({
                 edupersonuniqueid: edupersonuniqueid,

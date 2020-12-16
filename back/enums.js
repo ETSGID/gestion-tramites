@@ -25,6 +25,17 @@ exports.estadosCertificado = {
     "PETICION_CANCELADA": -1
 }
 
+// EV. CURRICULAR
+exports.estadosEvaluacionCurricular = {
+    "SOLICITUD_ENVIADA": 1,
+    "EVALUACION_PENDIENTE": 2,
+    "EVALUACION_DENEGADA": 3,
+    "EVALUACION_APROBADA": 4,
+    "NOTA_INTRODUCIDA": 5,
+    "SOLICITUD_CANCELADA": -1
+}
+
+
 exports.descuento = {
     "NO": 1,
     "FAMILIA_NUMEROSA_GENERAL": 2,

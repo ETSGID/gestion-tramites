@@ -1,28 +1,18 @@
-// Definicion del modelo Peticion:
+// Definicion del modelo Historico:
 
 module.exports = function (sequelize, DataTypes) {
-    let PeticionEvaluacionCurricular = sequelize.define('PeticionEvaluacionCurricular',
+    let HistoricoEvaluacionCurricular = sequelize.define('HistoricoEvaluacionCurricular',
         {
             id: {
                 type: DataTypes.INTEGER,
                 autoIncrement: true,
                 primaryKey: true
             },
-            dni: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
             edupersonuniqueid: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            planCodigo: {
-                type: DataTypes.STRING,
-            },
-            planNombre: {
-                type: DataTypes.STRING
-            },
-            email: {
+            dni: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
@@ -32,15 +22,11 @@ module.exports = function (sequelize, DataTypes) {
             apellido: {
                 type: DataTypes.STRING
             },
-            estadoPeticion: {
-                type: DataTypes.INTEGER,
-                allowNull: false
+            planCodigo: {
+                type: DataTypes.STRING,
             },
-            fecha: {
-                type: DataTypes.DATEONLY
-            },
-            textCancel: {
-                type: DataTypes.TEXT
+            planNombre: {
+                type: DataTypes.STRING
             },
             asignaturaNombre: {
                 type: DataTypes.STRING
@@ -51,13 +37,12 @@ module.exports = function (sequelize, DataTypes) {
             tipo: {
                 type: DataTypes.STRING
             },
-            justificacion: {
-                type: DataTypes.TEXT
-            }
-
+            fechaTribunal: {
+                type: DataTypes.DATEONLY
+            },
         },
         {
             timestamps: false
         });
-    return PeticionEvaluacionCurricular;
+    return HistoricoEvaluacionCurricular;
 };

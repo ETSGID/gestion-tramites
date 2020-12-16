@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('PeticionEvaluacionCurriculars', {
+    return queryInterface.createTable('HistoricoEvaluacionCurriculars', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -16,31 +16,17 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      planCodigo: {
-        type: Sequelize.STRING,
-      },
-      planNombre: {
-        type: Sequelize.STRING
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
       nombre: {
         type: Sequelize.STRING
       },
       apellido: {
         type: Sequelize.STRING
       },
-      estadoPeticion: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+      planCodigo: {
+        type: Sequelize.STRING,
       },
-      fecha: {
-        type: Sequelize.DATEONLY
-      },
-      textCancel: {
-        type: Sequelize.TEXT
+      planNombre: {
+        type: Sequelize.STRING
       },
       asignaturaNombre: {
         type: Sequelize.STRING
@@ -51,10 +37,9 @@ module.exports = {
       tipo: {
         type: Sequelize.STRING
       },
-      justificacion: {
-        type: Sequelize.TEXT
-      }
-
+      fechaTribunal: {
+        type: Sequelize.DATEONLY
+      },
     },
       {
         timestamps: false
@@ -62,6 +47,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('PeticionEvaluacionCurriculars')
+    return queryInterface.dropTable('HistoricoEvaluacionCurriculars')
   }
 };

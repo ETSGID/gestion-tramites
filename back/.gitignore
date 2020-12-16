@@ -60,3 +60,7 @@ typings/
 local.env
 
 node_modules
+certificates
+req.json
+test.js
+test2.js

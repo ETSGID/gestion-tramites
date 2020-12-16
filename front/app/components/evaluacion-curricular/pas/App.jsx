@@ -5,11 +5,12 @@ import Evaluaciones from './Evaluaciones'
 import NoPermiso from '../../NoPermiso'
 import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
+import { faBowlingBall } from '@fortawesome/free-solid-svg-icons';
 const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
 let urljoin = require('url-join');
 const service = process.env.SERVICE || 'http://localhost:3000';
 const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
-
+const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 
 export default class App extends React.Component {
 
@@ -36,6 +37,9 @@ export default class App extends React.Component {
     this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
     this.cambioEstadoTramite = this.cambioEstadoTramite.bind(this);
     this.checkPermisos = this.checkPermisos.bind(this);
+    this.descargarInformes = this.descargarInformes.bind(this);
+    this.descargarHistorico = this.descargarHistorico.bind(this);
+    this.borrarPeticiones = this.borrarPeticiones.bind(this);
   }
 
   componentDidMount() {
@@ -160,24 +164,66 @@ export default class App extends React.Component {
     })
   }
 
+  borrarPeticiones(tipo) {
+    axios.delete(urljoin(apiBaseUrl, "api/delete"), { params: { tipo: tipo } })
+      .then((response) => {
+        this.setState({
+          peticiones: response.data.peticiones,
+          numberPeticiones: response.data.numberPeticiones,
+          loading: null
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
+
   cambioEstadoTramite(tramite) {
     let paramsToUpdate = {};
     switch (tramite) {
       case 'titulacion':
-        this.setState({
-          disableTitulacion: !this.state.disableTitulacion,
-          loading: true,
-        });
-        paramsToUpdate.estadoTitulacion = !this.state.disableTitulacion ? 'DESACTIVADO' : 'ACTIVADO';
-        paramsToUpdate.estadoCurso = this.state.disableCurso ? 'DESACTIVADO' : 'ACTIVADO';
+        if (this.state.disableTitulacion) {
+          if (confirm(`Va a activar el trámite de solicitud de evaluación curricular por TITULACIÓN. Se borrarán todas las solicitudes de este tipo del periodo anterior. El alumno ya podrá solicitar este tipo de evaluación.`)) {
+            paramsToUpdate.estadoTitulacion = 'ACTIVADO';
+            this.setState({
+              disableTitulacion: false,
+              loading: true,
+            });
+            this.borrarPeticiones('titulación');
+          }
+        } else {
+          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por TITULACIÓN hasta que lo active de nuevo. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
+            paramsToUpdate.estadoTitulacion = 'DESACTIVADO';
+            this.setState({
+              disableTitulacion: true,
+              loading: true,
+            });
+          }
+        }
         break;
       case 'curso':
-        this.setState({
-          disableCurso: !this.state.disableCurso,
-          loading: true
-        });
-        paramsToUpdate.estadoTitulacion = this.state.disableTitulacion ? 'DESACTIVADO' : 'ACTIVADO';
-        paramsToUpdate.estadoCurso = !this.state.disableCurso ? 'DESACTIVADO' : 'ACTIVADO';
+        if (this.state.disableCurso) {
+          if (confirm(`Va a activar el trámite de solicitud de evaluación curricular por CURSO. Se borrarán todas las solicitudes de este tipo del periodo anterior. El alumno ya podrá solicitar este tipo de evaluación.`)) {
+            paramsToUpdate.estadoCurso = 'ACTIVADO';
+            this.setState({
+              disableCurso: false,
+              loading: true,
+            });
+            this.borrarPeticiones('curso');
+          }
+        } else {
+          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por CURSO hasta que lo active de nuevo. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
+            paramsToUpdate.estadoCurso = 'DESACTIVADO';
+            this.setState({
+              disableCurso: true,
+              loading: true,
+            });
+          }
+        }
         break;
       default:
         return;
@@ -203,6 +249,48 @@ export default class App extends React.Component {
       })
   }
 
+  descargarInformes() {
+    axios.get(urljoin(apiBaseUrl, "api/informes"), {
+      headers: {
+        'responseType': 'blob'
+      }
+    })
+      .then((response) => {
+        var file_path = "data:application/zip;base64," + response.data.content;
+        var a = document.createElement("A");
+        a.href = file_path;
+        a.download = response.data.title;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })
+      .catch((error) => {
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
+
+  descargarHistorico() {
+    axios.get(urljoin(apiBaseUrl, "api/historico"), {
+      headers: {
+        'responseType': 'blob'
+      }
+    })
+      .then((response) => {
+        var file_path = "data:application/zip;base64," + response.data.content;
+        var a = document.createElement("A");
+        a.href = file_path;
+        a.download = response.data.title;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })
+      .catch((error) => {
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
+
   render() {
     let evaluaciones;
     if (!this.state.tienePermiso && this.state.plansCargado) {
@@ -222,6 +310,8 @@ export default class App extends React.Component {
         cambioEstadoTramite={this.cambioEstadoTramite}
         disableCurso={this.state.disableCurso}
         disableTitulacion={this.state.disableTitulacion}
+        descargarInformes={this.descargarInformes}
+        descargarHistorico={this.descargarHistorico}
       >
       </Evaluaciones>
     } else {
@@ -231,7 +321,9 @@ export default class App extends React.Component {
     return (
       <div>
         <div className="cuerpo">
-          <h2>Peticiones de alumnos</h2>
+          <h2>Solicitudes de evaluación curricular de alumnos:</h2>
+          <p><a href="/pas/gestion-tramites/">Volver al listado de trámites</a></p>
+
           <LoadingOverlay
             active={this.state.loading}
             spinner

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
+import { Modal} from 'react-bootstrap';
 import InfoPeticion from './InfoPeticion';
 
 
@@ -33,7 +32,7 @@ export default class ModalStructure extends React.Component {
       <Modal show={true} onHide={this.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            Solicitud evaluación curricular por {this.props.peticion.tipo} - {this.props.peticion.asignaturaNombre}
+            Solicitud de evaluación curricular 
           </Modal.Title>
         </Modal.Header>
         {form}

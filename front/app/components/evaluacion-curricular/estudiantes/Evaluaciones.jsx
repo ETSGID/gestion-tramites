@@ -4,14 +4,15 @@ import { Alert, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
+const helpers = require('../../../../../back/lib/helpers');
 import ModalStructure from './ModalStructure';
 
-export default class Consulta extends React.Component {
+export default class Evaluaciones extends React.Component {
     constructor(props) {
         super(props)
         this.cambioEstadoClick = this.cambioEstadoClick.bind(this);
         this.cambioSelectedClick = this.cambioSelectedClick.bind(this);
-        this.volverClick = this.volverClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
 
     }
     cambioEstadoClick(paramsToUpdate) {
@@ -20,9 +21,9 @@ export default class Consulta extends React.Component {
     cambioSelectedClick(index, info) {
         this.props.cambioSelectedClick(index, info)
     }
-    volverClick() {
-        this.props.handleClick('volver');
-      }
+    handleClose() {
+        this.props.handleClose();
+    }
 
 
     render() {
@@ -41,7 +42,15 @@ export default class Consulta extends React.Component {
         },
         {
             dataField: 'planCodigo',
+            text: 'Plan código'
+        },
+        {
+            dataField: 'planNombre',
             text: 'Plan'
+        },
+        {
+            dataField: 'asignaturaCodigo',
+            text: 'Asignatura código'
         },
         {
             dataField: 'asignaturaNombre',
@@ -64,7 +73,12 @@ export default class Consulta extends React.Component {
         },
         {
             dataField: 'fecha',
-            text: 'Última Actualización'
+            text: 'Última Actualización',
+            formatter: (cellContent, row) => {
+                return (
+                    <span>{helpers.formatFecha(row.fecha)}</span>
+                )
+            }
         },
         {
             dataField: 'accion',
@@ -72,19 +86,19 @@ export default class Consulta extends React.Component {
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
                 switch (estadosEvaluacionCurricular[row.estadoPeticionTexto]) {
-                    case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
+                    case estadosEvaluacionCurricular.SOLICITUD_ENVIADA:
                         return (<span>Su solicitud está siendo procesada por secretaría para verificar que cumple con los requisitos.</span>)
                     case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
                         return (<span>Usted cumple los requisitos y la solicitud está siendo procesada por el tribunal encargado.</span>)
                     case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
-                        return (<span>Su solicitud ha sido denegada por el tribunal.</span>)
+                        return (<span>Su solicitud ha sido denegada por el tribunal. Para consultar el motivo, haga click en el botón de info.</span>)
                     case estadosEvaluacionCurricular.EVALUACION_APROBADA:
-                        return (<span>Su solicitud ha sido aprobada.</span>)
+                        return (<span>Su solicitud ha sido aprobada. Se le notificará cuando su nota se suba a Politécnica Virtual.</span>)
+                    case estadosEvaluacionCurricular.NOTA_INTRODUCIDA:
+                        return (<span>Su nota ha sido actualizada. Puede consultarla en Politécnica Virtual.</span>)
                     case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
-                        return (<span>Su solicitud ha sido cancelada.</span>)
-                    case estadosEvaluacionCurricular.EVALUACION_FINALIZADA:
-                    return (<span>Su proceso de solicitud ha sido dado por finalizado.</span>)
-                    default:
+                        return (<span>Su solicitud ha sido cancelada. Para consultar el motivo, haga click en el botón de info.</span>)
+                   default:
                         return (<span>Su solicitud está siendo procesada por secretaría.</span>)
                 }
             }
@@ -100,19 +114,20 @@ export default class Consulta extends React.Component {
         }
         ];
         let modal;
-        if (this.props.selected !== null) {
+        if ((this.props.selected !== null) && (typeof this.props.selected !== 'undefined')) {
             modal =
                 <ModalStructure
                     peticion={this.props.peticiones[this.props.selected]}
-                    handleClose={this.cambioSelectedClick}
+                    handleClose={this.handleClose}
                     info={this.props.info}
                     cambioEstadoClick={this.cambioEstadoClick}
+                    planes={this.props.planes}
                 >
                 </ModalStructure>
         }
         return (
 
-            <div className="cuerpo">
+            <div>
                 {
                     <BootstrapTable
                         bootstrap4
@@ -123,10 +138,8 @@ export default class Consulta extends React.Component {
                         defaultSorted={defaultSorted}
                         striped={true}
                     />
-                    }
+                }
                 {modal}
-                
-                <Button variant="primary" onClick={this.volverClick}>Volver</Button>
             </div>
 
         );

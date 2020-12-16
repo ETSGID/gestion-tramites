@@ -1,7 +1,7 @@
- import React from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import React from 'react';
+import { Modal } from 'react-bootstrap';
 const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
-
+const helpers = require('../../../../../back/lib/helpers');
 
 export default class InfoPeticion extends React.Component {
     constructor(props) {
@@ -10,22 +10,22 @@ export default class InfoPeticion extends React.Component {
     }
 
     render() {
-       let denegado;
-        if (estadosEvaluacionCurricular.SOLICITUD_DENEGADA == this.props.peticion.estadoPeticion ||estadosEvaluacionCurricular.EVALUACION_DENEGADA == this.props.peticion.estadoPeticion || estadosEvaluacionCurricular.SOLICITUD_CANCELADA == this.props.peticion.estadoPeticion) {
+        let denegado;
+        if (estadosEvaluacionCurricular.EVALUACION_DENEGADA == this.props.peticion.estadoPeticion || estadosEvaluacionCurricular.SOLICITUD_CANCELADA == this.props.peticion.estadoPeticion) {
             denegado = <li>Motivo cancelación: {this.props.peticion.textCancel}</li>
         }
-        
+
         return (
             <div>
                 <Modal.Body>
                     <b>Resumen</b>
                     <ul>
-                    <li>Asignatura: {this.props.peticion.asignaturaCodigo}-{this.props.peticion.asignaturaNombre}</li>
-                        <li>Plan: {this.props.peticion.planNombre} {this.props.peticion.planCodigo}</li>
+                        <li>Plan: {this.props.peticion.planNombre} ({this.props.peticion.planCodigo})</li>
+                        <li>Asignatura: {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo})</li>
                         <li>Tipo: {this.props.peticion.tipo}</li>
-                        <li>Email de contacto:{this.props.peticion.email}</li>
+                        <li>Email de contacto: {this.props.peticion.email}</li>
                         <li>Estado actual: {this.props.peticion.estadoPeticionTexto}</li>
-                        <li>Última actualización: {this.props.peticion.fecha || "Petición no registrada todavía"}</li>
+                        <li>Última actualización: {helpers.formatFecha(this.props.peticion.fecha)}</li>
                         {denegado}
                     </ul>
                 </Modal.Body>

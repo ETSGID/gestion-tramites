@@ -1,82 +1,72 @@
 import React from 'react';
-import { Modal, Button, Form} from 'react-bootstrap';
+import { Modal, Button, Form } from 'react-bootstrap';
 const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 
 export default class FormCancel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { textCancel: "", cancelNewState: estadosEvaluacionCurricular.SOLICITUD_CANCELADA};
+        this.state = {
+            textCancel: ""
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeTextCancel = this.handleChangeTextCancel.bind(this);
-        this.handleCheckBox = this.handleCheckBox.bind(this);
-
+        this.fecha = React.createRef();
     }
 
     handleChangeTextCancel(e) {
         this.setState({ textCancel: e.currentTarget.value })
     }
-    handleSubmit(event) {
-        let textCancel;
 
-        switch(this.state.cancelNewState){
-            case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
-                textCancel = "\n\nSe ha cancelado su solicitud. Si usted considera que ha habido algún error mande un CAU.  Pasará al estado: SOLICITUD_CANCELADA.\n\n Comentario Secretaría:\n ";
-                break;
-            case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
-                textCancel = "\n\nEl tribunal ha denegado su evaluación curricular. Pasará al estado: EVALUACION_DENEGADA.\n\nComentario Secretaría:\n ";
-                break;
-            default:
-                textCancel = "";
-                break;
+    handleSubmit(event) {
+        let paramsToUpdate = {};
+         if (this.props.peticion.estadoPeticion === estadosEvaluacionCurricular.EVALUACION_PENDIENTE) {
+             paramsToUpdate.cancelNewState = estadosEvaluacionCurricular.EVALUACION_DENEGADA;
+            if (!this.fecha.current.value) {
+                alert(`Debe indicar la fecha en la que el tribunal se reunió.`);
+            } else {
+                paramsToUpdate.fecha = this.fecha.current.value;
+            }
+            } else {
+            paramsToUpdate.cancelNewState = estadosEvaluacionCurricular.SOLICITUD_CANCELADA;
         }
 
-        textCancel+= this.state.textCancel.trim();
-
         event.preventDefault();
-        if (textCancel.trim() == "") {
+        if (this.state.textCancel.trim() == "") {
             alert("Debe indicar el motivo por el que se cancela la petición");
         } else {
-
-            let paramsToUpdate = {
-
-                textCancel : textCancel.trim(),
-                cancelNewState: this.state.cancelNewState
-            }
+            let textCancel = this.state.textCancel.trim();
+            paramsToUpdate.textCancel = textCancel.trim();
             this.props.cambioEstadoClick(paramsToUpdate)
         }
     }
-    handleCheckBox (ev) {
-        if (ev.currentTarget.value == estadosEvaluacionCurricular.SOLICITUD_CANCELADA) {
-            this.setState({cancelNewState : estadosEvaluacionCurricular.SOLICITUD_CANCELADA});
-        } else if (ev.currentTarget.value == estadosEvaluacionCurricular.EVALUACION_DENEGADA) {
-            this.setState({ cancelNewState: estadosEvaluacionCurricular.EVALUACION_DENEGADA});
-        }   else {
-            this.setState({ cancelNewState: estadosEvaluacionCurricular.SOLICITUD_CANCELADA });
-        }     
-    }
 
-    render() {
-        return (
-            <div>
-                <Modal.Body>
-                    Va a cancelar la petición de la evaluación curricular de {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo}) de {this.props.peticion.nombre} {this.props.peticion.apellido} ({this.props.peticion.edupersonuniqueid}).
-                    <br />
-                    <br />
-                    <Form onSubmit={this.handleSubmit}>
-                        <Form.Group>
-                            <Form.Check type="radio" label="No cumple requisitos" name="horizontalRadio" onChange={this.handleCheckBox} value = {estadosEvaluacionCurricular.SOLICITUD_CANCELADA} defaultChecked/>                           
-                            <Form.Check type="radio" label="El tribunal ha denegado su solicitud" name="horizontalRadio" onChange={this.handleCheckBox} value = {estadosEvaluacionCurricular.EVALUACION_DENEGADA} />
-                            <Form.Check type="radio" label="Otro motivo" name="horizontalRadio" onChange={this.handleCheckBox} value = {estadosEvaluacionCurricular.SOLICITUD_CANCELADA} defaultChecked/>                     
-                            <Form.Label>Indique motivo de cancelación</Form.Label>
-                            <Form.Control onChange={this.handleChangeTextCancel} as="textarea" rows="3" />
-                        </Form.Group>
-                    </Form >
-                </Modal.Body>
-                <Modal.Footer>
-                    {/* <Button variant="secondary" onClick={this.props.handleClose}>Cancelar</Button> */}
-                    <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Confirmar</Button>
-                </Modal.Footer>
-            </div>
-        );
+render() {
+    let fecha;
+    if (this.props.peticion.estadoPeticion === estadosEvaluacionCurricular.EVALUACION_PENDIENTE){
+        fecha = <Form.Group controlId="fechaReunion">
+        <Form.Label><b>FECHA DE REUNIÓN DEL TRIBUNAL:</b></Form.Label>
+        <Form.Control type="date" name="fecha" placeholder="fecha de reunión" ref={this.fecha} />
+      </Form.Group>
     }
+    return (
+        <div>
+            <Modal.Body>
+                Va a cancelar la petición de la evaluación curricular de {this.props.peticion.asignaturaNombre} ({this.props.peticion.asignaturaCodigo}) de {this.props.peticion.nombre} {this.props.peticion.apellido}.
+                    <br />
+                <br />
+                <Form onSubmit={this.handleSubmit}>
+                {fecha}
+                    <Form.Group>
+                        <Form.Label><b>Indique el motivo:</b></Form.Label>
+                        <Form.Control onChange={this.handleChangeTextCancel} as="textarea" rows="3" />
+                    </Form.Group>
+                    
+                </Form >
+            </Modal.Body>
+            <Modal.Footer>
+               <Button className="d-inline" type="submit" onClick={this.handleSubmit}>Confirmar</Button>
+            </Modal.Footer>
+        </div>
+    );
+}
 }

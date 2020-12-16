@@ -10,29 +10,29 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, asignaturaNo
     let text = `Su solicitud de evaluación curricular de la asignatura ${asignaturaNombre} ha cambiado de estado. \n\n\n  ===== Resumen =====\n\nAcaba de pasar al estado ${estadoActualText}. \n\n`;
     let filesname = [];
     switch (estadoActual) {
-        case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
+        case estadosEvaluacionCurricular.SOLICITUD_ENVIADA:
             send = true;
-            text += `Se ha enviado su solicitud de evaluación curricular. El personal procederá a comprobar si usted cumple los requisitos para solicitar dicha evaluación. Puede consultar el estado de su solicitud en la sección de consulta.`
+            text += `Se ha enviado su solicitud de evaluación curricular. El personal procederá a comprobar si usted cumple los requisitos para solicitar dicha evaluación. Puede consultar el estado de su solicitud en la aplicación.`
             break;
         case estadosEvaluacionCurricular.EVALUACION_PENDIENTE:
             send = true;
-            text += `Se ha aprobado su solicitud de evaluación curricular. El tribunal correspondiente procederá a analizar su caso. Puede consultar el estado de su solicitud en la sección de consulta.`
+            text += `Usted cumple los requisitos. El tribunal correspondiente procederá a analizar su caso. Puede consultar el estado de su solicitud en la aplicación.`
             break;
         case estadosEvaluacionCurricular.EVALUACION_DENEGADA:
             send = true;
-            text += `La comisión ha concluido que se deniega su solicitud de evaluación curricular, con los siguientes datos:\n`+ textoAdicional;
+            text += `El tribunal ha concluido que se ha DENEGADO su solicitud de evaluación curricular, con los siguientes datos:\n\n`+ textoAdicional +' \n\nSi usted considera que ha habido un error, utilice el servicio de CAU de secretaría en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/';
             break;
         case estadosEvaluacionCurricular.EVALUACION_APROBADA:
             send = true;
-            text += `La comisión ha concluido que se aprueba su solicitud de evaluación curricular, con los siguientes datos:\n`+ textoAdicional;
+            text += `El tribunal ha concluido que se ha APROBADO su solicitud de evaluación curricular, con los siguientes datos:\n\n`+ textoAdicional+'\n\nSi usted considera que ha habido un error, utilice el servicio de CAU de secretaría en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/ \n\nEn un plazo de 5 días, se actualizará la nota en Politécnica Virtual. Se le notificará este cambio de estado por email.';
             break;
-        case estadosEvaluacionCurricular.EVALUACION_FINALIZADA:
+        case estadosEvaluacionCurricular.NOTA_INTRODUCIDA:
             send = true;
-            text += `Se ha dado por finalizado su solicitud de evaluación curricular.`
+            text += 'Usted ya puede consultar su nota actualizada en Politécnica Virtual: https://www.upm.es/politecnica_virtual/';
             break;
         case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
             send = true;
-            text += `Su petición de evaluación curricular ha sido cancelada por el siguiente motivo.\n`+ textoAdicional;
+            text += `Su solicitud de evaluación curricular ha sido cancelada por el siguiente motivo:\n\n`+ textoAdicional;
             break;
     }
     if (send) {
@@ -56,7 +56,7 @@ exports.sendEmailToPas = async function (estadoActual, from, to, asignaturaNombr
     let text;
     let filesname = [];
     switch (estadoActual) {
-        case estadosEvaluacionCurricular.SOLICITUD_PENDIENTE:
+        case estadosEvaluacionCurricular.SOLICITUD_ENVIADA:
             send = true;
             text = `El alumno ${session.user.cn} ha solicitado la evaluación curricular de la asignatura ${asignaturaNombre}. Debe comprobar que cumple los requisitos y aceptar o denegar dicha solicitud para pasar al siguiente estado.`
             break;
