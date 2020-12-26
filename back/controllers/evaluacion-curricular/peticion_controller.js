@@ -12,6 +12,7 @@ const Op = Sequelize.Op;
 const helpers = require('../../lib/helpers');
 const { parse, Parser } = require('json2csv');
 const JSZip = require('jszip');
+const { resolve } = require('bluebird');
 
 //devuelve todas las peticiones de un alumno
 const getAllPeticionAlumno = async function (edupersonuniqueid) {
@@ -222,218 +223,214 @@ const updateEstadoTramite = async function (paramsToUpdate) {
     }
 }
 
-const getDataApiUpm = (mail, path, options = {}) => {
-    return new Promise(resolve => {
-        const curso = helpers.getCursoAnio();
-        // En desarrollo en local NO se puede acceder a la apiUPM
-        if (process.env.DEV == 'true') {
-            let data;
-            if (path === '/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json') {
-                data = [
-                    {
-                        "codigo_plan": "09TT",
-                        "nombre_plan": "GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION",
-                        "anio": curso,
-                        "periodo": "1",
-                        "anulada": "N",
-                        "conceptos": [
-                            {
-                                "nombre": "Créditos en 1a Matrícula",
-                                "suma_resta": "S",
-                                "cantidad": "66",
-                                "importe_unidad": "45.02",
-                                "importe_total": "2971.32"
-                            }, {
-                                "nombre": "Apertura Expediente",
-                                "suma_resta": "S",
-                                "cantidad": "1",
-                                "importe_unidad": "33.65",
-                                "importe_total": "33.65"
-                            }, {
-                                "nombre": "Seguro Escolar",
-                                "suma_resta": "S",
-                                "cantidad": "1",
-                                "importe_unidad": "1.12",
-                                "importe_total": "1.12"
-                            }, {
-                                "nombre": "Becario MEC",
-                                "suma_resta": "R",
-                                "cantidad": "",
-                                "importe_unidad": "",
-                                "importe_total": "2971.32"
-                            }
-                        ]
-                    },
-                    {
-                        "codigo_plan": "09AQ",
-                        "nombre_plan": "MASTER UNIVERSITARIO EN INGENIERÍA DE TELECOMUNICACIÓN",
-                        "anio": curso,
-                        "periodo": "1",
-                        "anulada": "N"
-                        //otros parametros que no importan
-                    },
-                    {
-                        "codigo_plan": "09TT",
-                        "nombre_plan": "GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION",
-                        //ejemplo curso pasado
-                        "anio": "2015-16",
-                        "periodo": "1",
-                        "anulada": "N"
-                        //otros parametros que no importan
-                    }
-                ];
-
-            } else if (path.startsWith('/sapi_upm/academico/alumnos/index.upm/matricula.json/')) {
-
-                const asignaturasMatricula = {
-                    '09TT': {},
-                    '09AQ': {}
-                }
-                asignaturasMatricula['09TT'][curso] = [
-                    {
-                        "codigo_asignatura": "95000001",
-                        "nombre_asignatura": "ALGEBRA",
-                        "duracion": "1S",
-                        "curso": "1",
-                        "creditos": "6"
-                    },
-                    {
-                        "codigo_asignatura": "95000013",
-                        "nombre_asignatura": "ELECTROMAGNETISMO",
-                        "duracion": "1S",
-                        "curso": "2",
-                        "creditos": "4.5"
-                    },
-                    // Opt
-                    {
-                        "codigo_asignatura": "95000191",
-                        "nombre_asignatura": "DESARROLLO PERSONAL Y GESTIÓN DE CARRERA",
-                        "duracion": "1S-2S",
-                        "curso": "4",
-                        "creditos": "4.5"
-                    },
-                    // Opt
-                    {
-                        "codigo_asignatura": "95000192",
-                        "nombre_asignatura": "CREATIVIDAD E INNOVACIÓN",
-                        "duracion": "2S",
-                        "curso": "3",
-                        "creditos": "4.5"
-                    },
-                    // TFG
-                    {
-                        "codigo_asignatura": "95000082",
-                        "nombre_asignatura": "TRABAJO FIN DE GRADO",
-                        "duracion": "1S-2S",
-                        "curso": "4",
-                        "creditos": "12"
-                    }
-                ]
-
-                asignaturasMatricula['09AQ'][curso] = [
-                    {
-                        "codigo_asignatura": "93000792",
-                        "nombre_asignatura": "ANALISIS SEÑAL PARA COMUNICACIONES",
-                        "duracion": "1S",
-                        "curso": "1",
-                        "creditos": "6"
-                    },
-                    {
-                        "codigo_asignatura": "93000795",
-                        "nombre_asignatura": "EQUIPOS Y TERMINALES DE USUARIO",
-                        "duracion": "1S",
-                        "curso": "1",
-                        "creditos": "6"
-                    }
-                ]
-                data = asignaturasMatricula[options.plan];
-            }
-            resolve(data);
-        } else {
-
-            const options = {
-                hostname: 'www.upm.es',
-                path: path,
-                headers: {
-                    "X-UPMUSR": mail
+const getDataApiUpm = async function (mail, path, options) {
+    // return new Promise((resolve,reject) => {
+    const curso = helpers.getCursoAnio();
+    // En desarrollo en local NO se puede acceder a la apiUPM
+    // if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
+    if (process.env.DEV == 'true') {
+        let data;
+        if (path === '/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json') {
+            data = [
+                {
+                    "codigo_plan": "09TT",
+                    "nombre_plan": "GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION",
+                    "anio": curso,
+                    "periodo": "1",
+                    "anulada": "N",
+                    "conceptos": [
+                        {
+                            "nombre": "Créditos en 1a Matrícula",
+                            "suma_resta": "S",
+                            "cantidad": "66",
+                            "importe_unidad": "45.02",
+                            "importe_total": "2971.32"
+                        }, {
+                            "nombre": "Apertura Expediente",
+                            "suma_resta": "S",
+                            "cantidad": "1",
+                            "importe_unidad": "33.65",
+                            "importe_total": "33.65"
+                        }, {
+                            "nombre": "Seguro Escolar",
+                            "suma_resta": "S",
+                            "cantidad": "1",
+                            "importe_unidad": "1.12",
+                            "importe_total": "1.12"
+                        }, {
+                            "nombre": "Becario MEC",
+                            "suma_resta": "R",
+                            "cantidad": "",
+                            "importe_unidad": "",
+                            "importe_total": "2971.32"
+                        }
+                    ]
                 },
-                cert: fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem'),
-                key: fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem'),
-                passphrase: process.env.API_PASSPHRASE
+                {
+                    "codigo_plan": "09AQ",
+                    "nombre_plan": "MASTER UNIVERSITARIO EN INGENIERÍA DE TELECOMUNICACIÓN",
+                    "anio": curso,
+                    "periodo": "1",
+                    "anulada": "N"
+                    //otros parametros que no importan
+                },
+                {
+                    "codigo_plan": "09TT",
+                    "nombre_plan": "GRADO EN INGENIERIA DE TECNOLOGIAS Y SERVICIOS DE TELECOMUNICACION",
+                    //ejemplo curso pasado
+                    "anio": "2015-16",
+                    "periodo": "1",
+                    "anulada": "N"
+                    //otros parametros que no importan
+                }
+            ];
+
+        } else if (path.startsWith('/sapi_upm/academico/alumnos/index.upm/matricula.json/')) {
+
+            const asignaturasMatricula = {
+                '09TT': {},
+                '09AQ': {}
             }
-            const req = https.request(options, (res) => {
-                let data = '';
+            asignaturasMatricula['09TT'][curso] = [
+                {
+                    "codigo_asignatura": "95000001",
+                    "nombre_asignatura": "ALGEBRA",
+                    "duracion": "1S",
+                    "curso": "1",
+                    "creditos": "6"
+                },
+                {
+                    "codigo_asignatura": "95000013",
+                    "nombre_asignatura": "ELECTROMAGNETISMO",
+                    "duracion": "1S",
+                    "curso": "2",
+                    "creditos": "4.5"
+                },
+                // Opt
+                {
+                    "codigo_asignatura": "95000191",
+                    "nombre_asignatura": "DESARROLLO PERSONAL Y GESTIÓN DE CARRERA",
+                    "duracion": "1S-2S",
+                    "curso": "4",
+                    "creditos": "4.5"
+                },
+                // Opt
+                {
+                    "codigo_asignatura": "95000192",
+                    "nombre_asignatura": "CREATIVIDAD E INNOVACIÓN",
+                    "duracion": "2S",
+                    "curso": "3",
+                    "creditos": "4.5"
+                },
+                // TFG
+                {
+                    "codigo_asignatura": "95000082",
+                    "nombre_asignatura": "TRABAJO FIN DE GRADO",
+                    "duracion": "1S-2S",
+                    "curso": "4",
+                    "creditos": "12"
+                }
+            ]
 
-                res.on('data', (d) => {
-                    data += d;
-                });
-
-                res.on('end', () => {
-                    data = JSON.parse(data);
-
-
-                    resolve(data);
-                });
-            });
-
-            req.on('error', (e) => {
-                console.error(e);
-            });
-
-            req.end();
+            asignaturasMatricula['09AQ'][curso] = [
+                {
+                    "codigo_asignatura": "93000792",
+                    "nombre_asignatura": "ANALISIS SEÑAL PARA COMUNICACIONES",
+                    "duracion": "1S",
+                    "curso": "1",
+                    "creditos": "6"
+                },
+                {
+                    "codigo_asignatura": "93000795",
+                    "nombre_asignatura": "EQUIPOS Y TERMINALES DE USUARIO",
+                    "duracion": "1S",
+                    "curso": "1",
+                    "creditos": "6"
+                }
+            ]
+            data = asignaturasMatricula[options.plan];
         }
-    });
+        return data;
+    } else if (process.env.PRUEBAS == 'true') {
+        try {
+            let email_pruebas = process.env.EMAIL_PRUEBAS;
+        var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
+        var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
+        var passphrase = process.env.API_PASSPHRASE;
+        const httpsAgent = new https.Agent({
+            cert: cert,
+            key: key,
+            passphrase: passphrase,
+            secureProtocol: "TLSv1_2_method"
+        })
+        const headers = {
+            'X-UPMUSR': email_pruebas
+        }
+        const response = await axios.get(path, { headers: headers, httpsAgent: httpsAgent })
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+
+    } else {
+
+    }
+    //  });
 }
 
 
 const getInfoMatricula = async function (correo) {
-    let planesAsignaturas = {};
-    const promisesAsignaturasPlanes = [];
+    let planesAsignaturas = {}
+    let promisesAsignaturasPlanes = [];
     let anio = helpers.getCursoAnio();
-
     try {
-        const plansMatricula = await getDataApiUpm(correo, '/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json', {});
-        plansMatricula.forEach(plan => {
-            if (plan.anio === anio) {
-                planesAsignaturas[plan.codigo_plan] = {
-                    codigo: plan.codigo_plan,
-                    nombre: plan.nombre_plan,
-                    asignaturas: [],
-                    //  asignaturasTrim: ''
+        getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json', {})
+        .then(async (data) => {
+            console.log('info:',data);
+            data.forEach(plan => {
+                if (plan.anio === anio) {
+                    planesAsignaturas[plan.codigo_plan] = {
+                        codigo: plan.codigo_plan,
+                        nombre: plan.nombre_plan,
+                        asignaturas: [],
+                        //  asignaturasTrim: ''
+                    }
                 }
+            })
+            for (const plan in planesAsignaturas) {
+                promisesAsignaturasPlanes.push(
+                    getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula.json/' + plan + '/asignaturas', { plan })
+                )
             }
-        })
-        for (const plan in planesAsignaturas) {
-            promisesAsignaturasPlanes.push(
-                getDataApiUpm(correo, '/sapi_upm/academico/alumnos/index.upm/matricula.json/' + plan + '/asignaturas', { plan })
-            )
-        }
-        const asignaturasPlanes = await Promise.all(promisesAsignaturasPlanes);
-        let index = 0
-        for (plan in planesAsignaturas) {
-            if (asignaturasPlanes[index] && asignaturasPlanes[index][anio] && Array.isArray(asignaturasPlanes[index][anio])) {
-                asignaturasPlanes[index][anio].forEach(asignatura => {
 
-                    let aux = {};
-                    aux.asignaturaCodigo = asignatura.codigo_asignatura;
-                    aux.asignaturaNombre = asignatura.nombre_asignatura;
-                    planesAsignaturas[plan].asignaturas.push(aux);
-                });
+            const asignaturasPlanes = await Promise.all(promisesAsignaturasPlanes);
+            let index = 0
+            for (plan in planesAsignaturas) {
+                if (asignaturasPlanes[index] && asignaturasPlanes[index][anio] && Array.isArray(asignaturasPlanes[index][anio])) {
+                    asignaturasPlanes[index][anio].forEach(asignatura => {
+                        let aux = {};
+                        aux.asignaturaCodigo = asignatura.codigo_asignatura;
+                        aux.asignaturaNombre = asignatura.nombre_asignatura;
+                        planesAsignaturas[plan].asignaturas.push(aux);
+                    });
+                }
+                //planesAsignaturas[plan].asignaturasTrim = planesAsignaturas[plan].asignaturas.reduce((acc, cur) => acc + ',' + cur, 'none');
+                // se va a volver a rellenar con mas informacion
+                //planesAsignaturas[plan].asignaturas = []
+                index++;
             }
-            //planesAsignaturas[plan].asignaturasTrim = planesAsignaturas[plan].asignaturas.reduce((acc, cur) => acc + ',' + cur, 'none');
-            // se va a volver a rellenar con mas informacion
-            //planesAsignaturas[plan].asignaturas = []
-            index++;
-        }
-        return planesAsignaturas;
-    } catch (err) {
-        console.error(err);
+            console.log('result',planesAsignaturas);
+            return planesAsignaturas;
+            })
+    } catch (error) {
+        throw error;
     }
 }
 
 const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cursoAcademico) {
     try {
-        let data;
+        let data = {};
         if (process.env.DEV == 'true') {
             data = {
                 "report": "EVALUACION_CURRICULAR",
@@ -465,7 +462,7 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                         "asignatura": 95000008,
                         "convocatoria": "JUL",
                         "calificacionAlfa": "P"
-                    },{
+                    }, {
                         "cursoAcademico": "2015-16",
                         "asignatura": 95000008,
                         "convocatoria": "FEB",
@@ -485,62 +482,91 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 "notaMediaCurso": 6.61,
                 "notaMedia": 6.67
             };
-
-        } else {
-            let username = process.env.API_USERNAME || "4d1lh2HsIWzLzQJLIuOq";
-            let password = process.env.API_PWD || "rLocK3dEMYQHIRhCtudQWCHCCTnHj1PKo6UwmbSfhOghYdeXfx";
+            return data;
+        } else if (process.env.PRUEBAS == 'true') {
+            let username = process.env.API_USERNAME;
+            let password = process.env.API_PWD;
             let data = {};
-            data.alumno = alumno;
-            data.plan = planCodigo;
-            data.asignatura = asignaturaCodigo;
-            data.cursoAcademico = cursoAcademico;
-            console.log('data to api:', data);
+            data.alumno = '9298dbdc-26bf-4211-8430-3019583bb882@upm.es';
+            data.plan = '09TT';
+            data.asignatura = 95000008;
+            data.cursoAcademico = '2015-16';
             const headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             };
-            response = await axios.post("https://api.etsit.upm.es/stats/report/evaluacion_curricular"), data, {
+            //console.log('data to api:', data);
+            datos = await axios.post("https://api.etsit.upm.es/stats/report/evaluacion_curricular", data, {
                 headers: headers,
                 auth: {
                     username: username,
                     password: password
                 }
-            }
-            // console.log('response from api:',response.data);
-            data = response.data;
+            })
+            data = datos.data;
+            return data;
+        } else {
+            let username = process.env.API_USERNAME;
+            let password = process.env.API_PWD;
+            let data = {};
+            data.alumno = alumno;
+            data.plan = planCodigo;
+            data.asignatura = asignaturaCodigo;
+            data.cursoAcademico = cursoAcademico;
+            const headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+            //console.log('data to api:', data);
+            datos = await axios.post("https://api.etsit.upm.es/stats/report/evaluacion_curricular", data, {
+                headers: headers,
+                auth: {
+                    username: username,
+                    password: password
+                }
+            })
+            data = datos.data;
+            return data;
         }
-        return data;
     }
     catch (error) {
-        console.log(error)
-        res.status(500).json({ error: error.message });
+        throw error;
     }
 }
 
 const getInformes = async function () {
     try {
-        let datosTitulacion = [];
-        let datosCurso = [];
+        var datosTitulacion = [];
+        var datosCurso = [];
         const curso = helpers.getCursoAnio();
         let respuesta = await getAllPeticionPas(null, null, null);
-        respuesta.peticiones.forEach(async (peticion) => {
+
+        datosTitulacion = await Promise.all(respuesta.peticiones.map(async (peticion) => {
             if (peticion.tipo === "titulación") {
-                let aux = await getDatosAlumno(peticion.edupersonuniqueid, peticion.planCodigo, peticion.asignaturaCodigo, curso);
+                let aux = {};
+                aux = await getDatosAlumno(peticion.edupersonuniqueid, peticion.planCodigo, peticion.asignaturaCodigo, curso);
                 aux.estadoPeticion = Object.keys(estadosEvaluacionCurricular).find(k => estadosEvaluacionCurricular[k] === peticion.estadoPeticion);
                 aux.asignaturaNombre = peticion.asignaturaNombre;
                 aux.nombre = peticion.nombre;
                 aux.apellido = peticion.apellido;
-                datosTitulacion.push(aux);
-            } else {
-                let aux = await getDatosAlumno(peticion.edupersonuniqueid, peticion.planCodigo, peticion.asignaturaCodigo, curso);
-                aux.estadoPeticion = Object.keys(estadosEvaluacionCurricular).find(k => estadosEvaluacionCurricular[k] === peticion.estadoPeticion);
-                aux.asignaturaNombre = peticion.asignaturaNombre;
-                aux.nombre = peticion.nombre;
-                aux.apellido = peticion.apellido;
-                datosCurso.push(aux);
+                return aux;
             }
-        })
-        return { datosTitulacion: datosTitulacion, datosCurso: datosCurso }
+        }));
+        datosCurso = await Promise.all(respuesta.peticiones.map(async (peticion) => {
+            if (peticion.tipo === "curso") {
+                let aux = {};
+                aux = await getDatosAlumno(peticion.edupersonuniqueid, peticion.planCodigo, peticion.asignaturaCodigo, curso);
+                aux.estadoPeticion = Object.keys(estadosEvaluacionCurricular).find(k => estadosEvaluacionCurricular[k] === peticion.estadoPeticion);
+                aux.asignaturaNombre = peticion.asignaturaNombre;
+                aux.nombre = peticion.nombre;
+                aux.apellido = peticion.apellido;
+                return aux;
+            }
+        }));
+        // borrar los undefined
+        datosTitulacionClean = datosTitulacion.filter(Boolean);
+        datosCursoClean = datosCurso.filter(Boolean);
+        return { datosTitulacion: datosTitulacionClean, datosCurso: datosCursoClean }
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -548,13 +574,13 @@ const getInformes = async function () {
 }
 
 const getHistorico = async function () {
-        try {
-            let respuesta = await models.HistoricoEvaluacionCurricular.findAll({});
-            return respuesta || [];
-        } catch (error) {
-            //se propaga el error, se captura en el middleware
-            throw error;
-        }
+    try {
+        let respuesta = await models.HistoricoEvaluacionCurricular.findAll({});
+        return respuesta || [];
+    } catch (error) {
+        //se propaga el error, se captura en el middleware
+        throw error;
+    }
 }
 
 const deletePeticiones = async function (tipo) {
@@ -576,7 +602,7 @@ const deletePeticiones = async function (tipo) {
 const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, fecha) {
     try {
         let respuesta = {};
-         respuesta = await models.HistoricoEvaluacionCurricular.create({
+        respuesta = await models.HistoricoEvaluacionCurricular.create({
             dni: dni,
             edupersonuniqueid: edupersonuniqueid,
             nombre: nombre,
@@ -600,6 +626,7 @@ exports.getInfoAllAlumno = async function (req, res, next) {
         let respuesta = {};
         respuesta.peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid);
         respuesta.matricula = await getInfoMatricula(req.session.user.mail);
+        console.log(respuesta);
         res.json(respuesta)
     } catch (error) {
         console.log(error)
@@ -716,6 +743,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     paramsToUpdate.tipo = req.body.paramsToUpdate.tipo;
                     paramsToUpdate.justificacion = req.body.paramsToUpdate.justificacion;
                     paramsToUpdate.textCancel = null;
+                    let datosAlumno = {};
                     datosAlumno = await getDatosAlumno(req.body.edupersonuniqueid, req.body.paramsToUpdate.planCodigo, req.body.paramsToUpdate.asignaturaCodigo, curso);
                     paramsToUpdate.dni = datosAlumno.dni;
                     emailToAlumno = true;
@@ -807,16 +835,109 @@ exports.getDatosAlumno = async function (req, res, next) {
 
 exports.getInformes = async function (req, res, next) {
     try {
-        var result = await getInformes();
-        const data_titulacion = result.datosTitulacion.map((report, index)=> {
+        getInformes().then(async (result) => {
+            const data_tit = await Promise.all(result.datosTitulacion.map(async (report, index) => {
+                return {
+                    número: (index + 1),
+                    estado_solicitud: report.estadoPeticion,
+                    dni: report.dni,
+                    nombre: report.nombre,
+                    apellidos: report.apellido,
+                    plan: report.plan,
+                    asignatura: report.asignatura + ' - ' + report.asignaturaNombre,
+                    curso_inicio_titulación: report.cursoAcademicoInicio,
+                    curso_ultima_matricula: report.cursoUltimaMatricula,
+                    numero_asignaturas_suspendidas_2_veces: report.numAsigSuspendida2veces,
+                    numero_asignaturas_suspendidas_3_veces: report.numAsigSuspendida3veces,
+                    numero_asignaturas_matriculadas_curso_anterior: report.numAsigMatriculaCursoAnterior,
+                    numero_asignaturas_matriculadas_curso_actual: report.numAsigMatriculaCursoActual,
+                    ECTS_pendientes: report.creditosPendientes,
+                    numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
+                    numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
+                    numero_veces_suspenso_asginatura: report.numVecesSuspenso,
+                    fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                    ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
+                    TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
+                    TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
+                    nota_media_curso: report.notaMediaCurso,
+                    nota_media_titulacion: report.notaMedia
+                };
+            }));
+            const data_curso = await Promise.all(result.datosCurso.map(async (report, index) => {
+                return {
+                    número: (index + 1),
+                    estado_solicitud: report.estadoPeticion,
+                    dni: report.dni,
+                    nombre: report.nombre,
+                    apellidos: report.apellido,
+                    plan: report.plan,
+                    asignatura: report.asignatura + ' - ' + report.asignaturaNombre,
+                    curso_inicio_titulación: report.cursoAcademicoInicio,
+                    curso_ultima_matricula: report.cursoUltimaMatricula,
+                    numero_asignaturas_suspendidas_2_veces: report.numAsigSuspendida2veces,
+                    numero_asignaturas_suspendidas_3_veces: report.numAsigSuspendida3veces,
+                    numero_asignaturas_matriculadas_curso_anterior: report.numAsigMatriculaCursoAnterior,
+                    numero_asignaturas_matriculadas_curso_actual: report.numAsigMatriculaCursoActual,
+                    ECTS_pendientes: report.creditosPendientes,
+                    numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
+                    numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
+                    numero_veces_suspenso_asginatura: report.numVecesSuspenso,
+                    fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                    ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
+                    TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
+                    TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
+                    nota_media_curso: report.notaMediaCurso,
+                    nota_media_titulacion: report.notaMedia
+                };
+            }));
+            const fields = [
+                'número', 'estado_solicitud', 'dni', 'nombre', 'apellidos', 'plan', 'asignatura', 'curso_inicio_titulación', 'curso_ultima_matricula',
+                'numero_asignaturas_suspendidas_2_veces', 'numero_asignaturas_suspendidas_3_veces', 'numero_asignaturas_matriculadas_curso_anterior',
+                'numero_asignaturas_matriculadas_curso_actual', 'ECTS_pendientes', 'numero_veces_suspenso_asignatura_curso_anterior', 'numero_veces_suspenso_asignatura_curso_actual',
+                'numero_veces_suspenso_asginatura', 'fecha_ultima_convocatoria_asignatura', 'penultima_calificacion', 'penultima_convocatoria', 'ultima_calificacion',
+                'ultima_convocatoria', 'TFT_matriculado', 'TFT_aprobado', 'nota_media_curso', 'nota_media_titulacion'
+            ];
+            const opts = { fields };
+            const json2csvParser = new Parser(opts);
+            const csv_tit = json2csvParser.parse(data_tit);
+            const csv_curso = json2csvParser.parse(data_curso);
+            var zip = new JSZip();
+            zip.file('informe_titulacion.csv', csv_tit);
+            zip.file('informe_curso.csv', csv_curso);
+            zip.generateAsync({ type: "base64" })
+                .then(function (content) {
+                    res.json({
+                        title: "informes.zip",
+                        content: content
+                    })
+                })
+        })
+        /*
+        getInformes().then((result)=>{
+            console.log('result:',result)
+        const fields = [
+            'número', 'estado_solicitud', 'dni', 'nombre', 'apellidos', 'plan', 'asignatura', 'curso_inicio_titulación', 'curso_ultima_matricula',
+            'numero_asignaturas_suspendidas_2_veces', 'numero_asignaturas_suspendidas_3_veces', 'numero_asignaturas_matriculadas_curso_anterior',
+            'numero_asignaturas_matriculadas_curso_actual', 'ECTS_pendientes', 'numero_veces_suspenso_asignatura_curso_anterior', 'numero_veces_suspenso_asignatura_curso_actual',
+            'numero_veces_suspenso_asginatura', 'fecha_ultima_convocatoria_asignatura', 'penultima_calificacion', 'penultima_convocatoria', 'ultima_calificacion',
+            'ultima_convocatoria', 'TFT_matriculado', 'TFT_aprobado', 'nota_media_curso', 'nota_media_titulacion'
+        ];
+        const opts = { fields };
+        const data_titulacion = result.datosTitulacion.map((report, index) => {
             return {
-                número: (index+1),
+                número: (index + 1),
                 estado_solicitud: report.estadoPeticion,
                 dni: report.dni,
                 nombre: report.nombre,
                 apellidos: report.apellido,
                 plan: report.plan,
-                asignatura: report.asignatura +' - ' + report.asignaturaNombre,
+                asignatura: report.asignatura + ' - ' + report.asignaturaNombre,
                 curso_inicio_titulación: report.cursoAcademicoInicio,
                 curso_ultima_matricula: report.cursoUltimaMatricula,
                 numero_asignaturas_suspendidas_2_veces: report.numAsigSuspendida2veces,
@@ -828,10 +949,10 @@ exports.getInformes = async function (req, res, next) {
                 numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                 numero_veces_suspenso_asginatura: report.numVecesSuspenso,
                 fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length -2].calificacion || report.notasAnteriores[report.notasAnteriores.length -2].calificacionAlfa,
-                penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length -2].convocatoria+' ' +report.notasAnteriores[report.notasAnteriores.length -2].cursoAcademico,
-                ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length -1].calificacion || report.notasAnteriores[report.notasAnteriores.length -1].calificacionAlfa,
-                ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length -1].convocatoria +' ' +report.notasAnteriores[report.notasAnteriores.length -1].cursoAcademico,
+                penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                 TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                 TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
                 nota_media_curso: report.notaMediaCurso,
@@ -840,13 +961,13 @@ exports.getInformes = async function (req, res, next) {
         });
         const data_curso = result.datosCurso.map((report, index) => {
             return {
-                número: (index+1),
+                número: (index + 1),
                 estado_solicitud: report.estadoPeticion,
                 dni: report.dni,
                 nombre: report.nombre,
                 apellidos: report.apellido,
                 plan: report.plan,
-                asignatura: report.asignatura +' - ' + report.asignaturaNombre,
+                asignatura: report.asignatura + ' - ' + report.asignaturaNombre,
                 curso_inicio_titulación: report.cursoAcademicoInicio,
                 curso_ultima_matricula: report.cursoUltimaMatricula,
                 numero_asignaturas_suspendidas_2_veces: report.numAsigSuspendida2veces,
@@ -858,31 +979,34 @@ exports.getInformes = async function (req, res, next) {
                 numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                 numero_veces_suspenso_asginatura: report.numVecesSuspenso,
                 fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length -2].calificacion || report.notasAnteriores[report.notasAnteriores.length -2].calificacionAlfa,
-                penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length -2].convocatoria+' ' +report.notasAnteriores[report.notasAnteriores.length -2].cursoAcademico,
-                ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length -1].calificacion || report.notasAnteriores[report.notasAnteriores.length -1].calificacionAlfa,
-                ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length -1].convocatoria +' ' +report.notasAnteriores[report.notasAnteriores.length -1].cursoAcademico,
+                penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                 TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                 TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
                 nota_media_curso: report.notaMediaCurso,
                 nota_media_titulacion: report.notaMedia
             };
         });
-
-        const json2csvParser = new Parser();
-        const csv_tit = json2csvParser.parse(data_titulacion);
-        const csv_curso = json2csvParser.parse(data_curso);
-        var zip = new JSZip();
-        zip.file('informe_titulacion.csv', csv_tit)
-        zip.file('informe_curso.csv', csv_curso)
-        zip.generateAsync({ type: "base64" })
-            .then(function (content) {
-                res.json({
-                    title: "informes.zip",
-                    content: content
+        Promise.all([data_titulacion, data_curso]).then(() => {
+            console.log('en promises 2 all:', data_titulacion);
+            const json2csvParser = new Parser(opts);
+            const csv_tit = json2csvParser.parse(data_titulacion);
+            const csv_curso = json2csvParser.parse(data_curso);
+            var zip = new JSZip();
+            zip.file('informe_titulacion.csv', csv_tit);
+            zip.file('informe_curso.csv', csv_curso);
+            zip.generateAsync({ type: "base64" })
+                .then(function (content) {
+                    res.json({
+                        title: "informes.zip",
+                        content: content
+                    })
                 })
-            })
-
+        })
+    })
+    */
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
@@ -893,9 +1017,11 @@ exports.getInformes = async function (req, res, next) {
 exports.getHistorico = async function (req, res, next) {
     try {
         var result = await getHistorico();
-        const data = result.map( (solicitud, index) => {
+        const opts = ['número', 'dni', 'nombre', 'apellidos', 'plan_codigo', 'plan_nombre', 'asignatura_codigo', 'asignatura_nombre',
+            'tipo', 'fecha_tribunal'];
+        const data = result.map((solicitud, index) => {
             return {
-                número: (index+1),
+                número: (index + 1),
                 //edupersonuniqueid: solicitud.edupersonuniqueid,
                 dni: solicitud.dni,
                 nombre: solicitud.nombre,
@@ -909,7 +1035,7 @@ exports.getHistorico = async function (req, res, next) {
             };
         });
 
-        const json2csvParser = new Parser();
+        const json2csvParser = new Parser({ opts });
         const csv = json2csvParser.parse(data);
         var zip = new JSZip();
         zip.file('historico.csv', csv)
@@ -938,4 +1064,3 @@ exports.deletePeticiones = async function (req, res, next) {
         res.status(500).json({ error: error.message });
     }
 }
-

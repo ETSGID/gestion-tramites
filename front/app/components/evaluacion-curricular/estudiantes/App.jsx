@@ -66,6 +66,7 @@ export default class App extends React.Component {
   getPeticiones() {
     axios.get(urljoin(apiBaseUrl, "api/peticiones"))
       .then((response) => {
+        console.log(response);
         //disable boton si ya solicitud hecha
         response.data.peticiones.forEach(peticion => {
           if (peticion.tipo === "titulación" && peticion.estadoPeticion !== estadosEvaluacionCurricular["SOLICITUD_CANCELADA"]) {
@@ -79,6 +80,7 @@ export default class App extends React.Component {
             })
           }
         })
+       
         this.setState({
           peticiones: response.data.peticiones,
           matricula: response.data.matricula,
