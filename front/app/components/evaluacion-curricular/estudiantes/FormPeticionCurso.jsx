@@ -64,14 +64,14 @@ export default class FormPeticionCurso extends React.Component {
               <Form.Label>Selecciona plan de estudios:</Form.Label>
               <Form.Control as="select" ref={select => this.planElegido = select}>
                 <option key={-1} value={-1}>-</option>
-                {this.state.planesMatriculados.map((plan, index) => (<option key={index} value={plan.planCodigo}>{plan.planCodigo} - {plan.planNombre}</option>))}
+                {this.props.planesMatriculados.map((plan, index) => (<option key={index} value={plan.planCodigo}>{plan.planCodigo} - {plan.planNombre}</option>))}
               </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Selecciona asignatura:</Form.Label>
               <Form.Control as="select" ref={select => this.asignaturaElegida = select} >
               <option key={-1} value={-1}>-</option>
-                  {this.state.asignaturasMatriculadas.map((asignatura, index) =>
+                  {this.props.asignaturasMatriculadas.map((asignatura, index) =>
                     <option key={index} value={index}>{asignatura.asignaturaCodigo} - {asignatura.asignaturaNombre}</option> )}
                 </Form.Control>
             </Form.Group>
