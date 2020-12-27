@@ -26,8 +26,8 @@ export default class FormPeticionTitulacion extends React.Component {
       alert("Debe rellenar la justificación");
     } else {
       paramsToUpdate.planCodigo = this.planElegido.value;
-      paramsToUpdate.asignaturaCodigo = this.state.asignaturasMatriculadas[this.asignaturaElegida.value].asignaturaCodigo;
-      paramsToUpdate.asignaturaNombre = this.state.asignaturasMatriculadas[this.asignaturaElegida.value].asignaturaNombre;
+      paramsToUpdate.asignaturaCodigo = this.props.asignaturasMatriculadas[this.asignaturaElegida.value].asignaturaCodigo;
+      paramsToUpdate.asignaturaNombre = this.props.asignaturasMatriculadas[this.asignaturaElegida.value].asignaturaNombre;
       paramsToUpdate.justificacion = this.textoJustificacion.value;
       paramsToUpdate.tipo = "titulación";
       console.log('params to update;',paramsToUpdate);
