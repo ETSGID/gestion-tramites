@@ -224,7 +224,6 @@ const updateEstadoTramite = async function (paramsToUpdate) {
 }
 
 const getDataApiUpm = async function (mail, path, options) {
-    // return new Promise((resolve,reject) => {
     const curso = helpers.getCursoAnio();
     // En desarrollo en local NO se puede acceder a la apiUPM
     // if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
@@ -350,28 +349,28 @@ const getDataApiUpm = async function (mail, path, options) {
             ]
             data = asignaturasMatricula[options.plan];
         }
-        return data;
+       return data;
     } else if (process.env.PRUEBAS == 'true') {
         try {
             let email_pruebas = process.env.EMAIL_PRUEBAS;
-        var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
-        var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
-        var passphrase = process.env.API_PASSPHRASE;
-        const httpsAgent = new https.Agent({
-            cert: cert,
-            key: key,
-            passphrase: passphrase,
-            secureProtocol: "TLSv1_2_method"
-        })
-        const headers = {
-            'X-UPMUSR': email_pruebas
+            var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
+            var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
+            var passphrase = process.env.API_PASSPHRASE;
+            const httpsAgent = new https.Agent({
+                cert: cert,
+                key: key,
+                passphrase: passphrase,
+                secureProtocol: "TLSv1_2_method"
+            })
+            const headers = {
+                'X-UPMUSR': email_pruebas
+            }
+            const response = await axios.get(path, { headers: headers, httpsAgent: httpsAgent })
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return error;
         }
-        const response = await axios.get(path, { headers: headers, httpsAgent: httpsAgent })
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        return error;
-    }
 
     } else {
 
@@ -381,51 +380,54 @@ const getDataApiUpm = async function (mail, path, options) {
 
 
 const getInfoMatricula = async function (correo) {
-    let planesAsignaturas = {}
-    let promisesAsignaturasPlanes = [];
-    let anio = helpers.getCursoAnio();
-    try {
-        getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json', {})
-        .then(async (data) => {
-            console.log('info:',data);
-            data.forEach(plan => {
-                if (plan.anio === anio) {
-                    planesAsignaturas[plan.codigo_plan] = {
-                        codigo: plan.codigo_plan,
-                        nombre: plan.nombre_plan,
-                        asignaturas: [],
-                        //  asignaturasTrim: ''
+    return new Promise((resolve) => {
+        let planesAsignaturas = {
+            planes: [],
+            asignaturas: []
+        };
+        let promisesAsignaturasPlanes = [];
+        let anio = helpers.getCursoAnio();
+        try {
+            getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json', {})
+                .then(async (data) => {
+                    console.log('info:', data);
+                    data.forEach(plan => {
+                        if (plan.anio === anio) {
+                            let aux = {};
+                            aux.planCodigo = plan.codigo_plan;
+                            aux.planNombre = plan.nombre_plan;
+                            planesAsignaturas.planes.push(aux);
+                        }
+                    })
+                    for (const index in planesAsignaturas.planes) {
+                        promisesAsignaturasPlanes.push(
+                            getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula.json/' + planesAsignaturas.planes[index].planCodigo + '/asignaturas', {})
+                        )
                     }
-                }
-            })
-            for (const plan in planesAsignaturas) {
-                promisesAsignaturasPlanes.push(
-                    getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula.json/' + plan + '/asignaturas', { plan })
-                )
-            }
 
-            const asignaturasPlanes = await Promise.all(promisesAsignaturasPlanes);
-            let index = 0
-            for (plan in planesAsignaturas) {
-                if (asignaturasPlanes[index] && asignaturasPlanes[index][anio] && Array.isArray(asignaturasPlanes[index][anio])) {
-                    asignaturasPlanes[index][anio].forEach(asignatura => {
-                        let aux = {};
-                        aux.asignaturaCodigo = asignatura.codigo_asignatura;
-                        aux.asignaturaNombre = asignatura.nombre_asignatura;
-                        planesAsignaturas[plan].asignaturas.push(aux);
-                    });
-                }
-                //planesAsignaturas[plan].asignaturasTrim = planesAsignaturas[plan].asignaturas.reduce((acc, cur) => acc + ',' + cur, 'none');
-                // se va a volver a rellenar con mas informacion
-                //planesAsignaturas[plan].asignaturas = []
-                index++;
-            }
-            console.log('result',planesAsignaturas);
-            return planesAsignaturas;
-            })
-    } catch (error) {
-        throw error;
-    }
+                    const asignaturasPlanes = await Promise.all(promisesAsignaturasPlanes);
+                    let index = 0
+                    for (plan in planesAsignaturas) {
+                        if (asignaturasPlanes[index] && asignaturasPlanes[index][anio] && Array.isArray(asignaturasPlanes[index][anio])) {
+                            asignaturasPlanes[index][anio].forEach(asignatura => {
+                                let aux = {};
+                                aux.asignaturaCodigo = asignatura.codigo_asignatura;
+                                aux.asignaturaNombre = asignatura.nombre_asignatura;
+                                planesAsignaturas.asignaturas.push(aux);
+                            });
+                        }
+                        //planesAsignaturas[plan].asignaturasTrim = planesAsignaturas[plan].asignaturas.reduce((acc, cur) => acc + ',' + cur, 'none');
+                        // se va a volver a rellenar con mas informacion
+                        //planesAsignaturas[plan].asignaturas = []
+                        index++;
+                    }
+                    console.log('result', planesAsignaturas);
+                    resolve(planesAsignaturas);
+                })
+        } catch (error) {
+            throw error;
+        }
+    });
 }
 
 const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cursoAcademico) {
@@ -625,9 +627,19 @@ exports.getInfoAllAlumno = async function (req, res, next) {
     try {
         let respuesta = {};
         respuesta.peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid);
-        respuesta.matricula = await getInfoMatricula(req.session.user.mail);
-        console.log(respuesta);
-        res.json(respuesta)
+        const matricula = await getInfoMatricula(req.session.user.mail);
+        respuesta.planesMatriculados = matricula.planes;
+        respuesta.asignaturasMatriculadas = matricula.asignaturas;
+        console.log('send:', respuesta);
+        res.json(respuesta);
+        // let promises =[];
+        // promises.push(getAllPeticionAlumno(req.session.user.edupersonuniqueid));
+        // promises.push(getInfoMatricula(req.session.user.mail));
+        // Promise.all(promises).then((data) => {
+        //     console.log('promise:',data);
+        //     res.json(data)
+        // })
+
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
