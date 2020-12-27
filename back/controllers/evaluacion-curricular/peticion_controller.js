@@ -226,7 +226,6 @@ const updateEstadoTramite = async function (paramsToUpdate) {
 const getDataApiUpm = async function (mail, path, options) {
     const curso = helpers.getCursoAnio();
     // En desarrollo en local NO se puede acceder a la apiUPM
-    // if (process.env.DEV == 'true' || process.env.PRUEBAS == 'true') {
     if (process.env.DEV == 'true') {
         let data;
         if (path === '/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json') {
@@ -349,7 +348,7 @@ const getDataApiUpm = async function (mail, path, options) {
             ]
             data = asignaturasMatricula[options.plan];
         }
-       return data;
+        return data;
     } else if (process.env.PRUEBAS == 'true') {
         try {
             let email_pruebas = process.env.EMAIL_PRUEBAS;
@@ -373,9 +372,26 @@ const getDataApiUpm = async function (mail, path, options) {
         }
 
     } else {
-
+        try {
+            var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
+            var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
+            var passphrase = process.env.API_PASSPHRASE;
+            const httpsAgent = new https.Agent({
+                cert: cert,
+                key: key,
+                passphrase: passphrase,
+                secureProtocol: "TLSv1_2_method"
+            })
+            const headers = {
+                'X-UPMUSR': mail
+            }
+            const response = await axios.get(path, { headers: headers, httpsAgent: httpsAgent })
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
     }
-    //  });
 }
 
 
@@ -390,7 +406,6 @@ const getInfoMatricula = async function (correo) {
         try {
             getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json', {})
                 .then(async (data) => {
-                    console.log('info:', data);
                     data.forEach(plan => {
                         if (plan.anio === anio) {
                             let aux = {};
@@ -416,12 +431,9 @@ const getInfoMatricula = async function (correo) {
                                 planesAsignaturas.asignaturas.push(aux);
                             });
                         }
-                        //planesAsignaturas[plan].asignaturasTrim = planesAsignaturas[plan].asignaturas.reduce((acc, cur) => acc + ',' + cur, 'none');
-                        // se va a volver a rellenar con mas informacion
-                        //planesAsignaturas[plan].asignaturas = []
                         index++;
                     }
-                    console.log('result', planesAsignaturas);
+                    //console.log('result', planesAsignaturas);
                     resolve(planesAsignaturas);
                 })
         } catch (error) {
@@ -587,6 +599,14 @@ const getHistorico = async function () {
 
 const deletePeticiones = async function (tipo) {
     try {
+        let borrar = await models.HistoricoEvaluacionCurricular.destroy({
+            where: {
+                fechaTribunal: {
+                    [Op.lte]: Sequelize.literal("current_date - interval '10 years'")
+                }
+            },
+            returning: true,
+        });
         let peticion = await models.PeticionEvaluacionCurricular.destroy({
             where: {
                 tipo: tipo
@@ -630,16 +650,7 @@ exports.getInfoAllAlumno = async function (req, res, next) {
         const matricula = await getInfoMatricula(req.session.user.mail);
         respuesta.planesMatriculados = matricula.planes;
         respuesta.asignaturasMatriculadas = matricula.asignaturas;
-        console.log('send:', respuesta);
         res.json(respuesta);
-        // let promises =[];
-        // promises.push(getAllPeticionAlumno(req.session.user.edupersonuniqueid));
-        // promises.push(getInfoMatricula(req.session.user.mail));
-        // Promise.all(promises).then((data) => {
-        //     console.log('promise:',data);
-        //     res.json(data)
-        // })
-
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
@@ -930,95 +941,6 @@ exports.getInformes = async function (req, res, next) {
                     })
                 })
         })
-        /*
-        getInformes().then((result)=>{
-            console.log('result:',result)
-        const fields = [
-            'número', 'estado_solicitud', 'dni', 'nombre', 'apellidos', 'plan', 'asignatura', 'curso_inicio_titulación', 'curso_ultima_matricula',
-            'numero_asignaturas_suspendidas_2_veces', 'numero_asignaturas_suspendidas_3_veces', 'numero_asignaturas_matriculadas_curso_anterior',
-            'numero_asignaturas_matriculadas_curso_actual', 'ECTS_pendientes', 'numero_veces_suspenso_asignatura_curso_anterior', 'numero_veces_suspenso_asignatura_curso_actual',
-            'numero_veces_suspenso_asginatura', 'fecha_ultima_convocatoria_asignatura', 'penultima_calificacion', 'penultima_convocatoria', 'ultima_calificacion',
-            'ultima_convocatoria', 'TFT_matriculado', 'TFT_aprobado', 'nota_media_curso', 'nota_media_titulacion'
-        ];
-        const opts = { fields };
-        const data_titulacion = result.datosTitulacion.map((report, index) => {
-            return {
-                número: (index + 1),
-                estado_solicitud: report.estadoPeticion,
-                dni: report.dni,
-                nombre: report.nombre,
-                apellidos: report.apellido,
-                plan: report.plan,
-                asignatura: report.asignatura + ' - ' + report.asignaturaNombre,
-                curso_inicio_titulación: report.cursoAcademicoInicio,
-                curso_ultima_matricula: report.cursoUltimaMatricula,
-                numero_asignaturas_suspendidas_2_veces: report.numAsigSuspendida2veces,
-                numero_asignaturas_suspendidas_3_veces: report.numAsigSuspendida3veces,
-                numero_asignaturas_matriculadas_curso_anterior: report.numAsigMatriculaCursoAnterior,
-                numero_asignaturas_matriculadas_curso_actual: report.numAsigMatriculaCursoActual,
-                ECTS_pendientes: report.creditosPendientes,
-                numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
-                numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
-                numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
-                ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
-                ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
-                TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
-                TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
-                nota_media_curso: report.notaMediaCurso,
-                nota_media_titulacion: report.notaMedia
-            };
-        });
-        const data_curso = result.datosCurso.map((report, index) => {
-            return {
-                número: (index + 1),
-                estado_solicitud: report.estadoPeticion,
-                dni: report.dni,
-                nombre: report.nombre,
-                apellidos: report.apellido,
-                plan: report.plan,
-                asignatura: report.asignatura + ' - ' + report.asignaturaNombre,
-                curso_inicio_titulación: report.cursoAcademicoInicio,
-                curso_ultima_matricula: report.cursoUltimaMatricula,
-                numero_asignaturas_suspendidas_2_veces: report.numAsigSuspendida2veces,
-                numero_asignaturas_suspendidas_3_veces: report.numAsigSuspendida3veces,
-                numero_asignaturas_matriculadas_curso_anterior: report.numAsigMatriculaCursoAnterior,
-                numero_asignaturas_matriculadas_curso_actual: report.numAsigMatriculaCursoActual,
-                ECTS_pendientes: report.creditosPendientes,
-                numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
-                numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
-                numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
-                ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
-                ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
-                TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
-                TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
-                nota_media_curso: report.notaMediaCurso,
-                nota_media_titulacion: report.notaMedia
-            };
-        });
-        Promise.all([data_titulacion, data_curso]).then(() => {
-            console.log('en promises 2 all:', data_titulacion);
-            const json2csvParser = new Parser(opts);
-            const csv_tit = json2csvParser.parse(data_titulacion);
-            const csv_curso = json2csvParser.parse(data_curso);
-            var zip = new JSZip();
-            zip.file('informe_titulacion.csv', csv_tit);
-            zip.file('informe_curso.csv', csv_curso);
-            zip.generateAsync({ type: "base64" })
-                .then(function (content) {
-                    res.json({
-                        title: "informes.zip",
-                        content: content
-                    })
-                })
-        })
-    })
-    */
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
