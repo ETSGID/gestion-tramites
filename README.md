@@ -61,9 +61,10 @@ EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
 EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
 EMAIL_PASS= #contraseña de zz.mailer.sys2
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
-API_PASSPHRASE= # passphrase de api upm
-API_USERNAME= # usuario api ev. curricular
-API_PWD= # contraseña api ev. curricular
+API_UPM_HORARIO_PASSPHRASE= # passphrase de api upm
+API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
+API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
+API_EVAL_CURRICULAR_URL= 
 ```
 ###### gestion-tramites-db.env 
 ```shell
