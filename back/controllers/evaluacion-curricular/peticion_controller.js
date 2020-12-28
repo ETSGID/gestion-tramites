@@ -808,12 +808,12 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
             toPAS = process.env.EMAIL_PRUEBAS;
         }
-        // if (emailToAlumno) {
-        //     let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
-        // }
-        // if (emailToPas) {
-        //     let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
-        // }
+        if (emailToAlumno) {
+            let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+        }
+        if (emailToPas) {
+            let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.asignaturaNombre, textoAdicional, req.filesBuffer, req.session)
+        }
 
         res.json(respuesta)
     } catch (error) {
@@ -968,7 +968,7 @@ exports.getHistorico = async function (req, res, next) {
                 fecha_tribunal: helpers.formatFecha(solicitud.fechaTribunal)
             };
         });
-
+        // falta crear pdf
         const json2csvParser = new Parser({ opts });
         const csv = json2csvParser.parse(data);
         var zip = new JSZip();
