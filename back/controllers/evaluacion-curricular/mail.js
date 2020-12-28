@@ -24,7 +24,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, asignaturaNo
             break;
         case estadosEvaluacionCurricular.EVALUACION_APROBADA:
             send = true;
-            text += `El tribunal ha concluido que se ha APROBADO su solicitud de evaluación curricular, con los siguientes datos:\n\n`+ textoAdicional+'\n\nSi usted considera que ha habido un error, utilice el servicio de CAU de secretaría en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/ \n\nEn un plazo de 5 días, se actualizará la nota en Politécnica Virtual. Se le notificará este cambio de estado por email.';
+            text += `El tribunal ha concluido que se ha APROBADO su solicitud de evaluación curricular, con los siguientes datos:\n\n`+ textoAdicional+'\n\nSi usted considera que ha habido un error, utilice el servicio de CAU de secretaría en el siguiente enlace: https://appsrv.etsit.upm.es/cau/secretaria/ \n\nEn un plazo aproximado de 5 días hábiles, se actualizará la nota en Politécnica Virtual. Se le notificará este cambio de estado por email.';
             break;
         case estadosEvaluacionCurricular.NOTA_INTRODUCIDA:
             send = true;

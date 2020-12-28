@@ -83,8 +83,7 @@ export default class App extends React.Component {
        
         this.setState({
           peticiones: response.data.peticiones,
-          planesMatriculados: response.data.planesMatriculados,
-          asignaturasMatriculadas: response.data.asignaturasMatriculadas,
+          matricula: response.data.matricula,
           loading: null
         })
       })
@@ -259,8 +258,7 @@ export default class App extends React.Component {
                 <FormPeticionTitulacion
                   handleClose={this.handleClose}
                   cambioEstadoClick={this.cambioEstadoClick}
-                  planesMatriculados={this.state.planesMatriculados}
-                  asignaturasMatriculadas={this.state.asignaturasMatriculadas}
+                  matricula={this.state.matricula}
                 />
               </Modal >
             }
@@ -274,8 +272,7 @@ export default class App extends React.Component {
                 <FormPeticionCurso
                   handleClose={this.handleClose}
                   cambioEstadoClick={this.cambioEstadoClick}
-                  planesMatriculados={this.state.planesMatriculados}
-                  asignaturasMatriculadas={this.state.asignaturasMatriculadas}
+                  matricula={this.state.matricula}
                 />
               </Modal >
             }

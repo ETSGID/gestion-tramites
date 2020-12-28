@@ -12,10 +12,15 @@ export default class FormPeticionTitulacion extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.cuentaCaracteres = this.cuentaCaracteres.bind(this);
-    //this.cambiaAsignaturas = this.cambiaAsignaturas.bind(this);
+    this.cambiaAsignaturas = this.cambiaAsignaturas.bind(this);
   }
 
   handleSubmit(event) {
+    let asignaturas = [];
+    for (var e in this.props.matricula){
+      asignaturas[this.props.matricula[e].codigo] = this.props.matricula[e].asignaturas;
+    }
+
     event.preventDefault();
     let paramsToUpdate = {};
     if (this.planElegido.value === "-1") {
@@ -26,11 +31,11 @@ export default class FormPeticionTitulacion extends React.Component {
       alert("Debe rellenar la justificación");
     } else {
       paramsToUpdate.planCodigo = this.planElegido.value;
-      paramsToUpdate.asignaturaCodigo = this.props.asignaturasMatriculadas[this.asignaturaElegida.value].asignaturaCodigo;
-      paramsToUpdate.asignaturaNombre = this.props.asignaturasMatriculadas[this.asignaturaElegida.value].asignaturaNombre;
+      paramsToUpdate.asignaturaCodigo = asignaturas[this.planElegido.value][this.asignaturaElegida.value].asignaturaCodigo;
+      paramsToUpdate.asignaturaNombre = asignaturas[this.planElegido.value][this.asignaturaElegida.value].asignaturaNombre;
       paramsToUpdate.justificacion = this.textoJustificacion.value;
       paramsToUpdate.tipo = "titulación";
-      console.log('params to update;',paramsToUpdate);
+      //console.log('params to update;',paramsToUpdate);
       if (confirm(`¿Está seguro de que quiere solicitar la evaluación curricular?`)) {
         this.props.cambioEstadoClick(null, paramsToUpdate); // index null porque no existe en la tabla, nueva peticion
       }
@@ -41,11 +46,11 @@ export default class FormPeticionTitulacion extends React.Component {
     this.props.handleClose();
   }
 
-  // cambiaAsignaturas() {
-  //   this.setState({
-  //     planElegido: this.planElegido.value
-  //   })
-  // }
+  cambiaAsignaturas() {
+    this.setState({
+      planElegido: this.planElegido.value
+    })
+  }
 
 
   cuentaCaracteres() {
@@ -56,24 +61,34 @@ export default class FormPeticionTitulacion extends React.Component {
 
 
   render() {
+    let planes =[];
+    let asignaturas = [];
+    for (var e in this.props.matricula){
+      let aux = {};
+      aux.codigo = this.props.matricula[e].codigo;
+      aux.nombre = this.props.matricula[e].nombre;
+      planes.push(aux);
+      asignaturas[this.props.matricula[e].codigo] = this.props.matricula[e].asignaturas;
+    }
     return (
       <div>
         <Modal.Body>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label>Selecciona plan de estudios:</Form.Label>
-              <Form.Control as="select" ref={select => this.planElegido = select}>
+              <Form.Control as="select" ref={select => this.planElegido = select} onChange={this.cambiaAsignaturas}>
                 <option key={-1} value={-1}>-</option>
-                {this.props.planesMatriculados.map((plan, index) => (<option key={index} value={plan.planCodigo}>{plan.planCodigo} - {plan.planNombre}</option>))}
+                {planes.map((plan, index) => (<option key={index} value={plan.codigo}>{plan.codigo} - {plan.nombre}</option>))}
               </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Selecciona asignatura:</Form.Label>
               <Form.Control as="select" ref={select => this.asignaturaElegida = select} >
               <option key={-1} value={-1}>-</option>
-                  {this.props.asignaturasMatriculadas.map((asignatura, index) =>
-                    <option key={index} value={index}>{asignatura.asignaturaCodigo} - {asignatura.asignaturaNombre}</option> )}
-                </Form.Control>
+              {(this.state.planElegido != -1) ? asignaturas[this.state.planElegido].map((asignatura, index) =>
+                    <option key={index} value={index}>{asignatura.asignaturaCodigo} - {asignatura.asignaturaNombre}</option> ): null
+                  }
+                  </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Justificación:</Form.Label>

@@ -196,7 +196,7 @@ export default class App extends React.Component {
             this.borrarPeticiones('titulación');
           }
         } else {
-          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por TITULACIÓN hasta que lo active de nuevo. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
+          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por TITULACIÓN hasta que lo active de nuevo. Si confirma, no podrá tener acceso a las solicitudes que sigan pendientes. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
             paramsToUpdate.estadoTitulacion = 'DESACTIVADO';
             this.setState({
               disableTitulacion: true,
@@ -216,7 +216,7 @@ export default class App extends React.Component {
             this.borrarPeticiones('curso');
           }
         } else {
-          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por CURSO hasta que lo active de nuevo. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
+          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por CURSO hasta que lo active de nuevo. Si confirma, no podrá tener acceso a las solicitudes que sigan pendientes. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
             paramsToUpdate.estadoCurso = 'DESACTIVADO';
             this.setState({
               disableCurso: true,

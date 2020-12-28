@@ -102,7 +102,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
 
 
 //devuelve toda las peticiones de todos los alumnos
-const getAllPeticionPas = async function (page, sizePerPage, filters) {
+const getAllPeticionPas = async function (isInforme, page, sizePerPage, filters) {
     try {
         const offset = 0 + (page - 1) * sizePerPage;
         const where = {}
@@ -169,14 +169,27 @@ const getAllPeticionPas = async function (page, sizePerPage, filters) {
         if (whereAnd.length > 0) {
             where[Op.and] = whereAnd
         }
-        let { count, rows } = await models.PeticionEvaluacionCurricular.findAndCountAll({
-            where,
-            offset,
-            limit: sizePerPage,
-            order: [
-                ['fecha', 'DESC']
-            ]
-        });
+        if (isInforme == true) {
+            var { count, rows } = await models.PeticionEvaluacionCurricular.findAndCountAll({
+                where,
+                offset,
+                limit: sizePerPage,
+                order: [
+                    ['plan', 'DESC'],
+                    ['dni', 'DESC']
+                ]
+            });
+
+        } else {
+            var { count, rows } = await models.PeticionEvaluacionCurricular.findAndCountAll({
+                where,
+                offset,
+                limit: sizePerPage,
+                order: [
+                    ['fecha', 'DESC']
+                ]
+            });
+        }
 
         let plans = await planController.findAllPlans();
         plans.forEach(plan => {
@@ -397,10 +410,7 @@ const getDataApiUpm = async function (mail, path, options) {
 
 const getInfoMatricula = async function (correo) {
     return new Promise((resolve) => {
-        let planesAsignaturas = {
-            planes: [],
-            asignaturas: []
-        };
+        let planesAsignaturas = {};
         let promisesAsignaturasPlanes = [];
         let anio = helpers.getCursoAnio();
         try {
@@ -408,18 +418,18 @@ const getInfoMatricula = async function (correo) {
                 .then(async (data) => {
                     data.forEach(plan => {
                         if (plan.anio === anio) {
-                            let aux = {};
-                            aux.planCodigo = plan.codigo_plan;
-                            aux.planNombre = plan.nombre_plan;
-                            planesAsignaturas.planes.push(aux);
+                            planesAsignaturas[plan.codigo_plan] = {
+                                codigo: plan.codigo_plan,
+                                nombre: plan.nombre_plan,
+                                asignaturas: []
+                            }
                         }
                     })
-                    for (const index in planesAsignaturas.planes) {
+                    for (const plan in planesAsignaturas) {
                         promisesAsignaturasPlanes.push(
-                            getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula.json/' + planesAsignaturas.planes[index].planCodigo + '/asignaturas', {})
+                            getDataApiUpm(correo, 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula.json/' + plan + '/asignaturas', { plan })
                         )
                     }
-
                     const asignaturasPlanes = await Promise.all(promisesAsignaturasPlanes);
                     let index = 0
                     for (plan in planesAsignaturas) {
@@ -428,7 +438,7 @@ const getInfoMatricula = async function (correo) {
                                 let aux = {};
                                 aux.asignaturaCodigo = asignatura.codigo_asignatura;
                                 aux.asignaturaNombre = asignatura.nombre_asignatura;
-                                planesAsignaturas.asignaturas.push(aux);
+                                planesAsignaturas[plan].asignaturas.push(aux);
                             });
                         }
                         index++;
@@ -553,7 +563,7 @@ const getInformes = async function () {
         var datosTitulacion = [];
         var datosCurso = [];
         const curso = helpers.getCursoAnio();
-        let respuesta = await getAllPeticionPas(null, null, null);
+        let respuesta = await getAllPeticionPas(true, null, null, null);
 
         datosTitulacion = await Promise.all(respuesta.peticiones.map(async (peticion) => {
             if (peticion.tipo === "titulación") {
@@ -589,7 +599,13 @@ const getInformes = async function () {
 
 const getHistorico = async function () {
     try {
-        let respuesta = await models.HistoricoEvaluacionCurricular.findAll({});
+        let respuesta = await models.HistoricoEvaluacionCurricular.findAll({
+            order: [
+                ['plan', 'DESC'],
+                ['fechaTribunal', 'DESC'],
+                ['dni', 'DESC']
+            ]
+        });
         return respuesta || [];
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -613,7 +629,7 @@ const deletePeticiones = async function (tipo) {
             },
             returning: true,
         });
-        peticion = await getAllPeticionPas(null, null, null);
+        peticion = await getAllPeticionPas(false, null, null, null);
         return peticion
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -647,9 +663,7 @@ exports.getInfoAllAlumno = async function (req, res, next) {
     try {
         let respuesta = {};
         respuesta.peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid);
-        const matricula = await getInfoMatricula(req.session.user.mail);
-        respuesta.planesMatriculados = matricula.planes;
-        respuesta.asignaturasMatriculadas = matricula.asignaturas;
+        respuesta.matricula = await getInfoMatricula(req.session.user.mail);
         res.json(respuesta);
     } catch (error) {
         console.log(error)
@@ -661,6 +675,7 @@ exports.getInfoAllAlumno = async function (req, res, next) {
 exports.getInfoAllPas = async function (req, res, next) {
     try {
         respuesta = await getAllPeticionPas(
+            false,
             req.query.page,
             req.query.sizePerPage,
             JSON.parse(req.query.filters)
