@@ -13,6 +13,8 @@ const helpers = require('../../lib/helpers');
 const { parse, Parser } = require('json2csv');
 const JSZip = require('jszip');
 const { resolve } = require('bluebird');
+const {jsPDF} = require('jspdf');
+const autotable = require('jspdf-autotable');
 
 //devuelve todas las peticiones de un alumno
 const getAllPeticionAlumno = async function (edupersonuniqueid) {
@@ -175,8 +177,8 @@ const getAllPeticionPas = async function (isInforme, page, sizePerPage, filters)
                 offset,
                 limit: sizePerPage,
                 order: [
-                    ['plan', 'DESC'],
-                    ['dni', 'DESC']
+                    ['planCodigo', 'ASC'],
+                    ['dni', 'ASC']
                 ]
             });
 
@@ -367,7 +369,7 @@ const getDataApiUpm = async function (mail, path, options) {
             let email_pruebas = process.env.EMAIL_PRUEBAS;
             var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
             var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
-            var passphrase = process.env.API_PASSPHRASE;
+            var passphrase = process.env.API_UPM_HORARIO_PASSPHRASE;
             const httpsAgent = new https.Agent({
                 cert: cert,
                 key: key,
@@ -388,7 +390,7 @@ const getDataApiUpm = async function (mail, path, options) {
         try {
             var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
             var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
-            var passphrase = process.env.API_PASSPHRASE;
+            var passphrase = process.env.API_UPM_HORARIO_PASSPHRASE;
             const httpsAgent = new https.Agent({
                 cert: cert,
                 key: key,
@@ -508,8 +510,8 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
             };
             return data;
         } else if (process.env.PRUEBAS == 'true') {
-            let username = process.env.API_USERNAME;
-            let password = process.env.API_PWD;
+            let username = process.env.API_EVAL_CURRICULAR_USERNAME;
+            let password = process.env.API_EVAL_CURRICULAR_PWD;
             let data = {};
             data.alumno = '9298dbdc-26bf-4211-8430-3019583bb882@upm.es';
             data.plan = '09TT';
@@ -520,7 +522,8 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 'Accept': 'application/json'
             };
             //console.log('data to api:', data);
-            datos = await axios.post("https://api.etsit.upm.es/stats/report/evaluacion_curricular", data, {
+            let url = process.env.API_EVAL_CURRICULAR_URL;
+            datos = await axios.post(url, data, {
                 headers: headers,
                 auth: {
                     username: username,
@@ -530,8 +533,8 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
             data = datos.data;
             return data;
         } else {
-            let username = process.env.API_USERNAME;
-            let password = process.env.API_PWD;
+            let username = process.env.API_EVAL_CURRICULAR_USERNAME;
+            let password = process.env.API_EVAL_CURRICULAR_PWD;
             let data = {};
             data.alumno = alumno;
             data.plan = planCodigo;
@@ -542,7 +545,8 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 'Accept': 'application/json'
             };
             //console.log('data to api:', data);
-            datos = await axios.post("https://api.etsit.upm.es/stats/report/evaluacion_curricular", data, {
+            let url = process.env.API_EVAL_CURRICULAR_URL;
+            datos = await axios.post(url, data, {
                 headers: headers,
                 auth: {
                     username: username,
@@ -601,9 +605,9 @@ const getHistorico = async function () {
     try {
         let respuesta = await models.HistoricoEvaluacionCurricular.findAll({
             order: [
-                ['plan', 'DESC'],
-                ['fechaTribunal', 'DESC'],
-                ['dni', 'DESC']
+                ['planCodigo', 'ASC'],
+                ['fechaTribunal', 'ASC'],
+                ['dni', 'ASC']
             ]
         });
         return respuesta || [];
@@ -983,11 +987,43 @@ exports.getHistorico = async function (req, res, next) {
                 fecha_tribunal: helpers.formatFecha(solicitud.fechaTribunal)
             };
         });
-        // falta crear pdf
         const json2csvParser = new Parser({ opts });
         const csv = json2csvParser.parse(data);
+
+        var pdf = new jsPDF();
+        let body = [];
+        for (var e in data){
+            body.push(data[e]);
+        }
+        pdf.autoTable({
+            head: [{
+                número: 'N',
+                dni: 'DNI',
+                nombre: 'NOMBRE',
+                apellidos: 'APELLIDOS',
+                plan_codigo: 'PLAN CODIGO',
+                plan_nombre: 'PLAN NOMBRE',
+                asignatura_codigo: 'ASIG. CODIGO',
+                asignatura_nombre: 'ASIG. NOMBRE',
+                tipo: 'TIPO',
+                fecha_tribunal: 'FECHA TRIBUNAL'
+            }],
+            body: body,
+            didDrawPage: function (data) {
+                // Header
+                pdf.setFontSize(20)
+                pdf.setTextColor(40)
+                pdf.text('Historico de solicitudes de evaluacion curricular', 20, 22)
+            },
+            margin: { top: 30 },
+            styles: { cellPadding: 1.2, fontSize: 8,  },
+            bodyStyles: { valign: 'middle',halign:'center' },
+            headStyles:{ valign: 'middle',halign:'center' }
+        })
+        
         var zip = new JSZip();
         zip.file('historico.csv', csv)
+        zip.file('historico.pdf', pdf.output('arraybuffer'))
         zip.generateAsync({ type: "base64" })
             .then(function (content) {
                 res.json({
