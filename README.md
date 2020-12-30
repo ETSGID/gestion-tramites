@@ -64,7 +64,7 @@ EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secret
 API_UPM_HORARIO_PASSPHRASE= # passphrase de api upm
 API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
-API_EVAL_CURRICULAR_URL= 
+API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -110,9 +110,10 @@ EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
 EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
 EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
-API_PASSPHRASE= # passphrase de api upm
-API_USERNAME= # usuario api ev. curricular
-API_PWD= # contraseña api ev. curricular
+API_UPM_HORARIO_PASSPHRASE= # passphrase de api upm
+API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
+API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
+API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 ```
 - Consideraciones:
 	- En local no se pueden utilizar las apis externas, por lo que se usan maquetas de datos **(DEV=true)**
@@ -121,6 +122,7 @@ API_PWD= # contraseña api ev. curricular
 	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
 	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
 	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
+	- Para las peticiones a API UPM, el certificado y su clave privada se colocan desde la máquina anfitrión mapeando un volumen en app/certificates (o bien se colocan en esa carpeta directamente para su ejecución en local sin Docker).
 ##### Comandos necesarios
 ```shell
 cd back
@@ -180,7 +182,9 @@ Ver [Front README.md](front/README.md)
 
 ### Trámites
 **1. Gestión Títulos**
+https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/home
 
 **2. Gestión Certificados**
 
 **3. Evaluación Curricular**
+https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Solicitud-de-evaluaci%C3%B3n-curricular
