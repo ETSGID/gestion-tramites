@@ -17,6 +17,8 @@ services:
       - dbtramites
     env_file:
       - ../config/gestion-tramites/gestion-tramites.env
+    volumes:
+      - ../config/gestion-tramites/certificates:/app/certificates
 
 volumes:
   dbdatatramites:
