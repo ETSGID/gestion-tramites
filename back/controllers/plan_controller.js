@@ -32,21 +32,21 @@ async function getPlansApiUpm() {
     }
 };
 
-async function findAllPlans(){
-    try{
+async function findAllPlans() {
+    try {
         return await models.Plan.findAll({
             order: [
                 ['nombre', 'ASC'],
             ],
         });
-    } catch (error){
+    } catch (error) {
         console.log(error);
         return [];
     }
 }
 
-async function getName(id){
-    try{
+async function getName(id) {
+    try {
         let nombrePlan = await models.Plan.findOne({
             attributes: ['nombre'],
             where: {
@@ -54,7 +54,7 @@ async function getName(id){
             }
         });
         return nombrePlan.nombre;
-    } catch (error){
+    } catch (error) {
         console.log(error);
         return [];
     }
