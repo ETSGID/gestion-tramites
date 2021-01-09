@@ -35,6 +35,9 @@ El proyecto se separa en dos partes:
 		- Webpack
 
 ## Puesta en marcha
+### Consideraciones previas
+La variable de entorno EMAIL_ADMIN solo se usa la primera vez que arranca el código para crear el rol **admin** a través de un seeder.
+
 ### Producción / pruebas
 ##### Variables de entorno
 ###### gestion-tramites.env
@@ -57,10 +60,14 @@ EMAIL_HOST=smtp.etsit.upm.es
 EMAIL_PORT=587
 EMAIL_USER=zz.mailer.sys2
 EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
-EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
-EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
+EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es #(solo para producción)
+EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas y dev: destino todos los emails)
 EMAIL_PASS= #contraseña de zz.mailer.sys2
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
+API_UPM_HORARIO_PASSPHRASE= #passhprase de apiupm mihorario
+API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
+API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
+API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -68,6 +75,39 @@ POSTGRES_DB=gestion_tramites
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=XXXX
 ```
+##### Conexión servicios remotos
+###### Servidor mail:
+- Host: `smtp.etsit.upm.es` *(variable de  entorno)*
+- Port : 587*(variable de  entorno)*
+- User : `zz.mailer.sys2` *(variable de  entorno)*
+- Sender: `Solicitud trámite <noreply@etsit.upm.es>` *(variable de  entorno)*
+- Password: Consultar GID o GICO *(variable de  entorno)*
+
+###### API UPM datos privados matricula:
+- PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
+- Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:
+ - `/app/certificates/es_upm_etsit_mihorario_key.pem`
+ - `/app/certificates/es_upm_etsit_mihorario_cert.pem`
+
+######  API Evaluación Curricular:
+- Username: Consultar GID o GICO*(variable de  entorno)*
+- Password: Consultar GID o GICO *(variable de  entorno)*
+- URL: `https://api.etsit.upm.es/stats/report/evaluacion_curricular` *(variable de  entorno)*
+
+###### API PERON
+- URL: `https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+
+###### CAS
+- Contextos:
+ - `/pas/gestion-tramites/` *(variable de  entorno)*
+ - `/estudiantes/gestion-tramites/`*(variable de  entorno)*
+- Servidor: 
+ - Pruebas: https://siupruebas.upm.es/cas *(variable de  entorno)*
+ - Producción: GICO
+- Servicio:
+ - Pruebas: https://pruebas.etsit.upm.es *(variable de  entorno)*
+ - Producción:  GICO
+
 ##### Comandos necesarios
 - Imagen:
 ```shell
@@ -100,10 +140,10 @@ PRUEBAS=false #(entrono de pruebas host26 o 27)
 DOCKER=false
 EMAIL_HOST=smtp.upm.es
 EMAIL_PORT=587
-EMAIL_USER=zz.mailer.sys2
-EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
-EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
-EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
+EMAIL_USER=xxx@alumnos.upm.es
+EMAIL_SENDER=xxx@alumnos.upm.es 
+EMAIL_SECRETARIA=xxx@alumnos.upm.es #(solo para producción)
+EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas y dev: destino todos los emails)
 EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
 ```
