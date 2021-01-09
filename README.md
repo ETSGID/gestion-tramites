@@ -78,7 +78,7 @@ POSTGRES_PASSWORD=XXXX
 ##### Conexión servicios remotos
 ###### Servidor mail:
 - Host: `smtp.etsit.upm.es` *(variable de  entorno)*
-- Port : 587*(variable de  entorno)*
+- Port : 587 *(variable de  entorno)*
 - User : `zz.mailer.sys2` *(variable de  entorno)*
 - Sender: `Solicitud trámite <noreply@etsit.upm.es>` *(variable de  entorno)*
 - Password: Consultar GID o GICO *(variable de  entorno)*
