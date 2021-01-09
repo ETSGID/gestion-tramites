@@ -172,36 +172,19 @@ Para realizar cambios en la base de datos deben hacerse a través de migraciones
 
 ```shell
 cd back
-# la url debe ser la de la base de datos
-
-# ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
-
-# ejemplo sin variables de entorno
-node_modules/.bin/sequelize db:migrate --url postgres://postgres:1234@localhost:5432/gestion_tramites
+node_modules/.bin/sequelize db:migrate
 ```
+
 Para deshacer las migraciones:
 ```shell
 cd back
-# la url debe ser la de la base de datos
-
-# ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
-
-# ejemplo sin variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --url postgres://postgres:1234@localhost:5432/gestion_tramites
+node_modules/.bin/sequelize db:migrate:undo
 ```
 
 Para deshacer una migración determinada
 ```shell
 cd back
-# la url debe ser la de la base de datos
-
-# ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
-
-# ejemplo sin variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://postgres:1234@localhost:5432/gestion_tramites
+node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration
 ```
 
 #### Front
