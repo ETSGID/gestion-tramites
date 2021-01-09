@@ -11,7 +11,7 @@
     "migrations:undo:all": "./node_modules/.bin/sequelize  db:migrate:undo:all --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB"
   },
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "busboy": "^0.3.1",
     "cas-authentication": "git+https://github.com/javicond3/cas-authentication.git",
     "cookie-parser": "^1.4.5",
