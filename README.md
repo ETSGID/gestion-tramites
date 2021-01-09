@@ -1,11 +1,15 @@
 # App gestión de trámites ETSIT UPM
+[[_TOC_]]
 
-## Resumen
+## Descripción
 Aplicación para gestión de trámites en la ETSIT UPM.
 Trámites gestionados por la app:
-- Gestión de títulos
-- Gestión de certificados
-- Evaluación curricular
+[1. Gestión de título](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Gesti%C3%B3n-de-t%C3%ADtulo)
+
+[2. Solicitud de certificados](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-certificados)
+
+[3. Solicitud de evaluación curricular](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-evaluaci%C3%B3n-curricular)
+
 
 El proyecto se separa en dos partes:
 
@@ -33,6 +37,14 @@ El proyecto se separa en dos partes:
 	- Front
 		- React.js
 		- Webpack
+
+
+## Consideraciones previas
+En la [Wiki general](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/home) de los proyectos se incluye alguna información de utilidad:
+- Mapeo de puertos proxy inverso de la ETSIT: [Entorno de desarrollo, pruebas, producción y local](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Entorno-de-desarrollo,-pruebas,-producci%C3%B3n-y-local).
+- Servicios y servidor CAS: [Entorno de desarrollo, pruebas, producción y local](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Entorno-de-desarrollo,-pruebas,-producci%C3%B3n-y-local).
+- Conexión con el servidor CAS: [CAS, Central Authentication Service](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service).
+- Campos devueltos por el CAS: [CAS, Central Authentication Service](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service).
 
 ## Puesta en marcha
 ### Consideraciones previas
@@ -77,6 +89,7 @@ POSTGRES_PASSWORD=XXXX
 ```
 ##### Conexión servicios remotos
 ###### Servidor mail:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/EMAIL-UPM)
 - Host: `smtp.etsit.upm.es` *(variable de  entorno)*
 - Port : 587 *(variable de  entorno)*
 - User : `zz.mailer.sys2` *(variable de  entorno)*
@@ -84,20 +97,24 @@ POSTGRES_PASSWORD=XXXX
 - Password: Consultar GID o GICO *(variable de  entorno)*
 
 ###### API UPM datos privados matricula:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
 - PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
 - Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:
  - `/app/certificates/es_upm_etsit_mihorario_key.pem`
  - `/app/certificates/es_upm_etsit_mihorario_cert.pem`
 
 ######  API Evaluación Curricular:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
 - Username: Consultar GID o GICO*(variable de  entorno)*
 - Password: Consultar GID o GICO *(variable de  entorno)*
 - URL: `https://api.etsit.upm.es/stats/report/evaluacion_curricular` *(variable de  entorno)*
 
 ###### API PERON
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
 - URL: `https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
 
 ###### CAS
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
 - Contextos:
  - `/pas/gestion-tramites/` *(variable de  entorno)*
  - `/estudiantes/gestion-tramites/`*(variable de  entorno)*
@@ -154,6 +171,33 @@ EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secret
 	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
 	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
 	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
+
+
+##### Conexión servicios remotos
+###### Servidor mail:
+En desarrollo se usa una cuenta de correo personal de la upm.
+- Host: `smtp.upm.es` *(variable de  entorno)*
+- Port : 587 *(variable de  entorno)*
+- User : Dirección correo personal del desarrollador *(variable de  entorno)*
+- Sender: Dirección correo personal del desarrollador *(variable de  entorno)*
+- Password: Contraseña correo personal del desarrollador *(variable de  entorno)*
+
+###### API UPM datos privados matricula:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
+Petición simulada *(in code)*
+
+######  API Evaluación Curricular:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
+Petición simulada *(in code)*
+
+###### API PERON
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
+Petición simulada *(in code)*
+
+###### CAS
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
+Conexión simulada *(in code)*
+
 ##### Comandos necesarios
 ```shell
 cd back
@@ -194,9 +238,9 @@ Si se quiere probar / desarrollar el front de un trámite realizado con **React.
 Ver [Front README.md](front/README.md)
 
 
-### Trámites
-**1. Gestión Títulos**
+### Información otros trámites
+**[1. Gestión de título](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Gesti%C3%B3n-de-t%C3%ADtulo)**
 
-**2. Gestión Certificados**
+**[2. Solicitud de certificados](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-certificados)**
 
-**3. Evaluación Curricular**
+**[3. Solicitud de evaluación curricular](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-evaluaci%C3%B3n-curricular)**
