@@ -10,7 +10,6 @@ const admin = process.env.EMAIL_ADMIN || 'secretario.etsit@upm.es';
 router.get(`/`, async function (req, res, next) {
     req.session.tramite = null;
     let permisos = await permisoController.getAllPermisos();
-    let emailUser = req.session.user.mailPrincipal;
     if (permisos.length === 0) { // vacio, crea permiso admin
         req.params.email = admin;
         req.params.tramite = 'admin';

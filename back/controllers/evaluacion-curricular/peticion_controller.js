@@ -945,7 +945,7 @@ exports.getInformes = async function (req, res, next) {
                 'numero_veces_suspenso_asginatura', 'fecha_ultima_convocatoria_asignatura', 'penultima_calificacion', 'penultima_convocatoria', 'ultima_calificacion',
                 'ultima_convocatoria', 'TFT_matriculado', 'TFT_aprobado', 'nota_media_curso', 'nota_media_titulacion'
             ];
-            const opts = { fields };
+            const opts = { fields, withBOM: true, delimiter: ';' };
             const json2csvParser = new Parser(opts);
             const csv_tit = json2csvParser.parse(data_tit);
             const csv_curso = json2csvParser.parse(data_curso);
@@ -970,7 +970,7 @@ exports.getInformes = async function (req, res, next) {
 exports.getHistorico = async function (req, res, next) {
     try {
         var result = await getHistorico();
-        const opts = ['número', 'dni', 'nombre', 'apellidos', 'plan_codigo', 'plan_nombre', 'asignatura_codigo', 'asignatura_nombre',
+        const fields = ['número', 'dni', 'nombre', 'apellidos', 'plan_codigo', 'plan_nombre', 'asignatura_codigo', 'asignatura_nombre',
             'tipo', 'fecha_tribunal'];
         const data = result.map((solicitud, index) => {
             return {
@@ -987,7 +987,8 @@ exports.getHistorico = async function (req, res, next) {
                 fecha_tribunal: helpers.formatFecha(solicitud.fechaTribunal)
             };
         });
-        const json2csvParser = new Parser({ opts });
+        const opts = { fields, withBOM: true, delimiter: ';' };
+        const json2csvParser = new Parser(opts);
         const csv = json2csvParser.parse(data);
 
         var pdf = new jsPDF();
