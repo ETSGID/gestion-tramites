@@ -2,13 +2,14 @@
 [[_TOC_]]
 
 ## Descripción
-Aplicación para gestión de trámites en la ETSIT UPM.
-Trámites gestionados por la app:
-[1. Gestión de título](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Gesti%C3%B3n-de-t%C3%ADtulo)
+- Aplicación para gestión de trámites en la ETSIT UPM.
+- Trámites gestionados por la app:
 
-[2. Solicitud de certificados](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-certificados)
+ [1. Gestión de título](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Gesti%C3%B3n-de-t%C3%ADtulo)
 
-[3. Solicitud de evaluación curricular](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-evaluaci%C3%B3n-curricular)
+ [2. Solicitud de certificados](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-certificados)
+
+ [3. Solicitud de evaluación curricular](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-evaluaci%C3%B3n-curricular)
 
 
 El proyecto se separa en dos partes:
