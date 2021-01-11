@@ -58,10 +58,10 @@ export default class FormInfoRequisitos extends React.Component {
       let notasAnteriores = 'aún no hay notas anteriores registradas';
       if (this.state.data.notasAnteriores.length >= 2) {
         let length = this.state.data.notasAnteriores.length;
-        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[length-2].convocatoria} de {this.state.data.notasAnteriores[length-2].cursoAcademico}: {this.state.data.notasAnteriores[length-2].calificacionAlfa}</li>
-          <li>{this.state.data.notasAnteriores[length-1].convocatoria} de {this.state.data.notasAnteriores[length-1].cursoAcademico}: {this.state.data.notasAnteriores[length-1].calificacionAlfa}</li></ul>)
+        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[length-2].convocatoria} de {this.state.data.notasAnteriores[length-2].cursoAcademico}: {this.state.data.notasAnteriores[length-2].calificacionAlfa}-{this.state.data.notasAnteriores[length-2].calificacion}</li>
+          <li>{this.state.data.notasAnteriores[length-1].convocatoria} de {this.state.data.notasAnteriores[length-1].cursoAcademico}: {this.state.data.notasAnteriores[length-1].calificacionAlfa}-{this.state.data.notasAnteriores[length-1].calificacion}</li></ul>)
       } else if (this.state.data.notasAnteriores.length == 1) {
-        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[0].convocatoria} de {this.state.data.notasAnteriores[0].cursoAcademico}: {this.state.data.notasAnteriores[0].calificacionAlfa}</li>
+        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[0].convocatoria} de {this.state.data.notasAnteriores[0].cursoAcademico}: {this.state.data.notasAnteriores[0].calificacionAlfa}-{this.state.data.notasAnteriores[0].calificacion}</li>
          </ul>)
       }
 
