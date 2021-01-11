@@ -13,7 +13,7 @@ const helpers = require('../../lib/helpers');
 const { parse, Parser } = require('json2csv');
 const JSZip = require('jszip');
 const { resolve } = require('bluebird');
-const {jsPDF} = require('jspdf');
+const { jsPDF } = require('jspdf');
 const autotable = require('jspdf-autotable');
 
 //devuelve todas las peticiones de un alumno
@@ -242,8 +242,8 @@ const getDataApiUpm = async function (mail, path, options) {
     const curso = helpers.getCursoAnio();
     // En desarrollo en local NO se puede acceder a la apiUPM
     if (process.env.DEV == 'true') {
-        let data;
-        if (path === '/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json') {
+        let data = [];
+        if (path == 'https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula/ultimoanio.json') {
             data = [
                 {
                     "codigo_plan": "09TT",
@@ -298,8 +298,7 @@ const getDataApiUpm = async function (mail, path, options) {
                 }
             ];
 
-        } else if (path.startsWith('/sapi_upm/academico/alumnos/index.upm/matricula.json/')) {
-
+        } else if (path.startsWith('https://www.upm.es/sapi_upm/academico/alumnos/index.upm/matricula.json/')) {
             const asignaturasMatricula = {
                 '09TT': {},
                 '09AQ': {}
@@ -366,7 +365,7 @@ const getDataApiUpm = async function (mail, path, options) {
         return data;
     } else if (process.env.PRUEBAS == 'true') {
         try {
-            let email_pruebas = process.env.EMAIL_PRUEBAS;
+            let email_api = process.env.EMAIL_API;
             var key = fs.readFileSync('certificates/es_upm_etsit_mihorario_key.pem');
             var cert = fs.readFileSync('certificates/es_upm_etsit_mihorario_cert.pem');
             var passphrase = process.env.API_UPM_HORARIO_PASSPHRASE;
@@ -377,7 +376,7 @@ const getDataApiUpm = async function (mail, path, options) {
                 secureProtocol: "TLSv1_2_method"
             })
             const headers = {
-                'X-UPMUSR': email_pruebas
+                'X-UPMUSR': email_api
             }
             const response = await axios.get(path, { headers: headers, httpsAgent: httpsAgent })
             return response.data;
@@ -513,10 +512,10 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
             let username = process.env.API_EVAL_CURRICULAR_USERNAME;
             let password = process.env.API_EVAL_CURRICULAR_PWD;
             let data = {};
-            data.alumno = '9298dbdc-26bf-4211-8430-3019583bb882@upm.es';
-            data.plan = '09TT';
-            data.asignatura = 95000008;
-            data.cursoAcademico = '2015-16';
+            data.alumno = process.env.UUID_API;
+            data.plan = planCodigo;
+            data.asignatura = asignaturaCodigo;
+            data.cursoAcademico = cursoAcademico;
             const headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -993,7 +992,7 @@ exports.getHistorico = async function (req, res, next) {
 
         var pdf = new jsPDF();
         let body = [];
-        for (var e in data){
+        for (var e in data) {
             body.push(data[e]);
         }
         pdf.autoTable({
@@ -1017,11 +1016,11 @@ exports.getHistorico = async function (req, res, next) {
                 pdf.text('Historico de solicitudes de evaluacion curricular', 20, 22)
             },
             margin: { top: 30 },
-            styles: { cellPadding: 1.2, fontSize: 8,  },
-            bodyStyles: { valign: 'middle',halign:'center' },
-            headStyles:{ valign: 'middle',halign:'center' }
+            styles: { cellPadding: 1.2, fontSize: 8, },
+            bodyStyles: { valign: 'middle', halign: 'center' },
+            headStyles: { valign: 'middle', halign: 'center' }
         })
-        
+
         var zip = new JSZip();
         zip.file('historico.csv', csv)
         zip.file('historico.pdf', pdf.output('arraybuffer'))
