@@ -22,6 +22,10 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, planCodigo, 
             send = true;
             text += `Su pago está siendo comprobado por el personal de secretaría, pronto se le informará de los siguientes pasos.`
             break;
+        case estadosCertificado.PAGO_VALORADO:
+            send = true;
+            text += `Ya se ha valorado si su certificado requiere pago o no. Consulta la decisión en la aplicación.`
+            break;
         case estadosCertificado.PAGO_CONFIRMADO:
             send = true;
             text += `Su pago del certificado académico solicitado ha sido validado por el personal de secretaría.`
