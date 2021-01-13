@@ -1,11 +1,17 @@
 # App gestión de trámites ETSIT UPM
+[[_TOC_]]
 
-## Resumen
-Aplicación para gestión de trámites en la ETSIT UPM.
-Trámites gestionados por la app:
-- Gestión de títulos
-- Gestión de certificados
-- Evaluación curricular
+## Descripción
+- Aplicación para gestión de trámites en la ETSIT UPM.
+- Gestor de permisos para el contexto PAS
+- Trámites gestionados por la app:
+
+ [1. Gestión de título](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Gesti%C3%B3n-de-t%C3%ADtulo)
+
+ [2. Solicitud de certificados](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-certificados)
+
+ [3. Solicitud de evaluación curricular](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-evaluaci%C3%B3n-curricular)
+
 
 El proyecto se separa en dos partes:
 
@@ -34,9 +40,103 @@ El proyecto se separa en dos partes:
 		- React.js
 		- Webpack
 
+
+## Consideraciones previas
+En la [Wiki general](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/home) de los proyectos se incluye alguna información de utilidad:
+- Mapeo de puertos proxy inverso de la ETSIT: [Entorno de desarrollo, pruebas, producción y local](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Entorno-de-desarrollo,-pruebas,-producci%C3%B3n-y-local).
+- Servicios y servidor CAS: [Entorno de desarrollo, pruebas, producción y local](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Entorno-de-desarrollo,-pruebas,-producci%C3%B3n-y-local).
+- Conexión con el servidor CAS: [CAS, Central Authentication Service](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service).
+- Campos devueltos por el CAS: [CAS, Central Authentication Service](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service).
+
 ## Puesta en marcha
-### Producción / pruebas
+### Consideraciones previas
+La variable de entorno EMAIL_ADMIN solo se usa la primera vez que arranca el código para crear el rol **admin** a través de un seeder.
+
+### Producción
 ##### Variables de entorno
+Se deben usar las variables presentes en el fichero `gestion-tramites.env`, rellenando los campos vacíos que se corresponden con credenciales.
+###### gestion-tramites.env
+```shell
+POSTGRES_DB=gestion_tramites #(nombre de DB)
+DB_USERNAME=postgres #(nombre de DB)
+DB_PASSWORD=1234
+DB_HOST=dbtramites
+DB_PORT=5432
+SERVICE=https://portal.etsit.upm.es #url servicio sin contexto
+CAS=https://siu.upm.es/cas #url nuevo servidor cas
+SESSION_SECRET=Secreto_para_las_sesiones
+CONTEXT1=/pas/gestion-tramites/
+CONTEXT2=/estudiantes/gestion-tramites/
+PORT=3000
+DEV=false
+PRUEBAS=false
+DOCKER=true
+EMAIL_HOST=smtp.etsit.upm.es
+EMAIL_PORT=587
+EMAIL_USER=zz.mailer.sys2
+EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
+EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es 
+EMAIL_PASS= #contraseña de zz.mailer.sys2
+EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
+API_UPM_HORARIO_PASSPHRASE= #passhprase de apiupm mihorario
+API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
+API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
+API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
+```
+###### gestion-tramites-db.env 
+```shell
+POSTGRES_DB=gestion_tramites
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=XXXX
+```
+##### Conexión servicios remotos
+###### Servidor mail:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/EMAIL-UPM)
+- Host: `smtp.etsit.upm.es` *(variable de  entorno)*
+- Port : 587 *(variable de  entorno)*
+- User : `zz.mailer.sys2` *(variable de  entorno)*
+- Sender: `Solicitud trámite <noreply@etsit.upm.es>` *(variable de  entorno)*
+- Password: Consultar GID o GICO *(variable de  entorno)*
+
+###### API UPM datos privados matricula:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
+- PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
+- Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:
+ - `/app/certificates/es_upm_etsit_mihorario_key.pem`
+ - `/app/certificates/es_upm_etsit_mihorario_cert.pem`
+
+######  API Evaluación Curricular:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
+- Username: Consultar GID o GICO*(variable de  entorno)*
+- Password: Consultar GID o GICO *(variable de  entorno)*
+- URL: `https://api.etsit.upm.es/stats/report/evaluacion_curricular` *(variable de  entorno)*
+
+###### API PERON
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
+- URL: `https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+
+###### CAS
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
+- Contextos:
+ - `/pas/gestion-tramites/` *(variable de  entorno)*
+ - `/estudiantes/gestion-tramites/`*(variable de  entorno)*
+- Servidor: GICO
+- Servicio: GICO
+
+##### Comandos necesarios
+- Imagen:
+```shell
+git.etsit.upm.es:4567/grupointegraciondigital/gestion-tramites:stable
+```
+- Configuración de docker-compose.override.yml
+- Ejecución:
+```shell
+docker-compose up
+```
+
+### Pruebas (host27)
+##### Variables de entorno
+Se deben copiar las variables presentes en el fichero  `back/pruebas.template.env` en el siguiente fichero `config/gestion-tramites/gestion-tramites.env`. Este fichero no se subirá al repositorio para proteger las credenciales. En este fichero se deben configurar las variables de entorno con contraseñas, ya que se encuentra en el `.gitignore`. Las variables de entorno son las siguientes:
 ###### gestion-tramites.env
 ```shell
 POSTGRES_DB=gestion_tramites #(nombre de DB)
@@ -51,17 +151,18 @@ CONTEXT1=/pas/gestion-tramites/
 CONTEXT2=/estudiantes/gestion-tramites/
 PORT=3000
 DEV=false
-PRUEBAS=false # true en pruebas
+PRUEBAS=true #para host27
 DOCKER=true
 EMAIL_HOST=smtp.etsit.upm.es
 EMAIL_PORT=587
 EMAIL_USER=zz.mailer.sys2
 EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
-EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
-EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
 EMAIL_PASS= #contraseña de zz.mailer.sys2
+EMAIL_PRUEBAS=xxx@alumnos.upm.es #destino de los emails
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
-API_UPM_HORARIO_PASSPHRASE= # passphrase de api upm
+EMAIL_API=xxx@alumnos.upm.es #para probar APIs con email
+UUID_API= yyy@upm.es #para probar APIs con UUID devuelto por el CAS
+API_UPM_HORARIO_PASSPHRASE= #passhprase de apiupm mihorario
 API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
@@ -72,21 +173,55 @@ POSTGRES_DB=gestion_tramites
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=XXXX
 ```
-##### Comandos necesarios
-- Imagen:
-```shell
-git.etsit.upm.es:4567/grupointegraciondigital/gestion-tramites:stable
-```
-- Configuración de docker-compose.override.yml
-- Ejecución:
-```shell
-docker-compose up
-```
+- Consideraciones:
+	- Para logearse en el CAS se debe utilizar una de las cuentas de prueba, pero luego el usuario de la sesión será el que se indique en EMAIL_API
+	- En el contexto PAS, es necesario dar permisos al usuario (EMAIL_API) para el trámite en cuestión, por lo que se debe añadir un permiso a mano en la base de datos, siendo el trámite 'admin','evaluacion-curricular','gestion-certificados' u otro trámite que se encuentre disponible:
+	`insert into "Permisos" (email, tramite) values (EMAIL_API,TRAMITE);`
+	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario de los correos. El que envía el email es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
+	- Para probar las APIS, se debe indicar el EMAIL_API para API UPM, y UUID_API para API Ev. Curricular del alumno del que se quiere obtener la información
+	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
+	
+
+##### Conexión servicios remotos
+###### Servidor mail:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/EMAIL-UPM)
+- Host: `smtp.etsit.upm.es` *(variable de  entorno)*
+- Port : 587 *(variable de  entorno)*
+- User : `zz.mailer.sys2` *(variable de  entorno)*
+- Sender: `Solicitud trámite <noreply@etsit.upm.es>` *(variable de  entorno)*
+- Password: Consultar GID o GICO *(variable de  entorno)*
+
+###### API UPM datos privados matricula:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
+- PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
+- Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:
+ - `/app/certificates/es_upm_etsit_mihorario_key.pem`
+ - `/app/certificates/es_upm_etsit_mihorario_cert.pem`
+
+######  API Evaluación Curricular:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
+- Username: Consultar GID o GICO*(variable de  entorno)*
+- Password: Consultar GID o GICO *(variable de  entorno)*
+- URL: `https://api.etsit.upm.es/stats/report/evaluacion_curricular` *(variable de  entorno)*
+
+###### API PERON
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
+- URL: `https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+
+
+###### CAS
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
+- Contextos:
+	- `/pas/gestion-tramites/` *(variable de  entorno)*
+	- `/estudiantes/gestion-tramites/`*(variable de  entorno)*
+- Servidor: https://siupruebas.upm.es/cas *(variable de  entorno)*
+- Servicio: https://pruebas.etsit.upm.es *(variable de  entorno)*
 
 ### Local (sin Docker)
 #### Back
 ##### Variables de entorno
-Se deben copiar las variables presentes en el fichero  `back/file.env` en el siguiente fichero `back/local.env`. Este fichero no se subirá al repositorio para proteger las credenciales del usuario. En este fichero se deben configurar las variables de entorno con contraseñas, ya que se encuentra en el `.gitignore`. Las variables de entorno son las siguientes:
+Se deben copiar las variables presentes en el fichero  `back/local.template.env` en el siguiente fichero `back/local.env`. Este fichero no se subirá al repositorio para proteger las credenciales del usuario. En este fichero se deben configurar las variables de entorno con contraseñas, ya que se encuentra en el `.gitignore`. Las variables de entorno son las siguientes:
+###### local.env
 ```shell
 POSTGRES_DB=gestion_tramites #(nombre de DB)
 DB_USERNAME=postgres #(nombre de usuario de DB)
@@ -99,30 +234,51 @@ SESSION_SECRET=Secreto_para_las_sesiones
 CONTEXT1=/pas/gestion-tramites/
 CONTEXT2=/estudiantes/gestion-tramites/
 PORT=3000
-DEV=true #(entorno de desarrollo)
-PRUEBAS=false #(entrono de pruebas host26 o 27)
+DEV=true #entorno de desarrollo local
+PRUEBAS=false
 DOCKER=false
 EMAIL_HOST=smtp.upm.es
 EMAIL_PORT=587
-EMAIL_USER=zz.mailer.sys2
-EMAIL_SENDER=Solicitud trámite <noreply@etsit.upm.es> 
-EMAIL_SECRETARIA=secretaria.alumnos@etsit.upm.es
-EMAIL_PRUEBAS=xxx@alumnos.upm.es #(solo para pruebas, a donde envia el mail de los alumnos)
+EMAIL_USER=xxx@alumnos.upm.es #igual que EMAIL_SENDER
+EMAIL_SENDER=xxx@alumnos.upm.es #igual que EMAIL_USER
+EMAIL_PRUEBAS=xxx@alumnos.upm.es #destino de todos los emails
 EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
-API_UPM_HORARIO_PASSPHRASE= # passphrase de api upm
-API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
-API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
-API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 ```
 - Consideraciones:
-	- En local no se pueden utilizar las apis externas, por lo que se usan maquetas de datos **(DEV=true)**
-	- **(DEV=true)** no  pasa por el cas y crea un **usario inventado** (Fernando Fernández Fernández) con los roles (**FA**): PAS y Alumno 
-	- En local no se puede usar la cuenta de correo ``zz.mailer.sys2``, pero sí se puede usar el correo de tipo @upm.es o @alumnos.upm.es con las credenciales del usuario.
+	- En local no se pueden utilizar las APIs externas, por lo que se usan maquetas de datos **(DEV=true)**
+	- **(DEV=true)** no  pasa por el CAS y crea un **usario inventado** (Fernando Fernández Fernández) con los roles (**FA**): PAS y Alumno 
+	- En local se usa el correo de tipo @upm.es o @alumnos.upm.es, con las credenciales del usuario, para el envío de emails por parte de la aplicación. Se debe indicar el EMAIL_USER, el EMAIL_SENDER y la EMAIL_PASS con la contraseña del alumno. **EMAIL_USER debe ser el mismo que EMAIL_SENDER**
 	- Configuración de CAS y SERVICE sirve para cualquier aplicación en localhost:3000. Aunque si **DEV=true** no pasa por el CAS
 	- Es necesario crear previamente la base de datos con los parámetros que se pasan (POSTGRES_DB, DB_USERNAME, DB_PASSWORD). La base de datos puede ser un contenedor docker o instalarla en el propio host. Se trata de una BBDD PostgreSQL.
-	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario y quien envía el email en pruebas. En local se debe indicar la contraseña del email del alumno que desea probar el servicio. En el entorno de pruebas la contraseña no es necesaria, solamente el email para indicar el destinatario, puesto que el que envía es ``zz.mailer.sys2`` (noreply@etsit.upm.es)
-	- Para las peticiones a API UPM, el certificado y su clave privada se colocan desde la máquina anfitrión mapeando un volumen en app/certificates (o bien se colocan en esa carpeta directamente para su ejecución en local sin Docker).
+	- El email de pruebas (EMAIL_PRUEBAS) se utiliza para indicar el destinatario de los correos que envía la aplicación
+
+
+##### Conexión servicios remotos
+###### Servidor mail:
+En desarrollo se usa una cuenta de correo personal de la upm.
+- Host: `smtp.upm.es` *(variable de  entorno)*
+- Port : 587 *(variable de  entorno)*
+- User : Dirección correo personal del desarrollador *(variable de  entorno)*
+- Sender: Dirección correo personal del desarrollador *(variable de  entorno)*
+- Password: Contraseña correo personal del desarrollador *(variable de  entorno)*
+
+###### API UPM datos privados matricula:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
+Petición simulada *(in code)*
+
+######  API Evaluación Curricular:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
+Petición simulada *(in code)*
+
+###### API PERON
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
+Petición simulada *(in code)*
+
+###### CAS
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
+Conexión simulada *(in code)*
+
 ##### Comandos necesarios
 ```shell
 cd back
@@ -141,36 +297,19 @@ Para realizar cambios en la base de datos deben hacerse a través de migraciones
 
 ```shell
 cd back
-# la url debe ser la de la base de datos
-
-# ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
-
-# ejemplo sin variables de entorno
-node_modules/.bin/sequelize db:migrate --url postgres://postgres:1234@localhost:5432/gestion_tramites
+node_modules/.bin/sequelize db:migrate
 ```
+
 Para deshacer las migraciones:
 ```shell
 cd back
-# la url debe ser la de la base de datos
-
-# ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
-
-# ejemplo sin variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --url postgres://postgres:1234@localhost:5432/gestion_tramites
+node_modules/.bin/sequelize db:migrate:undo
 ```
 
 Para deshacer una migración determinada
 ```shell
 cd back
-# la url debe ser la de la base de datos
-
-# ejemplo con variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$POSTGRES_DB
-
-# ejemplo sin variables de entorno
-node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration --url postgres://postgres:1234@localhost:5432/gestion_tramites
+node_modules/.bin/sequelize db:migrate:undo --name exampleNameMigration
 ```
 
 #### Front
@@ -180,12 +319,9 @@ Si se quiere probar / desarrollar el front de un trámite realizado con **React.
 Ver [Front README.md](front/README.md)
 
 
-### Trámites
-**1. Gestión Títulos**
-https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/home
+### Información otros trámites
+**[1. Gestión de título](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Gesti%C3%B3n-de-t%C3%ADtulo)**
 
-**2. Gestión Certificados**
-https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Solicitud-de-certificados
+**[2. Solicitud de certificados](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-certificados)**
 
-**3. Evaluación Curricular**
-https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Solicitud-de-evaluaci%C3%B3n-curricular
+**[3. Solicitud de evaluación curricular](https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Trámites/Solicitud-de-evaluaci%C3%B3n-curricular)**

@@ -138,7 +138,8 @@ if (process.env.DEV == 'true') {
     */
       req.session.user.employeetype = ['F', 'A'];
       //se envía al email configurado para el alumno o el que devuelve el cas
-      req.session.user.mail = req.session.user.mail;
+      //req.session.user.mail = req.session.user.mail;
+      req.session.user.mail = process.env.EMAIL_API;
       req.session.user.uid = 'ejemplo';
       req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
       req.session.user.sn= 'FERNANDEZ FERNANDEZ';

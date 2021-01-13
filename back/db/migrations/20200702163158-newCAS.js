@@ -2,7 +2,6 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-20200702163158-newCAS.js
     try {
       // Alter commands 
 

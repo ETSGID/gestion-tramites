@@ -2,10 +2,9 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
- const t = await queryInterface.sequelize.transaction();    
-try {
+    try {
       // Alter commands 
-      
+      const t = await queryInterface.sequelize.transaction();
 
       //borrar columna
       await queryInterface.removeColumn('Permisos', 'id', { transaction: t });
@@ -41,8 +40,8 @@ try {
   },
 
   down: async (queryInterface, Sequelize) => {
- const t = await queryInterface.sequelize.transaction();    
-try {
+    try {
+      const t = await queryInterface.sequelize.transaction();
       // Reverting commands
       await queryInterface.removeColumn('Permisos', 'email', { transaction: t });
       await queryInterface.removeColumn('Permisos', 'tramite', { transaction: t });

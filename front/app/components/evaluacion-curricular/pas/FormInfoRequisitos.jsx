@@ -55,11 +55,21 @@ export default class FormInfoRequisitos extends React.Component {
       } else if (this.state.data.matriculadoTFT) {
         estadoTFT = "matriculado"
       }
-      let notasAnteriores;
-      if (this.state.data.notasAnteriores) {
-        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[0].convocatoria} de {this.state.data.notasAnteriores[0].cursoAcademico}: {this.state.data.notasAnteriores[0].calificacionAlfa}</li>
-          <li>{this.state.data.notasAnteriores[1].convocatoria} de {this.state.data.notasAnteriores[1].cursoAcademico}: {this.state.data.notasAnteriores[1].calificacionAlfa}</li></ul>)
+      let notasAnteriores = 'aún no hay notas anteriores registradas';
+      if (this.state.data.notasAnteriores.length >= 2) {
+        let length = this.state.data.notasAnteriores.length;
+        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[length-2].convocatoria} de {this.state.data.notasAnteriores[length-2].cursoAcademico}: {this.state.data.notasAnteriores[length-2].calificacionAlfa}-{this.state.data.notasAnteriores[length-2].calificacion}</li>
+          <li>{this.state.data.notasAnteriores[length-1].convocatoria} de {this.state.data.notasAnteriores[length-1].cursoAcademico}: {this.state.data.notasAnteriores[length-1].calificacionAlfa}-{this.state.data.notasAnteriores[length-1].calificacion}</li></ul>)
+      } else if (this.state.data.notasAnteriores.length == 1) {
+        notasAnteriores = (<ul><li>{this.state.data.notasAnteriores[0].convocatoria} de {this.state.data.notasAnteriores[0].cursoAcademico}: {this.state.data.notasAnteriores[0].calificacionAlfa}-{this.state.data.notasAnteriores[0].calificacion}</li>
+         </ul>)
       }
+
+      let ultimaConvocatoria = 'aún no hay última convocatoria registrada';
+      if (this.state.data.ultimaConvocatoria != undefined) {
+        ultimaConvocatoria = this.state.data.ultimaConvocatoria;
+      }
+
       textRequisitos =
         <div>
           <b>Datos del alumno {this.props.peticion.nombre} {this.props.peticion.apellido}</b>
@@ -82,7 +92,7 @@ export default class FormInfoRequisitos extends React.Component {
             <li>Número de veces suspensa en el curso anterior: {this.state.data.numVecesSuspensoCursoAnterior}</li>
             <li>Número de veces suspensa en el curso actual: {this.state.data.numVecesSuspensoCursoActual}</li>
             <li>Número de veces suspensa en total: {this.state.data.numVecesSuspenso}</li>
-            <li>Fecha de última convocatoria: {this.state.data.ultimaConvocatoria}</li>
+            <li>Fecha de última convocatoria: {ultimaConvocatoria}</li>
             <li>Dos últimas calificaciones: {notasAnteriores}</li>
           </ul>
         </div>;

@@ -35,7 +35,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-local.env
 
 # Typescript v1 declaration files
 typings/
@@ -61,7 +60,3 @@ local.env
 
 node_modules
 certificates
-req.json
-test.js
-test2.js
-test3.js
