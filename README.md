@@ -185,6 +185,7 @@ Ver [Front README.md](front/README.md)
 https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/home
 
 **2. Gestión Certificados**
+https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Solicitud-de-certificados
 
 **3. Evaluación Curricular**
 https://git.etsit.upm.es/grupointegraciondigital/gestion-tramites/-/wikis/Solicitud-de-evaluaci%C3%B3n-curricular

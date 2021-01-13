@@ -5,6 +5,7 @@
 
 const { CronJob } = require('cron');
 let planController = require('../controllers/plan_controller')
+let peticionController = require('../controllers/gestion-certificados/peticion_controller')
 
 // cargar planes al iniciar la app
 async () => {
@@ -18,7 +19,7 @@ new CronJob(
     '0 0 0 * * *',
     async () => {
         await planController.createOrUpdatePlans();
-        // mas funciones programadas
+        await peticionController.deleteAntiguas();
     },
     null,
     true,

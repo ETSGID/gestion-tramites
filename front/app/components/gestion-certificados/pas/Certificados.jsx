@@ -61,6 +61,8 @@ export default class Certificados extends React.Component {
         })
 
         const estadoSelect = {};
+        estadoSelect['TRAMITES_ACTIVOS'] = 'TRAMITES_ACTIVOS';
+        estadoSelect['TRAMITES_FINALIZADOS'] = 'TRAMITES_FINALIZADOS';
         for (const estado in estadosCertificado) {
             estadoSelect[estado] = estado
         }

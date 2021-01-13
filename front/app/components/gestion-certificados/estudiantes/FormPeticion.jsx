@@ -154,20 +154,6 @@ export default class FormPeticion extends React.Component {
               />
               <Form.Check className="d-inline-block"
                 type="radio"
-                label="Ficha informativa"
-                name="formTipo"
-                value={tiposCertificado.FICHA_INFORMATIVA}
-                onChange={this.handleChangeTipo}
-              /> <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >
-                Sin nota media, para surtir efectos dentro de la UPM.
-              </Tooltip>}>
-                <span className="d-inline-block">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
-              </OverlayTrigger>
-              <br></br>
-              <Form.Check className="d-inline-block"
-                type="radio"
                 label="Otro"
                 name="formTipo"
                 value={tiposCertificado.OTRO}

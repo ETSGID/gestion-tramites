@@ -33,13 +33,11 @@ const getAllPeticionAlumno = async function (edupersonuniqueid) {
 
 
 //devuelve todas las peticiones de un alumno
-const getPeticionAlumno = async function (edupersonuniqueid, planCodigo, tipoCertificado) {
+const getPeticionAlumno = async function (id) {
     try {
         let peticion = await models.PeticionCertificado.findOne({
             where: {
-                edupersonuniqueid: edupersonuniqueid,
-                planCodigo: planCodigo,
-                tipoCertificado: tipoCertificado
+                id: id
             }
         });
         return peticion
@@ -50,13 +48,11 @@ const getPeticionAlumno = async function (edupersonuniqueid, planCodigo, tipoCer
 
 }
 
-const updatePeticionAlumno = async function (edupersonuniqueid, planCodigo, tipoCertificado, paramsToUpdate) {
+const updatePeticionAlumno = async function (id, paramsToUpdate) {
     try {
         let peticion = await models.PeticionCertificado.update(paramsToUpdate, {
             where: {
-                edupersonuniqueid: edupersonuniqueid,
-                planCodigo: planCodigo,
-                tipoCertificado: tipoCertificado
+                id: id
             },
             returning: true,
         });
@@ -106,7 +102,7 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
 
 
 //devuelve toda las peticiones de todos los alumnos
-const getAllPeticionPas = async function (page, sizePerPage, filters){
+const getAllPeticionPas = async function (page, sizePerPage, filters) {
     try {
         const offset = 0 + (page - 1) * sizePerPage;
         const where = {}
@@ -139,14 +135,24 @@ const getAllPeticionPas = async function (page, sizePerPage, filters){
                 })
             }
             if (filters.estadoPeticionTexto) {
-                whereAnd.push({
-                    estadoPeticion: estadosCertificado[filters.estadoPeticionTexto]
-                })
+                if (filters.estadoPeticionTexto == "TRAMITES_ACTIVOS") {
+                    whereAnd.push({
+                        estadoPeticion: { [Op.in]: [2, 3, 4, 5, 6] }
+                    })
+                } else if (filters.estadoPeticionTexto == "TRAMITES_FINALIZADOS") {
+                    whereAnd.push({
+                        estadoPeticion: { [Op.in]: [7, -1] }
+                    })
+                } else {
+                    whereAnd.push({
+                        estadoPeticion: estadosCertificado[filters.estadoPeticionTexto]
+                    })
+                }
             }
 
             if (filters.nombreCertificado) {
                 whereAnd.push({
-                    tipoCertificado:tiposCertificado[filters.nombreCertificado]
+                    tipoCertificado: tiposCertificado[filters.nombreCertificado]
                 })
             }
         }
@@ -297,18 +303,20 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
         if (Object.keys(req.body.peticion).length === 0) {
             //console.log("Nueva peticion");
             var id = (req.body.paramsToUpdate.contadorPeticiones > 0 ? req.body.paramsToUpdate.contadorPeticiones - 1 : null);
-            peticion.estadoPeticion = estadosCertificado.NO_PEDIDO,
-                req.body.peticion = {
-                    idTabla: id,
-                    estadoPeticionTexto: "NO_PEDIDO"
-                }
+            //peticion.estadoPeticion = estadosCertificado.NO_PEDIDO,
+            peticion.estadoPeticion = 0;
+            req.body.peticion = {
+                idTabla: id,
+                // estadoPeticionTexto: "NO_PEDIDO"
+            }
         } else { // modifica una peticion ya creada, cambio de estado
             if (!req.body.peticion.edupersonuniqueid) req.body.peticion.edupersonuniqueid = null;
-            peticion = await getPeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado)
+            peticion = await getPeticionAlumno(req.body.peticion.id);
+            //peticion = await getPeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado)
         }
         let paramsToUpdate = {};
         let estadoNuevo;
-        let textoAdicional; 
+        let textoAdicional;
         let emailToPas = false;
         let emailToAlumno = false;
         if (req.body.cancel) {
@@ -319,9 +327,10 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             paramsToUpdate.descuento = null;
             emailToAlumno = true;
         } else {
-            if (peticion.estadoPeticion !== estadosCertificado[req.body.peticion.estadoPeticionTexto]) throw "Intenta cambiar un estado que no puede";
+            if (peticion.estadoPeticion !== 0 && (peticion.estadoPeticion !== estadosCertificado[req.body.peticion.estadoPeticionTexto])) throw "Intenta cambiar un estado que no puede";
+            //  if (peticion.estadoPeticion !== estadosCertificado[req.body.peticion.estadoPeticionTexto]) throw "Intenta cambiar un estado que no puede";
             switch (peticion.estadoPeticion) {
-                case estadosCertificado.NO_PEDIDO:
+                case 0:
                 case estadosCertificado.PETICION_CANCELADA:
                     estadoNuevo = estadosCertificado.SOLICITUD_ENVIADA;
                     paramsToUpdate.descuento = req.body.paramsToUpdate.descuento
@@ -336,7 +345,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     emailToAlumno = true;
                     break;
                 case estadosCertificado.SOLICITUD_ENVIADA:
-                    if(peticion.tipoCertificado === 7){ //tipo OTRO
+                    if (peticion.tipoCertificado === 7) { //tipo OTRO
                         paramsToUpdate.requierePago = req.body.paramsToUpdate.requierePago;
                         estadoNuevo = estadosCertificado.PAGO_VALORADO;
                     } else {
@@ -345,7 +354,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     emailToAlumno = true;
                     break;
                 case estadosCertificado.PAGO_VALORADO:
-                    if(peticion.requierePago){ //ver si boolean o string
+                    if (peticion.requierePago) { //ver si boolean o string
                         estadoNuevo = estadosCertificado.ESPERA_PAGO;
                     } else {
                         estadoNuevo = estadosCertificado.CERTIFICADO_ENVIADO;
@@ -378,18 +387,18 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             toAlumno = process.env.EMAIL_PRUEBAS; //siempre se le manda el email al que hace la prueba
             toPAS = process.env.EMAIL_PRUEBAS;
         }
-        // if(emailToAlumno){
+        // if (emailToAlumno) {
         //     let mailInfoFromPas = await mail.sendEmailToAlumno(estadoNuevo, from, toAlumno, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session)
         // }
-        // if(emailToPas){
+        // if (emailToPas) {
         //     let mailInfoFromAlumno = await mail.sendEmailToPas(estadoNuevo, from, toPAS, req.body.peticion.planCodigo, textoAdicional, req.filesBuffer, req.session, paramsToUpdate.formaPago)
         // }
-        
+
         let respuesta;
         if (estadoNuevo === estadosCertificado.SOLICITUD_ENVIADA && peticion.estadoPeticion !== estadosCertificado.PETICION_CANCELADA) {
             respuesta = await createPeticionAlumno(req.session.user.edupersonuniqueid, req.session.user.mailPrincipal, req.session.user.givenname, req.session.user.sn, paramsToUpdate.planCodigo, paramsToUpdate.planNombre, req.body.paramsToUpdate.descuento, paramsToUpdate.tipoCertificado, paramsToUpdate.nombreCertificadoOtro, paramsToUpdate.descripcion, paramsToUpdate.requierePago)
         } else {
-            respuesta = await updatePeticionAlumno(req.body.peticion.edupersonuniqueid, req.body.peticion.planCodigo, req.body.peticion.tipoCertificado, paramsToUpdate)
+            respuesta = await updatePeticionAlumno(req.body.peticion.id, paramsToUpdate)
         }
         res.json(respuesta)
     } catch (error) {
@@ -398,6 +407,21 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
     }
 }
 
+exports.deleteAntiguas = async function () {
+    try {
+        let borrar = await models.PeticionCertificado.destroy({
+            where: {
+                fecha: {
+                    [Op.lte]: Sequelize.literal("current_date - interval '2 years'")
+                }
+            },
+            returning: true,
+        });
+    } catch (error) {
+        //se propaga el error, se captura en el middleware
+        throw error;
+    }
+}
 
 
 

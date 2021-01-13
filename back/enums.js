@@ -15,7 +15,7 @@ exports.estadosTitulo = {
 //UNIFICAR ESTADOS PARA TODOS LOS TRÁMITES!!!!!
 
 exports.estadosCertificado = {
-    "NO_PEDIDO": 1,
+   // "NO_PEDIDO": 1,
     "SOLICITUD_ENVIADA": 2,
     "ESPERA_PAGO": 3,
     "PAGO_REALIZADO": 4,
