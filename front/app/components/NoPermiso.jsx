@@ -12,7 +12,6 @@ export default class NoPermiso extends React.Component {
             <div>
                 <p><b>Usted no tiene permiso para gestionar este trámite.</b></p>
                 <p>Si cree que debería tener permiso, contacte con la persona encargada de secretaría.</p>
-                <p>Salga de este área o cierre sesión</p>
             </div>
         );
     }

@@ -1,9 +1,19 @@
 let models = require('../models');
 const enums = require('../enums');
+let Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 exports.getAllPermisos = async function (req, res, next) {
     try {
-        let permisos = await models.Permiso.findAll();
+        let permisos = await models.Permiso.findAll({
+            where: {
+                tramite: {[Op.not]: 'admin'}
+            },
+            order: [
+                ['email', 'ASC']
+            ]
+        }
+        );
         return permisos;
     } catch (error) {
         console.log(error)
@@ -34,28 +44,18 @@ exports.crearPermiso = async function (req, res, next) {
     try {
         let permiso = await models.Permiso.findOne({
             where: {
-                email: req.params.email,
-                tramite: req.params.tramite
+                email: req.body.email_1,
+                tramite: req.body.tramite
             }
         });
         if (!permiso) {
             let permiso = await models.Permiso.create({
-                email: req.params.email,
-                tramite: req.params.tramite
+                email: req.body.email_1,
+                tramite: req.body.tramite
             });
-            if (req.params.tramite === 'admin') {
-                return permiso;
-            } else {
-                res.render("confirmacionPermiso", {
-                    barraInicioText: "GESTOR DE PERMISOS",
-                    mensaje: 'El permiso indicado se ha creado correctamente.'
-                });
-            }
+            return true;
         } else {
-            res.render("confirmacionPermiso", {
-                barraInicioText: "GESTOR DE PERMISOS",
-                mensaje: 'El permiso que intenta crear ya existe.'
-            });
+            return false;
         }
 
     } catch (error) {
@@ -68,21 +68,10 @@ exports.eliminarPermiso = async function (req, res, next) {
     try {
         let permiso = await models.Permiso.destroy({
             where: {
-                email: req.params.email,
-                tramite: req.params.tramite
+                email: req.body.email,
+                tramite: req.body.tramite
             }
         });
-        if (permiso) {
-            res.render("confirmacionPermiso", {
-                barraInicioText: "GESTOR DE PERMISOS",
-                mensaje: 'El permiso indicado se ha eliminado correctamente.'
-            });
-        } else {
-            res.render("confirmacionPermiso", {
-                barraInicioText: "GESTOR DE PERMISOS",
-                mensaje: 'El permiso que intenta eliminar no existe.'
-            });
-        }
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
@@ -92,7 +81,7 @@ exports.eliminarPermiso = async function (req, res, next) {
 exports.updateAdmin = async function (req, res, next) {
     try {
         let permiso = await models.Permiso.update({
-            email: req.body.email
+            email: req.body.email_2
         },
             {
                 where: {
@@ -100,10 +89,21 @@ exports.updateAdmin = async function (req, res, next) {
                 },
                 returning: true,
             });
-        res.render("confirmacionPermiso", {
-            barraInicioText: "GESTOR DE PERMISOS",
-            mensaje: 'El email del administrador se ha actualizado correctamente.'
+        return permiso.email;
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.getAdmin = async function (req, res, next) {
+    try {
+        let permiso = await models.Permiso.findOne({
+            where: {
+                tramite: 'admin'
+            }
         });
+        return permiso.email;
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });

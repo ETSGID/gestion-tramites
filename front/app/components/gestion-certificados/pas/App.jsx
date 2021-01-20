@@ -32,7 +32,6 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.findPeticiones(1, 50, null);
     this.checkPermisos();
   }
 
@@ -40,7 +39,7 @@ export default class App extends React.Component {
     this.setState({
       loading: true
     })
-   axios.get(urljoin(apiBaseUrl, "api/peticiones"), {
+    axios.get(urljoin(apiBaseUrl, "api/peticiones"), {
       params: {
         'page': page,
         'sizePerPage': sizePerPage,
@@ -62,7 +61,7 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
-    }
+  }
 
   cambioEstadoClick(index, paramsToUpdate) {
     let peticionesNuevas = this.state.peticiones.slice()
@@ -125,6 +124,7 @@ export default class App extends React.Component {
               tienePermiso: true,
               loading: null,
             })
+            this.findPeticiones(1, 50, null);
             break;
           } else {
             this.setState({
@@ -147,7 +147,7 @@ export default class App extends React.Component {
     let certificados = "Cargando..."
     if (!this.state.tienePermiso) {
       certificados = <NoPermiso />
-    } else if (this.state.plansCargado){
+    } else if (this.state.plansCargado) {
       certificados = <Certificados
         selected={this.state.selected}
         cancel={this.state.cancel}
@@ -163,7 +163,7 @@ export default class App extends React.Component {
     return (
       <div>
         <div className="cuerpo">
-          <h2>Peticiones de certificados de alumnos:</h2>
+          <h2>Peticiones de certificados de alumnos</h2>
           <p><a href="/pas/gestion-tramites/">Volver al listado de trámites</a></p>
           <LoadingOverlay
             active={this.state.loading}

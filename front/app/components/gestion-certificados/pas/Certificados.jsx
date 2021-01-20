@@ -175,8 +175,6 @@ export default class Certificados extends React.Component {
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.ESPERA_PAGO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
-                    case estadosCertificado.PAGO_REALIZADO:
-                        return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     case estadosCertificado.PAGO_VALORADO:
                         return (<Button variant="danger" onClick={() => this.cambioSelectedClick(row.idTabla, true, false)}>Cancelar</Button>)
                     default:

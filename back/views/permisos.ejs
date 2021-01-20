@@ -8,7 +8,7 @@
     <!--BOOTSTRAP 4-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <link rel='stylesheet' type="text/css" href='<%=context%>/stylesheets/index.css' />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -20,73 +20,122 @@
         document.addEventListener('DOMContentLoaded', dibujarmenulateral("buttonMenuPortales123", context + "/logout", '<%=session.user.mailPrincipal%>', '<%=session.user.givenname%>', '<%=pruebasBoolean%>'));
     </script>
     <nav class="barraInicio navbar navbar-expand-md navbar-dark">
-        <span class="navbar-brand"><%=barraInicioText%></span>
+        <span class="navbar-brand">
+            <%=barraInicioText%>
+        </span>
     </nav>
 
     <div class="textoInicio">
         <p>
-            <b>Si quiere volver a la página inicial de gestión de trámites, pinche  <a href="<%=context%>" >aquí</a>.</b>
-            <br><br>A continuación, se muestra la lista de permisos activados:
-            <br><br>
-            <input id="searchBox" placeholder="Búsqueda...">
-        <table id="table" class="table hover">
-            <tr>
-                <th>Email</th>
-                <th>Trámite</th>
-                <%Object.values(session.permisos).forEach(permiso =>{ %>
-            <tr>
-                <td><%=permiso["email"]%></td>
-                <td><%=permiso["tramite"]%></td>
-            </tr>
-            <% }) %>
-            </tr>
-        </table><br>
-        </p>
-        <h5>Actualizar administrador</h5>
-        <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email deseado y
-            pulse el botón de actualizar:</p>
-        <form formaction="<%-context%>/permisos" method="POST">
-            <div class="form-group">
-                <input type="email" class="form-control" name="email" placeholder="ejemplo@upm.es">
-            </div>
-            <button type="submit" class="btn btn-primary">Actualizar</button>
-        </form><br>
-        <h5>Gestionar permisos</h5>
-        <p>
-            Tanto si desea crear un nuevo permiso como eliminarlo, rellene el siguiente formulario con el email de la
-            persona en cuestión y el trámite correspondiente:
-        <form formaction="<%-context%>/permisos" method="GET">
-            <div class="form-group">
-                <label for="email"><b>Email:</b></label>
-                <input type="email" class="form-control" name="email" placeholder="ejemplo@upm.es">
-            </div>
-            <div class="form-group">
-                <label for="tramite"><b>Seleccione trámite:</b></label>
-                <select class="form-control" name="tramite">
-                    <%Object.values(tramites).forEach(tramite =>{ %>
-                    <option><%=tramite[0]%></option>
-                    <% }) %>
-                </select>
-            </div>
-            <div class="form-group">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="accion" id="exampleRadios1" value="crear"
-                        checked>
-                    <label class="form-check-label" for="exampleRadios1">
-                        Crear permiso
-                    </label>
-                </div>
-                <div class="form-check form-check-inline">
+        <h3>
+            <%=barraInicioText%>
+        </h3>
+        <p><a href="<%=context%>">Volver al listado de trámites</a></p>
+
+        <div class="row">
+            <div class="col-6">
+                <h5>Dar de alta un nuevo permiso</h5>
+                <p>Rellene el siguiente formulario con el email de la persona en cuestión y el trámite correspondiente.
+                <form action="<%-context%>/createPermiso" method="POST"
+                    onsubmit="return confirm('¿Está seguro de querer crear este permiso?');">
+                    <div class="form-group">
+                        <label for="email_1"><b>Email:</b></label>
+                        <input type="email" class="form-control" name="email_1" placeholder="ejemplo@upm.es">
+                    </div>
+                    <div class="form-group">
+                        <label for="tramite"><b>Trámite:</b></label>
+                        <select class="form-control" name="tramite">
+                            <%Object.values(tramites).forEach(tramite=>{ %>
+                                <option>
+                                    <%=tramite[0]%>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+                    <!-- <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="accion" id="exampleRadios2" value="eliminar">
                     <label class="form-check-label" for="exampleRadios2">
                         Eliminar permiso
                     </label>
+                </div>-->
+                    <button type="submit" class="btn btn-primary">Crear permiso</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <h5>Actualizar administrador</h5>
+                <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email
+                    deseado.</p>
+                <form action="<%-context%>/updateAdmin" method="post"
+                    onsubmit="return confirm('¿Está seguro de querer actualizar el administrador?');">
+                    <div class="form-group">
+                        <label for="email_2"><b>Email:</b></label>
+                        <input type="email" class="form-control" name="email_2" placeholder="ejemplo@upm.es">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form><br>
+            </div>
+
+        </div>
+        <br>
+        <h5>Permisos activos</h5>
+        <p>Actual administrador: <%=admin%>
+        </p>
+
+        <table id="table" class="table hover">
+            <tr>
+                <th>Email
+                    <input id="searchBox" class='form-control' placeholder="ejemplo@upm.es">
+                </th>
+                <th>Trámite
+                    <select id="listaTramites" onchange="filterTramites()" class='form-control'>
+                        <option>Todos</option>
+                        <%Object.values(tramites).forEach(tramite=>{ %>
+                            <option>
+                                <%=tramite[0]%>
+                            </option>
+                            <% }) %>
+                    </select>
+                </th>
+                <th>Acción</th>
+                <%Object.values(session.permisos).forEach(permiso=>{ %>
+            <tr>
+                <td>
+                    <%=permiso["email"]%>
+                </td>
+                <td>
+                    <%=permiso["tramite"]%>
+                </td>
+                <td >
+                    <form action="<%-context%>/deletePermiso" method="POST" 
+                        onsubmit="return confirm('¿Está seguro de querer eliminar este permiso?');">
+                        <input type="email" class="form-control" hidden="true" name="email" value="<%=permiso['email']%>">
+                        <input type="text" class="form-control" hidden="true" name="tramite" value="<%=permiso['tramite']%>">
+                    <button class="btn btn-danger">Eliminar</button>
+                </form>
+                </td>
+            </tr>
+            <% }) %>
+                </tr>
+        </table><br>
+        </p>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>
+                        <%=barraInicioText%>
+                    </h2>
+                </div>
+                <div class="modal-body">
+                    <p id='mensaje'></p>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
-            <a href="<%=context%>" class="btn btn-danger">Volver atrás</a>
-        </form>
-        <br>
+
+        </div>
     </div>
 </body>
 <script>
@@ -101,6 +150,59 @@
     };
 
     paginate.init('#table', options, filterOptions);
+    function filterTramites() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("listaTramites");
+        filter = input.value;
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                if (filter == "Todos") {
+                    tr[i].style.display = "";
+                }
+                else if (td.innerHTML.indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    var showConfirmacion = "<%= showConfirmacion %>";
+    var mensaje = "<%= mensaje %>";
+    var modal = document.getElementById("myModal");
+
+    if (showConfirmacion == "true") {
+        document.getElementById('mensaje').innerHTML = mensaje;
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal
+        modal.style.display = "block";
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+            window.location.href = "<%= context %>/permisos";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                window.location.href = "<%= context %>/permisos";
+            }
+        }
+    } else {
+        modal.style.display = "none";
+    }
+
 </script>
 
 </html>

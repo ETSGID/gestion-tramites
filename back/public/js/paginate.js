@@ -324,7 +324,19 @@
             }
             const filter = document.querySelector(filterSettings.el).value.toUpperCase();
             const trs = document.querySelectorAll( settings.el + ' tr:not(.header)');
-            trs.forEach(tr => tr.style.display = [...tr.children].find(td => td.innerHTML.toUpperCase().includes(filter)) ? '' : 'none');
+            trs.forEach(function(tr){
+                let td = tr.getElementsByTagName("td")[0];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().includes(filter)) {
+                        tr.style.display = "";
+                    } else {
+                        tr.style.display = "none";
+                    }
+                }
+            });
+            //trs.forEach(tr => tr.style.display = [...tr.children].find(td => 
+            //td.innerHTML.toUpperCase().includes(filter))
+            // ? '' : 'none');
             if(filter.length == 0 && settings.hasPagination){
                 setNumberPerPage(_lignePaginate.getConstNumberPerPage());
                 _lignePaginate.sort(1);

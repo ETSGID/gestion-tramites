@@ -35,7 +35,6 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     this.checkPermisos();
-    this.findPeticiones(1, 50, null);
   }
 
   findPeticiones(page, sizePerPage, filters) {
@@ -130,6 +129,7 @@ export default class App extends React.Component {
               tienePermiso: true,
               loading: null,
             })
+            this.findPeticiones(1, 50, null);
             break;
           } else {
             this.setState({
@@ -150,7 +150,7 @@ export default class App extends React.Component {
 
   render() {
     let titulos = "Cargando..."
-    if (!this.state.tienePermiso && this.state.plansCargado) {
+    if (!this.state.tienePermiso) {
       titulos = <NoPermiso />
     } else {
       if (this.state.plansCargado) {
@@ -172,6 +172,7 @@ export default class App extends React.Component {
       <div>
         <div className="cuerpo">
           <h2>Peticiones de alumnos</h2>
+          <p><a href="/pas/gestion-tramites/">Volver al listado de trámites</a></p>
           <LoadingOverlay
             active={this.state.loading}
             spinner
