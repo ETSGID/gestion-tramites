@@ -136,3 +136,12 @@ div.paginate input[type='button'].active{
 }
 
 .modal-body {padding: 1rem}
+
+/* The alert message box */
+.alert {
+  padding: 20px;
+  background-color: #d1ecf1; /* Red */
+  color:#0c5460;
+  border-color: #bee5eb;
+  margin-bottom: 15px;
+}
