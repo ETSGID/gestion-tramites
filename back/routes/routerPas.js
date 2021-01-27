@@ -9,12 +9,12 @@ const admin = process.env.EMAIL_ADMIN || 'secretario.etsit@upm.es';
 
 router.get(`/`, async function (req, res, next) {
     req.session.tramite = null;
-    let permisos = await permisoController.getAllPermisos();
-    if (permisos.length === 0) { // vacio, crea permiso admin
-        req.body.email_1 = admin;
-        req.body.tramite = 'admin';
-        await permisoController.crearPermiso(req, res, next);
-    }
+    // let permisos = await permisoController.getAllPermisos();
+    // if (permisos.length === 0) { // vacio, crea permiso admin
+    //     req.body.email_1 = admin;
+    //     req.body.tramite = 'admin';
+    //     await permisoController.crearPermiso(req, res, next);
+    // }
     res.render("pagina-principal", {
         barraInicioText: "LISTA DE TRÁMITES DISPONIBLES ONLINE",
         tramites: enums.tramites

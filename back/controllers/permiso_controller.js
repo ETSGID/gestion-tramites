@@ -7,7 +7,7 @@ exports.getAllPermisos = async function (req, res, next) {
     try {
         let permisos = await models.Permiso.findAll({
             where: {
-                tramite: {[Op.not]: 'admin'}
+                tramite: { [Op.not]: 'admin' }
             },
             order: [
                 ['email', 'ASC']
@@ -107,5 +107,23 @@ exports.getAdmin = async function (req, res, next) {
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
+    }
+}
+
+exports.createAdmin = async function (admin) {
+    try {
+        let permiso = await models.Permiso.findOne({
+            where: {
+                tramite: 'admin'
+            }
+        });
+        if (!permiso) {
+            await models.Permiso.create({
+                email: admin,
+                tramite: 'admin'
+            });
+        }
+    } catch (error) {
+        console.log('Error:', error);
     }
 }
