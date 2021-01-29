@@ -84,7 +84,7 @@
         <table id="table" class="table hover">
             <tr>
                 <th>Email
-                    <input id="searchBox" class='form-control' placeholder="ejemplo@upm.es">
+                    <input id="searchBox" class='form-control' placeholder="ejemplo@upm.es" onkeyup="filterEmail()">
                 </th>
                 <th>Trámite
                     <select id="listaTramites" onchange="filterTramites()" class='form-control'>
@@ -145,9 +145,7 @@
         pageCounter: false, //Contador de paginas, en cual estas, de cuantas paginas
     };
 
-    let filterOptions = {
-        el: '#searchBox'
-    };
+    let filterOptions = null;
 
     paginate.init('#table', options, filterOptions);
     function filterTramites() {
@@ -170,6 +168,25 @@
             }
         }
     }
+
+    function filterEmail() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("searchBox");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                if (td.innerHTML.toUpperCase().includes(filter)) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+            }
+        }
+    }
+
 
     var showConfirmacion = "<%= showConfirmacion %>";
     var mensaje = "<%= mensaje %>";
