@@ -927,7 +927,7 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria = undefined ? "-" :helpers.formatFecha(report.ultimaConvocatoria),
+                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" :helpers.formatFecha(report.ultimaConvocatoria),
                     penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
                     penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
                     ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
@@ -984,7 +984,7 @@ exports.getHistorico = async function (req, res, next) {
                 asignatura_codigo: solicitud.asignaturaCodigo,
                 asignatura_nombre: solicitud.asignaturaNombre,
                 tipo: solicitud.tipo,
-                resolucion: estadosEvaluacionCurricular[solicitud.resolucion],
+                resolucion: Object.keys(estadosEvaluacionCurricular).find(k => estadosEvaluacionCurricular[k] === solicitud.resolucion),
                 fecha_tribunal: helpers.formatFecha(solicitud.fechaTribunal)
             };
         });
