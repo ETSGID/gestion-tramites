@@ -145,3 +145,13 @@ div.paginate input[type='button'].active{
   border-color: #bee5eb;
   margin-bottom: 15px;
 }
+
+.color_page {
+  font-weight: bold;
+}
+
+.pagination>li>a {
+  padding: 6px 9px;
+  color: #337ab7;
+  border: 0.3px solid #ddd;
+}

@@ -896,11 +896,11 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                    penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                    penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
-                    ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
-                    ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
+                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                    ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                     TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
                     nota_media_curso: report.notaMediaCurso,
@@ -926,11 +926,11 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                    penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                    penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
-                    ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
-                    ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
+                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria = undefined ? "-" :helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                    ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                     TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
                     nota_media_curso: report.notaMediaCurso,
@@ -970,7 +970,7 @@ exports.getHistorico = async function (req, res, next) {
     try {
         var result = await getHistorico();
         const fields = ['número', 'dni', 'nombre', 'apellidos', 'plan_codigo', 'plan_nombre', 'asignatura_codigo', 'asignatura_nombre',
-            'tipo', 'fecha_tribunal'];
+            'tipo', 'resolucion', 'fecha_tribunal'];
         const data = result.map((solicitud, index) => {
             return {
                 número: (index + 1),
@@ -983,6 +983,7 @@ exports.getHistorico = async function (req, res, next) {
                 asignatura_codigo: solicitud.asignaturaCodigo,
                 asignatura_nombre: solicitud.asignaturaNombre,
                 tipo: solicitud.tipo,
+                resolucion: estadosEvaluacionCurricular[solicitud.estadoPeticion],
                 fecha_tribunal: helpers.formatFecha(solicitud.fechaTribunal)
             };
         });
