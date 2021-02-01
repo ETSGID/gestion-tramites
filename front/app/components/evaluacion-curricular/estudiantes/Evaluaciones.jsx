@@ -96,7 +96,7 @@ export default class Evaluaciones extends React.Component {
                         return (<span>Su solicitud ha sido aprobada. Se le notificará cuando su nota se suba a Politécnica Virtual.</span>)
                     case estadosEvaluacionCurricular.NOTA_INTRODUCIDA:
                         return (<span>Su nota ha sido actualizada. Puede consultarla en Politécnica Virtual.</span>)
-                    case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
+                    case estadosEvaluacionCurricular.NO_CUMPLE_REQUISITOS:
                         return (<span>Su solicitud ha sido cancelada. Para consultar el motivo, haga click en el botón de info.</span>)
                    default:
                         return (<span>Su solicitud está siendo procesada por secretaría.</span>)

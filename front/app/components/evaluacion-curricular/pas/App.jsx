@@ -44,22 +44,6 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.checkPermisos();
-    this.findPeticiones(1, 50, null);
-    axios.get(urljoin(apiBaseUrl, "/api/estadoTramite"))
-      .then((response) => {
-        this.setState({
-          disableCurso: response.data[0].estadoCurso == "DESACTIVADO" ? true : false,
-          disableTitulacion: response.data[0].estadoTitulacion == "DESACTIVADO" ? true : false
-        })
-      })
-      .catch((error) => {
-        this.setState({
-          loading: null
-        })
-        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
-          error.response.data.error || '' : ''}`)
-      })
-
   }
 
   findPeticiones(page, sizePerPage, filters) {
@@ -101,6 +85,21 @@ export default class App extends React.Component {
               tienePermiso: true,
               loading: null,
             })
+            this.findPeticiones(1, 50, null);
+            axios.get(urljoin(apiBaseUrl, "/api/estadoTramite"))
+              .then((response) => {
+                this.setState({
+                  disableCurso: response.data[0].estadoCurso == "DESACTIVADO" ? true : false,
+                  disableTitulacion: response.data[0].estadoTitulacion == "DESACTIVADO" ? true : false
+                })
+              })
+              .catch((error) => {
+                this.setState({
+                  loading: null
+                })
+                alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+                  error.response.data.error || '' : ''}`)
+              })
             break;
           } else {
             this.setState({
@@ -293,7 +292,7 @@ export default class App extends React.Component {
 
   render() {
     let evaluaciones;
-    if (!this.state.tienePermiso && this.state.plansCargado) {
+    if (!this.state.tienePermiso) {
       evaluaciones = <NoPermiso />
     } else if (this.state.plansCargado) {
       evaluaciones = <Evaluaciones
@@ -321,7 +320,7 @@ export default class App extends React.Component {
     return (
       <div>
         <div className="cuerpo">
-          <h2>Solicitudes de evaluación curricular de alumnos:</h2>
+          <h2>Solicitudes de evaluación curricular de alumnos</h2>
           <p><a href="/pas/gestion-tramites/">Volver al listado de trámites</a></p>
 
           <LoadingOverlay

@@ -11,6 +11,8 @@ export default class FormPeticion extends React.Component {
     this.state = {
       checkDescuento: descuento.NO,
       disabledFile: "disabled",
+      contadorCaracteresTitulo: 0,
+      contadorCaracteresMotivo: 0,
       tipoCertificado: "1",
       otroChecked: false
     }
@@ -21,6 +23,7 @@ export default class FormPeticion extends React.Component {
     this.handleChangeDescuentos = this.handleChangeDescuentos.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleChangeTipo = this.handleChangeTipo.bind(this);
+    this.cuentaCaracteres = this.cuentaCaracteres.bind(this);
   }
   handleChangeDescuentos(e) {
     let disabledFile = e.currentTarget.value == descuento.NO ? "disabled" : ""
@@ -53,7 +56,14 @@ export default class FormPeticion extends React.Component {
         paramsToUpdate.file2 = this.fileInputDescuento.current.files[0]
       }
       if(paramsToUpdate.tipoCertificado === "7"){
+        //console.log(this.textoTitulo.value);
+        if(this.textoTitulo.value === ""){
+          alert("Debe indicar el título del certificado");
+          return;
+        } else {
         paramsToUpdate.nombreCertificadoOtro = this.textoTitulo.value;
+        paramsToUpdate.descripcion = this.textoMotivo.value;
+        }
       }
       paramsToUpdate.file1 = this.fileDNI.current.files[0];
       if (confirm(`¿Está seguro que quiere pedir el certificado académico?`)) {
@@ -64,6 +74,13 @@ export default class FormPeticion extends React.Component {
 
   handleClose() {
     this.props.handleClose();
+  }
+
+  cuentaCaracteres() {
+    this.setState({
+      contadorCaracteresTitulo: this.textoTitulo.value.length,
+      contadorCaracteresMotivo: this.textoMotivo.value.length
+    })
   }
 
 
@@ -137,21 +154,6 @@ export default class FormPeticion extends React.Component {
               />
               <Form.Check className="d-inline-block"
                 type="radio"
-                label="Ficha informativa"
-                name="formTipo"
-                value={tiposCertificado.FICHA_INFORMATIVA}
-                onChange={this.handleChangeTipo}
-              /> <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >
-                Sin nota media, para surtir efectos dentro de la UPM.
-              </Tooltip>}>
-                <span className="d-inline-block">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
-              </OverlayTrigger>
-              </Form.Group>
-              {/* <br></br>
-              <Form.Check className="d-inline-block"
-                type="radio"
                 label="Otro"
                 name="formTipo"
                 value={tiposCertificado.OTRO}
@@ -172,7 +174,16 @@ export default class FormPeticion extends React.Component {
                   {20 - this.state.contadorCaracteresTitulo} caracteres restantes
                 </Form.Text>
               </Form.Group>
-            } */}
+            }
+            {this.state.otroChecked && <Form.Group >
+                <Form.Label>Exponga el motivo del certificado:</Form.Label>
+                <Form.Control maxLength={200} as="textarea" rows="3" ref={textarea => this.textoMotivo = textarea} onChange={this.cuentaCaracteres} />
+                <Form.Text muted>
+                  {200 - this.state.contadorCaracteresMotivo} caracteres restantes
+                </Form.Text>
+              </Form.Group>
+            }
+            
 
             <Form.Group>
               <Form.Label as="legend">

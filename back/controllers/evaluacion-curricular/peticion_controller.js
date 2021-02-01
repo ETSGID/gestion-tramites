@@ -640,7 +640,7 @@ const deletePeticiones = async function (tipo) {
     }
 }
 
-const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, fecha) {
+const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, fecha, resolucion) {
     try {
         let respuesta = {};
         respuesta = await models.HistoricoEvaluacionCurricular.create({
@@ -653,7 +653,8 @@ const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido
             asignaturaNombre: asignaturaNombre,
             asignaturaCodigo: asignaturaCodigo,
             tipo: tipo,
-            fechaTribunal: fecha
+            fechaTribunal: fecha,
+            resolucion: resolucion
         })
         return respuesta
     } catch (error) {
@@ -769,13 +770,13 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
             emailToAlumno = true;
             //si ev denegada : añadir entrada en historico
             if (estadoNuevo === estadosEvaluacionCurricular.EVALUACION_DENEGADA) {
-                await createHistorico(req.session.user.edupersonuniqueid, req.body.peticion.dni, req.body.peticion.nombre, req.body.peticion.apellido, req.body.peticion.planCodigo, req.body.peticion.planNombre, req.body.peticion.asignaturaNombre, req.body.peticion.asignaturaCodigo, req.body.peticion.tipo, req.body.paramsToUpdate.fecha);
+                await createHistorico(req.session.user.edupersonuniqueid, req.body.peticion.dni, req.body.peticion.nombre, req.body.peticion.apellido, req.body.peticion.planCodigo, req.body.peticion.planNombre, req.body.peticion.asignaturaNombre, req.body.peticion.asignaturaCodigo, req.body.peticion.tipo, req.body.paramsToUpdate.fecha, estadoNuevo);
             }
         } else {// si crear o actualizar peticion
             if (peticion.estadoPeticion !== 0 && (peticion.estadoPeticion !== estadosEvaluacionCurricular[req.body.peticion.estadoPeticionTexto])) throw "Intenta cambiar un estado que no puede";
             switch (peticion.estadoPeticion) {
                 case 0:
-                case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
+                case estadosEvaluacionCurricular.NO_CUMPLE_REQUISITOS:
                     estadoNuevo = estadosEvaluacionCurricular.SOLICITUD_ENVIADA;
                     paramsToUpdate.asignaturaNombre = req.body.paramsToUpdate.asignaturaNombre;
                     paramsToUpdate.asignaturaCodigo = req.body.paramsToUpdate.asignaturaCodigo;
@@ -799,7 +800,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     textoAdicional = "Nombre: " + req.body.peticion.nombre + "\nApellido: " + req.body.peticion.apellido + "\nAsignatura: " + req.body.peticion.asignaturaNombre + " (" + req.body.peticion.asignaturaCodigo + ")\nTitulación: " + req.body.peticion.planNombre + " (" + req.body.peticion.planCodigo + ")\nFecha reunión tribunal: " + helpers.formatFecha(req.body.paramsToUpdate.fecha) + "\nMotivo: " + req.body.paramsToUpdate.motivo;
                     emailToAlumno = true;
                     //añadir entrada en historico
-                    await createHistorico(req.session.user.edupersonuniqueid, req.body.peticion.dni, req.body.peticion.nombre, req.body.peticion.apellido, req.body.peticion.planCodigo, req.body.peticion.planNombre, req.body.peticion.asignaturaNombre, req.body.peticion.asignaturaCodigo, req.body.peticion.tipo, req.body.paramsToUpdate.fecha);
+                    await createHistorico(req.session.user.edupersonuniqueid, req.body.peticion.dni, req.body.peticion.nombre, req.body.peticion.apellido, req.body.peticion.planCodigo, req.body.peticion.planNombre, req.body.peticion.asignaturaNombre, req.body.peticion.asignaturaCodigo, req.body.peticion.tipo, req.body.paramsToUpdate.fecha, estadoNuevo);
                     break;
                 case estadosEvaluacionCurricular.EVALUACION_APROBADA:
                     estadoNuevo = estadosEvaluacionCurricular.NOTA_INTRODUCIDA;
@@ -896,11 +897,11 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                    penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                    penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
-                    ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
-                    ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
+                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                    ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                     TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
                     nota_media_curso: report.notaMediaCurso,
@@ -926,11 +927,11 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    fecha_ultima_convocatoria_asignatura: helpers.formatFecha(report.ultimaConvocatoria),
-                    penultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                    penultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
-                    ultima_calificacion: report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
-                    ultima_convocatoria: report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
+                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" :helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
+                    ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                     TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
                     nota_media_curso: report.notaMediaCurso,
@@ -970,7 +971,7 @@ exports.getHistorico = async function (req, res, next) {
     try {
         var result = await getHistorico();
         const fields = ['número', 'dni', 'nombre', 'apellidos', 'plan_codigo', 'plan_nombre', 'asignatura_codigo', 'asignatura_nombre',
-            'tipo', 'fecha_tribunal'];
+            'tipo', 'resolucion', 'fecha_tribunal'];
         const data = result.map((solicitud, index) => {
             return {
                 número: (index + 1),
@@ -983,6 +984,7 @@ exports.getHistorico = async function (req, res, next) {
                 asignatura_codigo: solicitud.asignaturaCodigo,
                 asignatura_nombre: solicitud.asignaturaNombre,
                 tipo: solicitud.tipo,
+                resolucion: Object.keys(estadosEvaluacionCurricular).find(k => estadosEvaluacionCurricular[k] === solicitud.resolucion),
                 fecha_tribunal: helpers.formatFecha(solicitud.fechaTribunal)
             };
         });
@@ -1006,6 +1008,7 @@ exports.getHistorico = async function (req, res, next) {
                 asignatura_codigo: 'ASIG. CODIGO',
                 asignatura_nombre: 'ASIG. NOMBRE',
                 tipo: 'TIPO',
+                resolucion: "RESOLUCION",
                 fecha_tribunal: 'FECHA TRIBUNAL'
             }],
             body: body,
@@ -1016,7 +1019,7 @@ exports.getHistorico = async function (req, res, next) {
                 pdf.text('Historico de solicitudes de evaluacion curricular', 20, 22)
             },
             margin: { top: 30 },
-            styles: { cellPadding: 1.2, fontSize: 8, },
+            styles: { cellPadding: 1.2, fontSize: 6, },
             bodyStyles: { valign: 'middle', halign: 'center' },
             headStyles: { valign: 'middle', halign: 'center' }
         })

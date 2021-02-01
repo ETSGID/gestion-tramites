@@ -27,7 +27,7 @@ export default class FormCancel extends React.Component {
                 paramsToUpdate.fecha = this.fecha.current.value;
             }
             } else {
-            paramsToUpdate.cancelNewState = estadosEvaluacionCurricular.SOLICITUD_CANCELADA;
+            paramsToUpdate.cancelNewState = estadosEvaluacionCurricular.NO_CUMPLE_REQUISITOS;
         }
 
         event.preventDefault();

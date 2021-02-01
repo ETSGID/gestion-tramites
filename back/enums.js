@@ -15,11 +15,12 @@ exports.estadosTitulo = {
 //UNIFICAR ESTADOS PARA TODOS LOS TRÁMITES!!!!!
 
 exports.estadosCertificado = {
-    "NO_PEDIDO": 1,
+   // "NO_PEDIDO": 1,
     "SOLICITUD_ENVIADA": 2,
     "ESPERA_PAGO": 3,
     "PAGO_REALIZADO": 4,
     "PAGO_CONFIRMADO": 5,
+    "PAGO_VALORADO":6,
     "CERTIFICADO_ENVIADO": 7,
     "PETICION_CANCELADA": -1
 }
@@ -31,8 +32,9 @@ exports.estadosEvaluacionCurricular = {
     "EVALUACION_DENEGADA": 3,
     "EVALUACION_APROBADA": 4,
     "NOTA_INTRODUCIDA": 5,
-    "SOLICITUD_CANCELADA": -1
+    "NO_CUMPLE_REQUISITOS": -1
 }
+
 
 exports.descuento = {
     "NO": 1,
@@ -52,7 +54,7 @@ exports.tiposCertificado = {
     "PERCENTILES_INGLES": 4,
     "RENOVACION_TITULO_FAMILIA_NUMEROSA": 5,
     "FICHA_INFORMATIVA": 6,
-    // "OTRO": 7
+    "OTRO": 7
 }
 
 exports.tramites = {

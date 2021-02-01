@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Modal, Button, Form, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 const descuento = require('../../../../../back/enums').descuento
+const tiposCertificado = require('../../../../../back/enums').tiposCertificado;
 
 export default class FormRestart extends React.Component {
   constructor(props) {
@@ -58,14 +59,15 @@ export default class FormRestart extends React.Component {
 
 
   render() {
+    var tipoTexto = Object.keys(tiposCertificado).find(k => tiposCertificado[k] === this.props.peticion.tipoCertificado);
     return (
       <div>
         <Modal.Body>
           {/* Usted va a solicitar un certificado académico. A día: {this.props.peticion.fecha} */}
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
-              <Form.Label as="legend">
-                Adjunte una copia de su DNI escaneado por las dos caras:
+              <Form.Label>
+                <b>Adjunte una copia de su DNI escaneado por las dos caras:</b>
                 <br />
               </Form.Label>
               <input type="file" ref={this.fileDNI} />
@@ -84,15 +86,15 @@ export default class FormRestart extends React.Component {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label as="legend">
+              <Form.Label >
                 <b>Tipo de certificado seleccionado:</b>
                 <br></br>
-                {this.props.peticion.tipoCertificado.replace(/_/g," ")}
+                {tipoTexto.replace(/_/g," ")}
               </Form.Label>
              
               </Form.Group>
             <Form.Group>
-              <Form.Label as="legend">
+              <Form.Label >
                 <b>Descuentos aplicables</b>
               </Form.Label>
               <Form.Check
@@ -117,7 +119,7 @@ export default class FormRestart extends React.Component {
                 value={descuento.FAMILIA_NUMEROSA_ESPECIAL}
                 onChange={this.handleChangeDescuentos}
               />
-              <Form.Label as="legend">
+              <Form.Label>
                 Adjunte acreditación familia numerosa:
               </Form.Label>
               <input type="file" disabled={this.state.disabledFile} ref={this.fileInputDescuento} />
