@@ -30,7 +30,7 @@ exports.sendEmailToAlumno = async function (estadoActual, from, to, asignaturaNo
             send = true;
             text += 'Usted ya puede consultar su nota actualizada en Politécnica Virtual: https://www.upm.es/politecnica_virtual/';
             break;
-        case estadosEvaluacionCurricular.SOLICITUD_CANCELADA:
+        case estadosEvaluacionCurricular.NO_CUMPLE_REQUISITOS:
             send = true;
             text += `Su solicitud de evaluación curricular ha sido cancelada por el siguiente motivo:\n\n`+ textoAdicional;
             break;

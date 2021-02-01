@@ -68,12 +68,12 @@ export default class App extends React.Component {
       .then((response) => {
         //disable boton si ya solicitud hecha
         response.data.peticiones.forEach(peticion => {
-          if (peticion.tipo === "titulación" && peticion.estadoPeticion !== estadosEvaluacionCurricular["SOLICITUD_CANCELADA"]) {
+          if (peticion.tipo === "titulación" && peticion.estadoPeticion !== estadosEvaluacionCurricular["NO_CUMPLE_REQUISITOS"]) {
             this.setState({
               disableTitulacion: true,
             })
           }
-          if (peticion.tipo === "curso" && peticion.estadoPeticion !== estadosEvaluacionCurricular["SOLICITUD_CANCELADA"]) {
+          if (peticion.tipo === "curso" && peticion.estadoPeticion !== estadosEvaluacionCurricular["NO_CUMPLE_REQUISITOS"]) {
             this.setState({
               disableCurso: true,
             })
@@ -140,12 +140,12 @@ export default class App extends React.Component {
           }
           //disable boton si ya solicitud hecha
           peticionesNuevas.forEach(peticion => {
-            if (peticion.tipo === "titulación" && peticion.estadoPeticion !== estadosEvaluacionCurricular["SOLICITUD_CANCELADA"]) {
+            if (peticion.tipo === "titulación" && peticion.estadoPeticion !== estadosEvaluacionCurricular["NO_CUMPLE_REQUISITOS"]) {
               this.setState({
                 disableTitulacion: true,
               })
             }
-            if (peticion.tipo === "curso" && peticion.estadoPeticion !== estadosEvaluacionCurricular["SOLICITUD_CANCELADA"]) {
+            if (peticion.tipo === "curso" && peticion.estadoPeticion !== estadosEvaluacionCurricular["NO_CUMPLE_REQUISITOS"]) {
               this.setState({
                 disableCurso: true,
               })

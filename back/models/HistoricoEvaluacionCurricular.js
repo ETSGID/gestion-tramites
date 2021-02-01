@@ -40,6 +40,9 @@ module.exports = function (sequelize, DataTypes) {
             fechaTribunal: {
                 type: DataTypes.DATEONLY
             },
+            resolucion: {
+                type: DataTypes.INTEGER
+            }
         },
         {
             timestamps: false
