@@ -786,7 +786,7 @@ exports.updateOrCreatePeticion = async function (req, res, next) {
                     paramsToUpdate.justificacion = req.body.paramsToUpdate.justificacion;
                     paramsToUpdate.textCancel = null;
                     let datosAlumno = {};
-                    datosAlumno = await getDatosAlumno(req.body.edupersonuniqueid, req.body.paramsToUpdate.planCodigo, req.body.paramsToUpdate.asignaturaCodigo, curso);
+                    datosAlumno = await getDatosAlumno(req.session.user.edupersonuniqueid, req.body.paramsToUpdate.planCodigo, req.body.paramsToUpdate.asignaturaCodigo, curso);
                     paramsToUpdate.dni = datosAlumno.dni;
                     emailToAlumno = true;
                     emailToPas = true;
@@ -867,7 +867,7 @@ exports.updateEstadoTramite = async function (req, res, next) {
 exports.getDatosAlumno = async function (req, res, next) {
 
     try {
-        respuesta = await getDatosAlumno(req.body.edupersonuniqueid, req.body.planCodigo, req.body.asignaturaCodigo, req.body.cursoAcademico);
+        respuesta = await getDatosAlumno(req.session.user.edupersonuniqueid, req.body.planCodigo, req.body.asignaturaCodigo, req.body.cursoAcademico);
         res.json(respuesta)
     } catch (error) {
         console.log(error)

@@ -144,7 +144,7 @@ if (process.env.DEV == 'true') {
       req.session.user.cn = 'FERNANDO FERNANDEZ FERNANDEZ';
       req.session.user.sn= 'FERNANDEZ FERNANDEZ';
       req.session.user.givenname = 'FERNANDO';
-      req.session.user.edupersonuniqueid = '123@upm.es'
+      req.session.user.edupersonuniqueid = process.env.UUID_API || '123@upm.es'
       
       res.locals.portalName = 'pruebas';
       res.locals.pruebasBoolean = true;

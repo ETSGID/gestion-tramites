@@ -39,9 +39,6 @@ module.exports = {
       },
       fechaTribunal: {
         type: Sequelize.DATEONLY
-      },
-      resolucion: {
-        type: Sequelize.INTEGER
       }
     },
       {
