@@ -155,3 +155,17 @@ div.paginate input[type='button'].active{
   color: #337ab7;
   border: 0.3px solid #ddd;
 }
+
+.row-p {
+  margin-left: 0px;
+}
+
+.space {
+  margin-left: 10px;
+}
+
+.seccion {
+  border:#888 solid 1px;
+  border-radius: 20px 20px 20px 20px;
+  padding:15px;
+}

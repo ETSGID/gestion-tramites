@@ -26,121 +26,121 @@
     </nav>
 
     <div class="textoInicio">
-        <p>
+
         <h3>
             <%=barraInicioText%>
         </h3>
         <p><a href="<%=context%>">Volver al listado de trámites</a></p>
 
-        <div class="row">
-            <div class="col-6">
-                <h5>Dar de alta un nuevo permiso</h5>
-                <p>Rellene el siguiente formulario con el email de la persona en cuestión y el trámite correspondiente.
-                <form action="<%-context%>/createPermiso" method="POST"
-                    onsubmit="return confirm('¿Está seguro de querer crear este permiso?');">
-                    <div class="form-group">
+        <div class="seccion">
+            <h5>Dar de alta un nuevo permiso</h5>
+            <p>Rellene el siguiente formulario con el email de la persona en cuestión y el trámite correspondiente.
+            <form action="<%-context%>/createPermiso" method="POST" onsubmit="return validador_create()">
+                <div class="form-group">
+                    <div class="row row-p">
                         <label for="email_1"><b>Email:</b></label>
-                        <input type="email" class="form-control" name="email_1" placeholder="ejemplo@upm.es">
+                        <input type="email" class="form-control col-5 space" name="email_1"
+                            placeholder="ejemplo@upm.es">
                     </div>
+                    <br>
                     <div class="form-group">
-                        <label for="tramite"><b>Trámite:</b></label>
-                        <select class="form-control" name="tramite">
+                        <div class="row row-p">
+                            <label for="tramite"><b>Trámite:</b></label>
+                            <select class="form-control col-5 space" name="tramite">
+                                <%Object.values(tramites).forEach(tramite=>{ %>
+                                    <option>
+                                        <%=tramite[0]%>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <button type="submit" class="btn btn-primary space">Crear permiso</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="seccion">
+            <h5>Actualizar administrador</h5>
+            <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email
+                deseado.</p>
+            <form action="<%-context%>/updateAdmin" method="post" onsubmit="return validador_update()">
+                <div class="form-group">
+                    <div class="row row-p">
+                        <label for="email_2"><b>Email: </b></label>
+                        <input type="email" class="form-control col-5 space" name="email_2"
+                            placeholder="ejemplo@upm.es">
+                        <button type="submit" class="btn btn-primary space">Actualizar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br>
+        <div>
+            <h5>Permisos activos</h5>
+            <p>Actual administrador: <%=admin%>
+            </p>
+
+            <table id="table" class="table hover">
+                <tr>
+                    <th>Email
+                        <input id="searchBox" class='form-control' placeholder="ejemplo@upm.es" onkeyup="filterEmail()">
+                    </th>
+                    <th>Trámite
+                        <select id="listaTramites" onchange="filterTramites()" class='form-control'>
+                            <option>Todos</option>
                             <%Object.values(tramites).forEach(tramite=>{ %>
                                 <option>
                                     <%=tramite[0]%>
                                 </option>
                                 <% }) %>
                         </select>
-                    </div>
-                    <!-- <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="accion" id="exampleRadios2" value="eliminar">
-                    <label class="form-check-label" for="exampleRadios2">
-                        Eliminar permiso
-                    </label>
-                </div>-->
-                    <button type="submit" class="btn btn-primary">Crear permiso</button>
-                </form>
-            </div>
-            <div class="col-6">
-                <h5>Actualizar administrador</h5>
-                <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email
-                    deseado.</p>
-                <form action="<%-context%>/updateAdmin" method="post"
-                    onsubmit="return confirm('¿Está seguro de querer actualizar el administrador?');">
-                    <div class="form-group">
-                        <label for="email_2"><b>Email:</b></label>
-                        <input type="email" class="form-control" name="email_2" placeholder="ejemplo@upm.es">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Actualizar</button>
-                </form><br>
-            </div>
-
-        </div>
-        <br>
-        <h5>Permisos activos</h5>
-        <p>Actual administrador: <%=admin%>
-        </p>
-
-        <table id="table" class="table hover">
-            <tr>
-                <th>Email
-                    <input id="searchBox" class='form-control' placeholder="ejemplo@upm.es" onkeyup="filterEmail()">
-                </th>
-                <th>Trámite
-                    <select id="listaTramites" onchange="filterTramites()" class='form-control'>
-                        <option>Todos</option>
-                        <%Object.values(tramites).forEach(tramite=>{ %>
-                            <option>
-                                <%=tramite[0]%>
-                            </option>
-                            <% }) %>
-                    </select>
-                </th>
-                <th>Acción</th>
-                <%Object.values(session.permisos).forEach(permiso=>{ %>
-            <tr>
-                <td>
-                    <%=permiso["email"]%>
-                </td>
-                <td>
-                    <%=permiso["tramite"]%>
-                </td>
-                <td>
-                    <form action="<%-context%>/deletePermiso" method="POST"
-                        onsubmit="return confirm('¿Está seguro de querer eliminar este permiso?');">
-                        <input type="email" class="form-control" hidden="true" name="email"
-                            value="<%=permiso['email']%>">
-                        <input type="text" class="form-control" hidden="true" name="tramite"
-                            value="<%=permiso['tramite']%>">
-                        <button class="btn btn-danger">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            <% }) %>
+                    </th>
+                    <th>Acción</th>
+                    <%Object.values(session.permisos).forEach(permiso=>{ %>
+                <tr>
+                    <td>
+                        <%=permiso["email"]%>
+                    </td>
+                    <td>
+                        <%=permiso["tramite"]%>
+                    </td>
+                    <td>
+                        <form action="<%-context%>/deletePermiso" method="POST"
+                            onsubmit="return confirm('¿Está seguro de querer eliminar este permiso?');">
+                            <input type="email" class="form-control" hidden="true" name="email"
+                                value="<%=permiso['email']%>">
+                            <input type="text" class="form-control" hidden="true" name="tramite"
+                                value="<%=permiso['tramite']%>">
+                            <button class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
-               
-        </table>
-        <div id="box"></div>
-        <br>
-        </p>
+                <% }) %>
+                    </tr>
 
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h2>
-                        <%=barraInicioText%>
-                    </h2>
-                </div>
-                <div class="modal-body">
-                    <p id='mensaje'></p>
-                </div>
-            </div>
+            </table>
+            <div id="box"></div>
+            <br>
 
         </div>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>
+                    <%=barraInicioText%>
+                </h2>
+            </div>
+            <div class="modal-body">
+                <p id='mensaje'></p>
+            </div>
+        </div>
+
     </div>
 </body>
 <script>
@@ -152,7 +152,7 @@
         box_mode: "list",
         page_options: false
     });
-    
+
     function filterTramites() {
         var input, filter, table, tr, td, i;
         input = document.getElementById("listaTramites");
@@ -189,6 +189,26 @@
                     tr[i].style.display = "none";
                 }
             }
+        }
+    }
+
+    function validador_create() {
+        var email = document.getElementsByName("email_1")[0].value;
+        if (email == undefined || email == null || email == "") {
+            alert('Debe rellenar el campo email.');
+            return false;
+        } else {
+            confirm('¿Está seguro de querer crear un nuevo permiso?');
+        }
+    }
+
+    function validador_update() {
+        var email = document.getElementsByName("email_2")[0].value;
+        if (email == undefined || email == null || email == "") {
+            alert('Debe rellenar el campo email.');
+            return false;
+        } else {
+            confirm('¿Está seguro de querer actualizar el administrador?');
         }
     }
 
