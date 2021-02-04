@@ -33,20 +33,39 @@
         <p><a href="<%=context%>">Volver al listado de trámites</a></p>
 
         <div class="seccion">
+            <h5>Actualizar administrador</h5>
+            <p>Actual administrador: <%=admin%></p>
+            <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email
+                deseado.</p>
+            <form action="<%-context%>/updateAdmin" method="post" onsubmit="return validador_update()">
+                <div class="form-group">
+                    <div class="row row-p">
+                        <label for="email_2"><b>Email: </b></label>
+                        <input type="email" class="form-control col-4 space" name="email_2"
+                            placeholder="ejemplo@upm.es">
+                        <button type="submit" class="btn btn-primary space">Actualizar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <br>
+
+        <div class="seccion">
             <h5>Dar de alta un nuevo permiso</h5>
             <p>Rellene el siguiente formulario con el email de la persona en cuestión y el trámite correspondiente.
             <form action="<%-context%>/createPermiso" method="POST" onsubmit="return validador_create()">
                 <div class="form-group">
                     <div class="row row-p">
                         <label for="email_1"><b>Email:</b></label>
-                        <input type="email" class="form-control col-5 space" name="email_1"
+                        <input type="email" class="form-control col-3 space" name="email_1"
                             placeholder="ejemplo@upm.es">
-                    </div>
+                    <!-- </div>
                     <br>
                     <div class="form-group">
-                        <div class="row row-p">
-                            <label for="tramite"><b>Trámite:</b></label>
-                            <select class="form-control col-5 space" name="tramite">
+                        <div class="row row-p"> -->
+                            <label for="tramite" class="space"><b>Trámite:</b></label>
+                            <select class="form-control col-2 space" name="tramite">
                                 <%Object.values(tramites).forEach(tramite=>{ %>
                                     <option>
                                         <%=tramite[0]%>
@@ -54,32 +73,16 @@
                                     <% }) %>
                             </select>
                             <button type="submit" class="btn btn-primary space">Crear permiso</button>
-                        </div>
+                        <!-- </div> -->
                     </div>
                 </div>
             </form>
         </div>
+
         <br>
-        <div class="seccion">
-            <h5>Actualizar administrador</h5>
-            <p>Si desea actualizar el email del rol de administrador, introduzca en el siguiente espacio el email
-                deseado.</p>
-            <form action="<%-context%>/updateAdmin" method="post" onsubmit="return validador_update()">
-                <div class="form-group">
-                    <div class="row row-p">
-                        <label for="email_2"><b>Email: </b></label>
-                        <input type="email" class="form-control col-5 space" name="email_2"
-                            placeholder="ejemplo@upm.es">
-                        <button type="submit" class="btn btn-primary space">Actualizar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <br>
+        
         <div>
             <h5>Permisos activos</h5>
-            <p>Actual administrador: <%=admin%>
-            </p>
 
             <table id="table" class="table hover">
                 <tr>

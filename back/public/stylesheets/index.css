@@ -169,3 +169,7 @@ div.paginate input[type='button'].active{
   border-radius: 20px 20px 20px 20px;
   padding:15px;
 }
+
+label {
+  margin-top:auto;
+}
