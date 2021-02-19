@@ -53,8 +53,10 @@ module.exports = function (sequelize, DataTypes) {
             },
             justificacion: {
                 type: DataTypes.TEXT
+            },
+            mostrar:{
+                type: DataTypes.BOOLEAN
             }
-
         },
         {
             timestamps: false

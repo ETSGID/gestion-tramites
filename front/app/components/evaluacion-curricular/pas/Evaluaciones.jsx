@@ -240,6 +240,7 @@ export default class Evaluaciones extends React.Component {
                 <div class="col">
                 <p>Para descargar los informes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarInformes()}> Descargar informes</Button></p>
                 <p>Para descargar el histórico de solicitudes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarHistorico()}> Descargar histórico</Button></p>
+                <p>Para recuperar las solicitudes eliminadas del curso actual: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.recuperarPeticiones()}> Recuperar</Button></p>
                 </div>
             </div>
            

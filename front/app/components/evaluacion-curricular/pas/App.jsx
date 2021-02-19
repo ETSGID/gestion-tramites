@@ -40,6 +40,7 @@ export default class App extends React.Component {
     this.descargarInformes = this.descargarInformes.bind(this);
     this.descargarHistorico = this.descargarHistorico.bind(this);
     this.borrarPeticiones = this.borrarPeticiones.bind(this);
+    this.recuperarPeticiones = this.recuperarPeticiones.bind(this);
   }
 
   componentDidMount() {
@@ -180,13 +181,30 @@ export default class App extends React.Component {
           error.response.data.error || '' : ''}`)
       })
   }
+  recuperarPeticiones() {
+    axios.get(urljoin(apiBaseUrl, "api/recuperar"))
+      .then((response) => {
+        this.setState({
+          peticiones: response.data.peticiones,
+          numberPeticiones: response.data.numberPeticiones,
+          loading: null
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          loading: null
+        })
+        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+          error.response.data.error || '' : ''}`)
+      })
+  }
 
   cambioEstadoTramite(tramite) {
     let paramsToUpdate = {};
     switch (tramite) {
       case 'titulacion':
         if (this.state.disableTitulacion) {
-          if (confirm(`Va a activar el trámite de solicitud de evaluación curricular por TITULACIÓN. Se borrarán todas las solicitudes de este tipo del periodo anterior. El alumno ya podrá solicitar este tipo de evaluación.`)) {
+          if (confirm(`ACTIVANDO LA EVALUACIÓN POR TITULACIÓN\n\nATENCIÓN: Se BORRARÁN todas las solicitudes de este tipo del periodo anterior (Para recupararlas, utilice el botón de RECUPERAR)`)) {
             paramsToUpdate.estadoTitulacion = 'ACTIVADO';
             this.setState({
               disableTitulacion: false,
@@ -195,7 +213,7 @@ export default class App extends React.Component {
             this.borrarPeticiones('titulación');
           }
         } else {
-          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por TITULACIÓN hasta que lo active de nuevo. Si confirma, no podrá tener acceso a las solicitudes que sigan pendientes. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
+          if (confirm(`DESACTIVANDO LA EVALUACIÓN POR TITULACIÓN\n\nEl alumno ya no podrá solicitar este tipo de evaluación`)) {
             paramsToUpdate.estadoTitulacion = 'DESACTIVADO';
             this.setState({
               disableTitulacion: true,
@@ -206,7 +224,7 @@ export default class App extends React.Component {
         break;
       case 'curso':
         if (this.state.disableCurso) {
-          if (confirm(`Va a activar el trámite de solicitud de evaluación curricular por CURSO. Se borrarán todas las solicitudes de este tipo del periodo anterior. El alumno ya podrá solicitar este tipo de evaluación.`)) {
+          if (confirm(`ACTIVANDO LA EVALUACIÓN POR CURSO\n\nATENCIÓN: Se BORRARÁN todas las solicitudes de este tipo del periodo anterior (Para recupararlas, utilice el botón de RECUPERAR)`)) {
             paramsToUpdate.estadoCurso = 'ACTIVADO';
             this.setState({
               disableCurso: false,
@@ -215,7 +233,7 @@ export default class App extends React.Component {
             this.borrarPeticiones('curso');
           }
         } else {
-          if (confirm(`Va a desactivar el trámite de solicitud de evaluación curricular por CURSO hasta que lo active de nuevo. Si confirma, no podrá tener acceso a las solicitudes que sigan pendientes. El alumno ya no podrá solicitar este tipo de evaluación.`)) {
+          if (confirm(`DESACTIVANDO LA EVALUACIÓN POR TITULACIÓN\n\nEl alumno ya no podrá solicitar este tipo de evaluación`)) {
             paramsToUpdate.estadoCurso = 'DESACTIVADO';
             this.setState({
               disableCurso: true,
@@ -311,6 +329,7 @@ export default class App extends React.Component {
         disableTitulacion={this.state.disableTitulacion}
         descargarInformes={this.descargarInformes}
         descargarHistorico={this.descargarHistorico}
+        recuperarPeticiones={this.recuperarPeticiones}
       >
       </Evaluaciones>
     } else {

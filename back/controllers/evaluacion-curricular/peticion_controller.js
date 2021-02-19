@@ -21,7 +21,8 @@ const getAllPeticionAlumno = async function (edupersonuniqueid) {
     try {
         let peticiones = await models.PeticionEvaluacionCurricular.findAll({
             where: {
-                edupersonuniqueid: edupersonuniqueid
+                edupersonuniqueid: edupersonuniqueid,
+                mostrar: true
             }
         });
         return peticiones || [];
@@ -38,7 +39,8 @@ const getPeticionAlumno = async function (id) {
     try {
         let peticion = await models.PeticionEvaluacionCurricular.findOne({
             where: {
-                id: id
+                id: id,
+                mostrar: true
             }
         });
         return peticion
@@ -67,16 +69,6 @@ const updatePeticionAlumno = async function (id, paramsToUpdate) {
 const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, justificacion, dni) {
     try {
         let respuesta = {};
-        let peticion = null;
-        // peticion = await models.PeticionEvaluacionCurricular.findOne({
-        //     where: {
-        //         edupersonuniqueid: edupersonuniqueid,
-        //         planCodigo: planCodigo,
-        //         tipo: tipo,
-        //         asignaturaCodigo: asignaturaCodigo
-        //     }
-        // });
-        if (peticion === null) {
             respuesta = await models.PeticionEvaluacionCurricular.create({
                 dni: dni,
                 edupersonuniqueid: edupersonuniqueid,
@@ -90,11 +82,9 @@ const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, ap
                 asignaturaCodigo: asignaturaCodigo,
                 tipo: tipo,
                 justificacion: justificacion,
-                fecha: new Date()
+                fecha: new Date(),
+                mostrar: true
             })
-        } else {
-            respuesta = null;
-        }
         return respuesta
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -109,6 +99,7 @@ const getAllPeticionPas = async function (isInforme, page, sizePerPage, filters)
         const offset = 0 + (page - 1) * sizePerPage;
         const where = {}
         const whereAnd = []
+        whereAnd.push({ mostrar: true });
         if (filters) {
             if (filters.edupersonuniqueid) {
                 whereAnd.push({
@@ -618,7 +609,7 @@ const getHistorico = async function () {
 
 const deletePeticiones = async function (tipo) {
     try {
-        let borrar = await models.HistoricoEvaluacionCurricular.destroy({
+        let borrarHistorico = await models.HistoricoEvaluacionCurricular.destroy({
             where: {
                 fechaTribunal: {
                     [Op.lte]: Sequelize.literal("current_date - interval '10 years'")
@@ -626,13 +617,24 @@ const deletePeticiones = async function (tipo) {
             },
             returning: true,
         });
-        let peticion = await models.PeticionEvaluacionCurricular.destroy({
+        let borrarPeticiones = await models.PeticionEvaluacionCurricular.destroy({
+            where: {
+                fecha: {
+                    [Op.lte]: Sequelize.literal("current_date - interval '10 years'")
+                }
+            },
+            returning: true,
+        });
+        let updatePeticion = await models.PeticionEvaluacionCurricular.update(
+            {
+                mostrar: false
+            }, {
             where: {
                 tipo: tipo
             },
             returning: true,
         });
-        peticion = await getAllPeticionPas(false, null, null, null);
+        let peticion = await getAllPeticionPas(false, null, null, null);
         return peticion
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -657,6 +659,49 @@ const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido
             resolucion: resolucion
         })
         return respuesta
+    } catch (error) {
+        //se propaga el error, se captura en el middleware
+        throw error;
+    }
+}
+
+const recuperarPeticiones = async function (){
+    try {
+        const now = new Date();
+        let mesActual = now.getMonth();
+        let añoActual = now.getFullYear();
+        let respuesta = {};
+        if(mesActual < 8){ //antes de septiembre
+            respuesta = await models.PeticionEvaluacionCurricular.update(
+                {
+                    mostrar: true
+                }, {
+                where: {
+                fecha: {
+                    [Op.and]: {
+                        [Op.lte]: new Date(añoActual, 7, 31), //31 de agosto
+                        [Op.gte]: new Date(añoActual-1, 8, 1)
+                     } 
+                }},
+                returning: true,
+                raw:true
+                });
+        } else {
+            respuesta = await models.PeticionEvaluacionCurricular.update(
+                {
+                    mostrar: true
+                }, {
+                where: {
+                fecha: {
+                        [Op.gte]: new Date(añoActual, 8, 1)
+                     } 
+                },
+                returning: true,
+                raw:true
+                });
+        }
+        let peticion = await getAllPeticionPas(false, null, null, null);
+        return peticion
     } catch (error) {
         //se propaga el error, se captura en el middleware
         throw error;
@@ -898,8 +943,8 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
                     fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
-                    penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                    penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    penultima_calificacion: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
                     ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
                     ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
@@ -927,9 +972,9 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" :helpers.formatFecha(report.ultimaConvocatoria),
-                    penultima_calificacion: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
-                    penultima_convocatoria: report.notasAnteriores.length <2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
+                    fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
+                    penultima_calificacion: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
+                    penultima_convocatoria: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
                     ultima_calificacion: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].calificacion || report.notasAnteriores[report.notasAnteriores.length - 1].calificacionAlfa,
                     ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
@@ -1046,6 +1091,16 @@ exports.deletePeticiones = async function (req, res, next) {
     try {
         let tipo = req.query.tipo;
         respuesta = await deletePeticiones(tipo);
+        res.json(respuesta)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.recuperarPeticiones = async function (req, res, next) {
+    try {
+        respuesta = await recuperarPeticiones();
         res.json(respuesta)
     } catch (error) {
         console.log(error)
