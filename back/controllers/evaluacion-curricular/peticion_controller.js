@@ -665,7 +665,7 @@ const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido
     }
 }
 
-const recuperarPeticiones = async function (){
+const recuperarPeticiones = async function (tipo){
     try {
         const now = new Date();
         let mesActual = now.getMonth();
@@ -677,12 +677,14 @@ const recuperarPeticiones = async function (){
                     mostrar: true
                 }, {
                 where: {
-                fecha: {
-                    [Op.and]: {
-                        [Op.lte]: new Date(añoActual, 7, 31), //31 de agosto
-                        [Op.gte]: new Date(añoActual-1, 8, 1)
-                     } 
-                }},
+                    tipo,
+                    fecha: {
+                        [Op.and]: {
+                            [Op.lte]: new Date(añoActual, 7, 31), //31 de agosto
+                            [Op.gte]: new Date(añoActual-1, 8, 1)
+                        } 
+                    },
+            },
                 returning: true,
                 raw:true
                 });
@@ -1100,7 +1102,7 @@ exports.deletePeticiones = async function (req, res, next) {
 
 exports.recuperarPeticiones = async function (req, res, next) {
     try {
-        respuesta = await recuperarPeticiones();
+        respuesta = await recuperarPeticiones(req.params.tipo);
         res.json(respuesta)
     } catch (error) {
         console.log(error)

@@ -181,8 +181,9 @@ export default class App extends React.Component {
           error.response.data.error || '' : ''}`)
       })
   }
-  recuperarPeticiones() {
-    axios.get(urljoin(apiBaseUrl, "api/recuperar"))
+  recuperarPeticiones(tipo) {
+    if (confirm(`¿Desea recuperar todas las solicitudes de tipo ${tipo} del curso actual?`)) {
+      axios.get(urljoin(apiBaseUrl, "api/recuperar/" + tipo))
       .then((response) => {
         this.setState({
           peticiones: response.data.peticiones,
@@ -197,6 +198,7 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
+    }
   }
 
   cambioEstadoTramite(tramite) {

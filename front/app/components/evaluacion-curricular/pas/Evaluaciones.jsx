@@ -3,7 +3,7 @@ import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { Button, Alert } from 'react-bootstrap';
+import { Button, Alert,  OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
@@ -232,18 +232,37 @@ export default class Evaluaciones extends React.Component {
         return (
             <div>
             <div class="row">
-                <div class="col">
-                Para activar o desactivar cada tipo de evaluación curricular:
-                    <li>Estado evaluación por titulación: {estadoTitulacion}   {botonTitulacion}</li>
-                    <li>Estado evaluación por curso: {estadoCurso}   {botonCurso}</li>
+                <div class="col" style={{"borderRight": "2px solid"}}>
+                    <h4>Evaluación curricular por curso:</h4>
+                    <li>Estado: {estadoCurso}   {botonCurso}</li>
+                    <li>
+                        Recuperar solicitudes curso actual 
+                        <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Recuperar las solicitude de evaluación por curso del curso actual. Si se reabre el procedimiento se borran las que había, esta es la opción de recuperarlas</Tooltip>}>
+                            <span className="d-inline-block">
+                                <FontAwesomeIcon icon={faInfoCircle} />
+                            </span>
+                        </OverlayTrigger> 
+                        <Button variant="warning" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.recuperarPeticiones("curso")}> Recuperar</Button>
+                    </li>
                 </div>
-                <div class="col">
-                <p>Para descargar los informes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarInformes()}> Descargar informes</Button></p>
-                <p>Para descargar el histórico de solicitudes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarHistorico()}> Descargar histórico</Button></p>
-                <p>Para recuperar las solicitudes eliminadas del curso actual: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.recuperarPeticiones()}> Recuperar</Button></p>
+                <div class="col" style={{"borderRight": "2px solid"}}>
+                    <h4>Evaluación curricular por titulación:</h4>
+                    <li>Estado: {estadoTitulacion}   {botonTitulacion}</li>
+                    <li>Recuperar solicitudes curso actual 
+                        <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Recuperar las solicitude de evaluación por titulación del curso actual. Si se reabre el procedimiento se borran las que había, esta es la opción de recuperarlas</Tooltip>}>
+                            <span className="d-inline-block">
+                                <FontAwesomeIcon icon={faInfoCircle} />
+                            </span>
+                        </OverlayTrigger> 
+                        <Button variant="warning" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.recuperarPeticiones("titulación")}> Recuperar</Button>
+                    </li>
                 </div>
+                <div class="col" style={{"borderRight": "2px solid"}}>
+                    <h4>Descargar informes:</h4>
+                    <li>Curso actual: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarInformes()}> Descargar informes</Button></li>
+                    <li>Histórico de solicitudes: <Button variant="primary" style={{ marginBottom: "15px", marginLeft:"10px" }} onClick={() => this.props.descargarHistorico()}> Descargar histórico</Button></li>
             </div>
-           
+            </div>
              <p></p>
                 <BootstrapTable
                     remote={

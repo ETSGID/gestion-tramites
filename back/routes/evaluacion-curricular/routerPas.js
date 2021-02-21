@@ -17,5 +17,5 @@ router.post('/api/datosAlumno', peticionController.configureMultiPartFormData, p
 router.get('/api/informes', peticionController.getInformes)
 router.get('/api/historico', peticionController.getHistorico)
 router.delete('/api/delete',peticionController.deletePeticiones);
-router.get('/api/recuperar',peticionController.recuperarPeticiones)
+router.get('/api/recuperar/:tipo',peticionController.recuperarPeticiones)
 module.exports = router;
