@@ -55,7 +55,8 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.TEXT
             },
             mostrar:{
-                type: DataTypes.BOOLEAN
+                type: DataTypes.BOOLEAN,
+                defaultValue: true
             }
         },
         {

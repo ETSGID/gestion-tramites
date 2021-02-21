@@ -12,7 +12,10 @@ module.exports = {
       await queryInterface.addColumn(
         'PeticionEvaluacionCurriculars',
         'mostrar',
-        Sequelize.BOOLEAN,
+        {
+          type: Sequelize.BOOLEAN,
+          defaultValue: true,
+        },
         { transaction: t }
       )
 

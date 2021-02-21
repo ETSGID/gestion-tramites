@@ -58,7 +58,7 @@ exports.sendEmailToPas = async function (estadoActual, from, to, asignaturaNombr
     switch (estadoActual) {
         case estadosEvaluacionCurricular.SOLICITUD_ENVIADA:
             send = true;
-            text = `El alumno ${session.user.cn} ha solicitado la evaluación curricular de la asignatura ${asignaturaNombre}. Debe comprobar que cumple los requisitos y aceptar o denegar dicha solicitud para pasar al siguiente estado.`
+            text = `El alumno ${session.user.cn} ha solicitado la evaluación curricular de la asignatura ${asignaturaNombre}. Debe comprobar que cumple los requisitos y aceptar o denegar dicha solicitud para pasar al siguiente estado. La dirección de contacto del alumno es ${session.user.mailPrincipal}`
             break;
         //pongo algun otro estado para avisar de que falta evaluacion aun???
     }
