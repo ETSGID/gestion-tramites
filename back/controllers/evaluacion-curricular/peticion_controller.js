@@ -914,7 +914,7 @@ exports.updateEstadoTramite = async function (req, res, next) {
 exports.getDatosAlumno = async function (req, res, next) {
 
     try {
-        respuesta = await getDatosAlumno(req.session.user.edupersonuniqueid, req.body.planCodigo, req.body.asignaturaCodigo, req.body.cursoAcademico);
+        respuesta = await getDatosAlumno(req.body.edupersonuniqueid, req.body.planCodigo, req.body.asignaturaCodigo, req.body.cursoAcademico);
         res.json(respuesta)
     } catch (error) {
         console.log(error)
