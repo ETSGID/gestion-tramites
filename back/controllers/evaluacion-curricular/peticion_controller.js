@@ -465,6 +465,7 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 "numVecesSuspensoCursoAnterior": 0,
                 "numVecesSuspensoCursoActual": 0,
                 "numVecesSuspenso": 1,
+                "numVecesSuspensoSobre4": 0,
                 "ultimaConvocatoria": "2016-02-08",
                 "notasAnteriores": [
                     {
@@ -495,6 +496,7 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 ],
                 "aprobadoTFT": true,
                 "matriculadoTFT": false,
+                "matriculadoMaster" : true,
                 "notaMediaCurso": 6.61,
                 "notaMedia": 6.67
             };
@@ -944,6 +946,7 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
+                    numero_veces_supsenso_superior_4 : report.numVecesSuspensoSobre4,
                     fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
                     penultima_calificacion: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
                     penultima_convocatoria: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
@@ -951,6 +954,7 @@ exports.getInformes = async function (req, res, next) {
                     ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                     TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
+                    master_matriculado: report.matriculadoMaster ? 'Sí' : 'No',
                     nota_media_curso: report.notaMediaCurso,
                     nota_media_titulacion: report.notaMedia
                 };
@@ -974,6 +978,7 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
+                    numero_veces_supsenso_superior_4 : report.numVecesSuspensoSobre4,
                     fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
                     penultima_calificacion: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
                     penultima_convocatoria: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
@@ -981,6 +986,7 @@ exports.getInformes = async function (req, res, next) {
                     ultima_convocatoria: report.notasAnteriores.length == 0 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 1].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 1].cursoAcademico,
                     TFT_matriculado: report.matriculadoTFT ? 'Sí' : "No",
                     TFT_aprobado: report.aprobadoTFT ? 'Sí' : "No",
+                    master_matriculado: report.matriculadoMaster ? 'Sí' : 'No',
                     nota_media_curso: report.notaMediaCurso,
                     nota_media_titulacion: report.notaMedia
                 };
@@ -989,8 +995,8 @@ exports.getInformes = async function (req, res, next) {
                 'número', 'estado_solicitud', 'dni', 'nombre', 'apellidos', 'plan', 'asignatura', 'curso_inicio_titulación', 'curso_ultima_matricula',
                 'numero_asignaturas_suspendidas_2_veces', 'numero_asignaturas_suspendidas_3_veces', 'numero_asignaturas_matriculadas_curso_anterior',
                 'numero_asignaturas_matriculadas_curso_actual', 'ECTS_pendientes', 'numero_veces_suspenso_asignatura_curso_anterior', 'numero_veces_suspenso_asignatura_curso_actual',
-                'numero_veces_suspenso_asginatura', 'fecha_ultima_convocatoria_asignatura', 'penultima_calificacion', 'penultima_convocatoria', 'ultima_calificacion',
-                'ultima_convocatoria', 'TFT_matriculado', 'TFT_aprobado', 'nota_media_curso', 'nota_media_titulacion'
+                'numero_veces_suspenso_asginatura', 'numero_veces_supsenso_superior_4', 'fecha_ultima_convocatoria_asignatura', 'penultima_calificacion', 'penultima_convocatoria', 'ultima_calificacion',
+                'ultima_convocatoria', 'TFT_matriculado', 'TFT_aprobado', 'master_matriculado', 'nota_media_curso', 'nota_media_titulacion'
             ];
             const opts = { fields, withBOM: true, delimiter: ';' };
             const json2csvParser = new Parser(opts);

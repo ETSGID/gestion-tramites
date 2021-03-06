@@ -177,6 +177,11 @@ app.use(async (req, res, next) => {
   if (typeof req.session.user.employeetype === 'string') {
     req.session.user.employeetype = req.session.user.employeetype.split('');
   }
+  // Print first time of session the user
+  if (!req.session.user.noFirst){
+    console.log(req.session.user);
+    req.session.user.noFirst = true;
+  }
   next();
 });
 
