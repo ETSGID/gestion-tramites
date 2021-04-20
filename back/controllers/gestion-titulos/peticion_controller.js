@@ -9,6 +9,8 @@ let planController = require('../plan_controller');
 const estadosTitulo = require('../../enums').estadosTitulo;
 const base64 = require('../../lib/base64');
 
+const PERON_URL = normalize
+
 // Actualizar la base de datos cambiando el dni por el edupersonuniqueid
 exports.updateDatabase = async function (req, res, next) {
     try {
@@ -207,7 +209,8 @@ exports.getInfoAlumno = async function (req, res, next) {
                 { "idplan": "0994", "curso_academico": "2018-19", "dni": "12345678" }
             ]
         } else {
-            let apiCall = await axios.get("https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=" + base64.Base64EncodeUrl(req.session.user.edupersonuniqueid))
+            const url = process.env.API_PERON_URL;
+            let apiCall = await axios.get(url, { params: { uuid: base64.Base64EncodeUrl(req.session.user.edupersonuniqueid) } })
             titulosAlumno = apiCall.data
         }
         if (Array.isArray(titulosAlumno) && titulosAlumno.length > 0) {

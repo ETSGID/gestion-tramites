@@ -82,6 +82,7 @@ API_UPM_HORARIO_PASSPHRASE= #passhprase de apiupm mihorario
 API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
+API_PERON_URL=https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -113,7 +114,7 @@ POSTGRES_PASSWORD=XXXX
 
 ###### API PERON
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
-- URL: `https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+- URL: `https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
 
 ###### CAS
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
@@ -166,6 +167,7 @@ API_UPM_HORARIO_PASSPHRASE= #passhprase de apiupm mihorario
 API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
+API_PERON_URL=https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -206,7 +208,7 @@ POSTGRES_PASSWORD=XXXX
 
 ###### API PERON
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
-- URL: `https://peron.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+- URL: `https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
 
 
 ###### CAS
