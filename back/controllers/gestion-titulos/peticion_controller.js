@@ -9,8 +9,6 @@ let planController = require('../plan_controller');
 const estadosTitulo = require('../../enums').estadosTitulo;
 const base64 = require('../../lib/base64');
 
-const PERON_URL = normalize
-
 // Actualizar la base de datos cambiando el dni por el edupersonuniqueid
 exports.updateDatabase = async function (req, res, next) {
     try {
