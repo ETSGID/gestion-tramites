@@ -25,6 +25,7 @@ module.exports = {
       if (t) {
         await t.rollback();
       }
+      throw error;
     }
   },
 
@@ -42,6 +43,7 @@ module.exports = {
       if (t) {
         await t.rollback();
       }
+      throw error;
     }
   }
 }

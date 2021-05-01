@@ -36,6 +36,7 @@ module.exports = {
       if (t) {
         await t.rollback();
       }
+      throw error;
     }
   },
 
@@ -56,11 +57,11 @@ module.exports = {
       )
       await t.commit();
     } catch (error) {
-
       console.log(error);
       if (t) {
         await t.rollback();
       }
+      throw error;
     }
   }
 }
