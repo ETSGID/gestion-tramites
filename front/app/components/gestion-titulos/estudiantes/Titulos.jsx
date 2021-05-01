@@ -22,7 +22,11 @@ export default class Titulos extends React.Component {
     render() {
         let peticiones = this.props.peticiones.map((peticion, index) => {
             peticion.idTabla = index;
-            peticion.estadoPeticionTexto = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === peticion.estadoPeticion) || "NO_PEDIDO"
+            if (peticion.compuesto) {
+                peticion.estadoPeticionTexto = "DOBLE_TITULACION"
+            } else {
+                peticion.estadoPeticionTexto = Object.keys(estadosTitulo).find(k => estadosTitulo[k] === peticion.estadoPeticion) || "NO_PEDIDO"
+            }
             peticion.accion = peticion.estadoPeticionTexto
             return peticion
         })
@@ -69,49 +73,53 @@ export default class Titulos extends React.Component {
                         return (<span>Su título ya está disponible, pase a buscarlo.</span>)
                     case estadosTitulo.TITULO_RECOGIDO:
                         return (<span>Su título ya ha sido recogido.</span>)
+                    case estadosTitulo.DOBLE_TITULACION:
+                        return (<span style={{'color':'red'}}> Doble titulación. Debe solicitar los títulos que la forman por separado: {row.compuestoPor.join(' | ')}</span >)
                     default:
-                        return (<span>Su solicitud está siendo procesada por secretaría.</span>)
+                        return(<span> Su solicitud está siendo procesada por secretaría.</span >)
                 }
-            }
+}
         },
-        {
-            dataField: '',
-            text: 'Info',
+{
+    dataField: '',
+        text: 'Info',
             //formatter se usa para poder actualizar la tabla en el render
             formatter: (cellContent, row) => {
-                return (<Button variant="secondary" onClick={() => this.cambioSelectedClick(row.idTabla, true)}><FontAwesomeIcon icon={faInfoCircle}/></Button>)
+                if(estadosTitulo[row.estadoPeticionTexto] !== estadosTitulo.DOBLE_TITULACION){
+                    return (<Button variant="secondary" onClick={() => this.cambioSelectedClick(row.idTabla, true)}><FontAwesomeIcon icon={faInfoCircle} /></Button>)
+                }
             }
 
-        }
+}
     ];
-        let modal;
-        if (this.props.selected !== null) {
-            modal =
-                <ModalStructure
-                    peticion={this.props.peticiones[this.props.selected]}
-                    handleClose={this.cambioSelectedClick}
-                    info={this.props.info}
-                    cambioEstadoClick={this.cambioEstadoClick}
-                >
-                </ModalStructure>
-        }
-        return (
-            <div>
-                <BootstrapTable
-                    bootstrap4
-                    wrapperClasses="table-responsive"
-                    keyField="idTabla"
-                    data={peticiones}
-                    columns={columns}
-                    defaultSorted={defaultSorted}
-                    striped={true}
-                />
-                {modal}
+let modal;
+if (this.props.selected !== null) {
+    modal =
+        <ModalStructure
+            peticion={this.props.peticiones[this.props.selected]}
+            handleClose={this.cambioSelectedClick}
+            info={this.props.info}
+            cambioEstadoClick={this.cambioEstadoClick}
+        >
+        </ModalStructure>
+}
+return (
+    <div>
+        <BootstrapTable
+            bootstrap4
+            wrapperClasses="table-responsive"
+            keyField="idTabla"
+            data={peticiones}
+            columns={columns}
+            defaultSorted={defaultSorted}
+            striped={true}
+        />
+        {modal}
 
 
-            </div>
+    </div>
 
-        );
+);
 
     }
 }

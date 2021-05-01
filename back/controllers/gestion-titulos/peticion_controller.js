@@ -39,7 +39,8 @@ const getAllPeticionAlumno = async function (edupersonuniqueid, email) {
                     { edupersonuniqueid: edupersonuniqueid },
                     { email: email }
                 ]
-            }
+            },
+            raw: true
         });
         return peticiones;
     } catch (error) {
@@ -203,7 +204,9 @@ exports.getInfoAlumno = async function (req, res, next) {
             titulosAlumno = [
                 { "idplan": "09TT", "curso_academico": "2019-20", "dni": "12345678" },
                 { "idplan": "09TT", "curso_academico": "2019-20", "dni": "12345678" },
+                { "idplan": "09BC", "curso_academico": "2019-20", "dni": "12345678" },
                 { "idplan": "09AQ", "curso_academico": "2019-20", "dni": "12345678" },
+                { "idplan": "09AZ", "curso_academico": "2019-20", "dni": "12345678" },
                 { "idplan": "0994", "curso_academico": "2018-19", "dni": "12345678" }
             ]
         } else {
@@ -232,6 +235,8 @@ exports.getInfoAlumno = async function (req, res, next) {
             peticion.planNombre = '';
             if (plan) {
                 peticion.planNombre = plan.nombre || '';
+                peticion.compuesto = plan.compuesto;
+                peticion.compuestoPor = plan.compuestoPor || [];
             }
         })
         res.json(peticiones)

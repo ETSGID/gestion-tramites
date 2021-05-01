@@ -83,6 +83,7 @@ API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 API_PERON_URL=https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php
+API_ETSIT_UPM=https://api.etsit.upm.es/upm/public
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -99,12 +100,22 @@ POSTGRES_PASSWORD=XXXX
 - Sender: `Solicitud trámite <noreply@etsit.upm.es>` *(variable de  entorno)*
 - Password: Consultar GID o GICO *(variable de  entorno)*
 
+###### API UPM datos públicos planes:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#servicios-p%C3%BAblicos)
+ - No hace falta autenticación 
+- URL:  `https://www.upm.es/wapi_upm/academico/comun/index.upm/v2/` *(peticiones in code)*
+
 ###### API UPM datos privados matricula:
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
 - PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
 - Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:
  - `/app/certificates/es_upm_etsit_mihorario_key.pem`
  - `/app/certificates/es_upm_etsit_mihorario_cert.pem`
+
+###### API ETSIT UPM datos públicos planes:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-ETSIT-UPM)
+- No hace falta autenticación 
+- URL: `https://api.etsit.upm.es/upm/public`  *(variable de entorno)*
 
 ######  API Evaluación Curricular:
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
@@ -114,7 +125,7 @@ POSTGRES_PASSWORD=XXXX
 
 ###### API PERON
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
-- URL: `https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+- URL: `https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(peticiones in code)*
 
 ###### CAS
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
@@ -168,6 +179,7 @@ API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 API_PERON_URL=https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php
+API_ETSIT_UPM=https://api.etsit.upm.es/upm/public
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -193,12 +205,22 @@ POSTGRES_PASSWORD=XXXX
 - Sender: `Solicitud trámite <noreply@etsit.upm.es>` *(variable de  entorno)*
 - Password: Consultar GID o GICO *(variable de  entorno)*
 
+###### API UPM datos públicos planes:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#servicios-p%C3%BAblicos)
+ - No hace falta autenticación 
+- URL:  `https://www.upm.es/wapi_upm/academico/comun/index.upm/v2/` *(peticiones in code)*
+
 ###### API UPM datos privados matricula:
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
 - PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
 - Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:
  - `/app/certificates/es_upm_etsit_mihorario_key.pem`
  - `/app/certificates/es_upm_etsit_mihorario_cert.pem`
+
+###### API ETSIT UPM datos públicos planes:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-ETSIT-UPM)
+- No hace falta autenticación 
+- URL: `https://api.etsit.upm.es/upm/public`  *(variable de entorno)*
 
 ######  API Evaluación Curricular:
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
@@ -208,7 +230,7 @@ POSTGRES_PASSWORD=XXXX
 
 ###### API PERON
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
-- URL: `https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(in code)*
+- URL: `https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php?uuid=` *(peticiones in code)*
 
 
 ###### CAS
@@ -246,6 +268,7 @@ EMAIL_SENDER=xxx@alumnos.upm.es #igual que EMAIL_USER
 EMAIL_PRUEBAS=xxx@alumnos.upm.es #destino de todos los emails
 EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
+API_ETSIT_UPM=https://api.etsit.upm.es/upm/public
 ```
 - Consideraciones:
 	- En local no se pueden utilizar las APIs externas, por lo que se usan maquetas de datos **(DEV=true)**
@@ -265,21 +288,31 @@ En desarrollo se usa una cuenta de correo personal de la upm.
 - Sender: Dirección correo personal del desarrollador *(variable de  entorno)*
 - Password: Contraseña correo personal del desarrollador *(variable de  entorno)*
 
+###### API UPM datos públicos planes:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#servicios-p%C3%BAblicos)
+ - No hace falta autenticación 
+- URL:  `https://www.upm.es/wapi_upm/academico/comun/index.upm/v2/` *(peticiones in code)*
+
 ###### API UPM datos privados matricula:
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
-Petición simulada *(in code)*
+Petición simulada *(peticiones in code)*
+
+###### API ETSIT UPM datos públicos planes:
+- [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-ETSIT-UPM)
+- No hace falta autenticación 
+- URL: `https://api.etsit.upm.es/upm/public`  *(variable de entorno)*
 
 ######  API Evaluación Curricular:
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-EVALUACI%C3%93N-CURRICULAR)
-Petición simulada *(in code)*
+Petición simulada *(peticiones in code)*
 
 ###### API PERON
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-PERON)
-Petición simulada *(in code)*
+Petición simulada *(peticiones in code)*
 
 ###### CAS
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/CAS,-Central-Authentication-Service)
-Conexión simulada *(in code)*
+Conexión simulada *(peticiones in code)*
 
 ##### Comandos necesarios
 ```shell

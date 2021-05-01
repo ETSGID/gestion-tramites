@@ -13,6 +13,12 @@ module.exports = function(sequelize, DataTypes) {
         },
         acronimo: {
           type: DataTypes.STRING
+        },
+        compuesto:{
+          type: DataTypes.BOOLEAN
+        },
+        compuestoPor:{
+          type: DataTypes.JSONB
         }
       },
       {

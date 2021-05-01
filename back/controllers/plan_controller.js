@@ -4,12 +4,15 @@ const models = require('../models');
 async function createOrUpdatePlans() {
     const promises = [];
     try {
-        const plans = await getPlansApiUpm();
-        plans.data.forEach(plan => {
+        const plans = (await getPlansApiUpm()).data || [];
+        plans.forEach(async plan => {
+            const planEtsit = (await getPlansApiEtsitUpm(plan.codigo)).data || {};
             promises.push(
                 models.Plan.upsert({
                     id: plan.codigo,
-                    nombre: plan.nombre
+                    nombre: plan.nombre,
+                    compuesto: planEtsit.compuesto || false,
+                    compuestoPor: planEtsit.compuestoPor || null
                 })
             )
         });
@@ -29,6 +32,19 @@ async function getPlansApiUpm() {
         // no se propaga el error porque puede haber fallos en api upm y esta no es critica
         console.log(error);
         return { data: [] };
+    }
+};
+
+async function getPlansApiEtsitUpm(idPlan) {
+    const url = process.env.API_ETSIT_UPM || "a"
+    try {
+        return await axios.get(
+            `${url}/plan/${idPlan}`
+        );
+    } catch (error) {
+        // no se propaga el error porque puede haber fallos en api upm y esta no es critica
+        console.log(error);
+        return { data: {} };
     }
 };
 

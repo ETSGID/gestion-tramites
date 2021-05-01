@@ -8,7 +8,8 @@ exports.estadosTitulo = {
     "ESPERA_TITULO": 6,
     "TITULO_DISPONIBLE": 7,
     "TITULO_RECOGIDO": 8,
-    "PETICION_CANCELADA": -1
+    "PETICION_CANCELADA": -1,
+    "DOBLE_TITULACION": -2
 }
 
 
