@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Variable de entorno API_ETSIT_UPM_URL
 - Doble titulaciones en gestion titulos
 
-### Added
-- Variable de entorno API_PERON_URL
 
 ## v2.0.6 - 2021-04-20
 
