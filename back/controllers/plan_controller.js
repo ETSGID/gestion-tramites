@@ -2,20 +2,26 @@ const axios = require('axios');
 const models = require('../models');
 
 async function createOrUpdatePlans() {
-    const promises = [];
     try {
+        const promises = [];
         const plans = (await getPlansApiUpm()).data || [];
-        plans.forEach(async plan => {
-            const planEtsit = (await getPlansApiEtsitUpm(plan.codigo)).data || {};
-            promises.push(
-                models.Plan.upsert({
-                    id: plan.codigo,
-                    nombre: plan.nombre,
-                    compuesto: planEtsit.compuesto || false,
-                    compuestoPor: planEtsit.compuestoPor || null
-                })
-            )
-        });
+        for (plan of plans) {
+            try {
+                const planEtsit = (await getPlansApiEtsitUpm(plan.codigo)).data || {};
+                promises.push(
+                    models.Plan.upsert({
+                        id: plan.codigo,
+                        nombre: plan.nombre,
+                        compuesto: planEtsit.compuesto || false,
+                        compuestoPor: planEtsit.compuestoPor || null
+                    })
+                )
+            }
+            catch (error) {
+                console.log('Error:', error);
+            }
+
+        }
         await Promise.all(promises);
     } catch (error) {
         // no haces un next(error) pq quieres que siga funcionando aunque api upm falle en este punto
@@ -36,15 +42,13 @@ async function getPlansApiUpm() {
 };
 
 async function getPlansApiEtsitUpm(idPlan) {
-    const url = process.env.API_ETSIT_UPM || "a"
+    const url = process.env.API_ETSIT_UPM_URL || "https://api.etsit.upm.es/upm/public"
     try {
         return await axios.get(
             `${url}/plan/${idPlan}`
         );
     } catch (error) {
-        // no se propaga el error porque puede haber fallos en api upm y esta no es critica
-        console.log(error);
-        return { data: {} };
+        throw error
     }
 };
 

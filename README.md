@@ -83,7 +83,7 @@ API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 API_PERON_URL=https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php
-API_ETSIT_UPM=https://api.etsit.upm.es/upm/public
+API_ETSIT_UPM_URL=https://api.etsit.upm.es/upm/public
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -179,7 +179,7 @@ API_EVAL_CURRICULAR_USERNAME= # usuario api ev. curricular
 API_EVAL_CURRICULAR_PWD= # contraseña api ev. curricular
 API_EVAL_CURRICULAR_URL=https://api.etsit.upm.es/stats/report/evaluacion_curricular
 API_PERON_URL=https://legacy.etsit.upm.es/etsitAPIRest/consultaNodoFinalizacion.php
-API_ETSIT_UPM=https://api.etsit.upm.es/upm/public
+API_ETSIT_UPM_URL=https://api.etsit.upm.es/upm/public
 ```
 ###### gestion-tramites-db.env 
 ```shell
@@ -268,7 +268,7 @@ EMAIL_SENDER=xxx@alumnos.upm.es #igual que EMAIL_USER
 EMAIL_PRUEBAS=xxx@alumnos.upm.es #destino de todos los emails
 EMAIL_PASS= #contraseña del alumno (del email de pruebas) para enviar los mails
 EMAIL_ADMIN= #email del encargado de gestionar permisos, como por ejemplo secretario.etsit@upm.es
-API_ETSIT_UPM=https://api.etsit.upm.es/upm/public
+API_ETSIT_UPM_URL=https://api.etsit.upm.es/upm/public
 ```
 - Consideraciones:
 	- En local no se pueden utilizar las APIs externas, por lo que se usan maquetas de datos **(DEV=true)**

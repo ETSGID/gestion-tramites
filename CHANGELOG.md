@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.0.7 - 2021-05-03
+### Added
+- Variable de entorno API_ETSIT_UPM_URL
+- Doble titulaciones en gestion titulos
+
+### Added
+- Variable de entorno API_PERON_URL
+
 ## v2.0.6 - 2021-04-20
 
 ### Added

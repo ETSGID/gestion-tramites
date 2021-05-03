@@ -29,8 +29,6 @@ let HistoricoEvaluacionCurricular = require('./HistoricoEvaluacionCurricular')(s
         // await sequelize.sync();
         await sequelize.authenticate();
         console.log("Connected to the database")
-        // actualizar o crear planes
-        await planController.createOrUpdatePlans();
         // extension unaccent
         try {
             await sequelize.query('CREATE EXTENSION unaccent;')
