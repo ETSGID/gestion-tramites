@@ -1,6 +1,7 @@
 # App gestión de trámites ETSIT UPM
 [[_TOC_]]
 
+
 ## Descripción
 - Aplicación para gestión de trámites en la ETSIT UPM.
 - Gestor de permisos para el contexto PAS
@@ -25,9 +26,9 @@ El proyecto se separa en dos partes:
 - Los **.js** generados se guardan en la parte public de **back**
 ## Tecnologías y versiones a instalar
 1. Sin docker
-	- Node.js (versión ...)
-	- npm (versión ...)
-	- PostgreSQL (versión ...)
+	- Node.js (versión 12.16.2)
+	- npm (versión 6.14.4)
+	- PostgreSQL (versión 9.6)
 1. Con Docker
 	- Docker
 	- Docker-compose
