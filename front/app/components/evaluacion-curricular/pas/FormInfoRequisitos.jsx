@@ -4,8 +4,7 @@ import axios from 'axios';
 
 const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
 let urljoin = require('url-join');
-const service = process.env.SERVICE || 'http://localhost:3000';
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
+const apiBaseUrl = require('../../../../lib/apiBaseUrl').buildApiBaseUrl('pas', tramite[0]);
 const helpers = require('../../../../../back/lib/helpers');
 
 export default class FormInfoRequisitos extends React.Component {
@@ -35,7 +34,7 @@ export default class FormInfoRequisitos extends React.Component {
         })
       })
       .catch((error) => {
-        alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
+        alert(`Error en la conexión con el servidor. Verifique si el alumno se encuentra matriculado en la asignatura. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
   }

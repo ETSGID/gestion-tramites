@@ -8,6 +8,7 @@ router.get('/', function (req, res) {
   res.render('index');
 });
 
+router.get('/api/:plan/asingaturas', peticionController.getAsignaturasPlan)
 router.get('/api/peticiones', peticionController.getInfoAllAlumno)
 router.post('/api/peticionCambioEstado', peticionController.configureMultiPartFormData, peticionController.updateOrCreatePeticion)
 router.get('/api/estadoTramite', peticionController.getEstadoTramite)

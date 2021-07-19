@@ -8,8 +8,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import { faBowlingBall } from '@fortawesome/free-solid-svg-icons';
 const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
 let urljoin = require('url-join');
-const service = process.env.SERVICE || 'http://localhost:3000';
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
+const apiBaseUrl = require('../../../../lib/apiBaseUrl').buildApiBaseUrl('pas', tramite[0]);
 const estadosEvaluacionCurricular = require('../../../../../back/enums').estadosEvaluacionCurricular;
 
 export default class App extends React.Component {

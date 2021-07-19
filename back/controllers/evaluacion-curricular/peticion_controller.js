@@ -6,15 +6,14 @@ const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
 let planController = require('../plan_controller');
+let asignaturaController = require('../asignatura_controller');
 let Sequelize = require('sequelize');
-const { response } = require('express');
 const Op = Sequelize.Op;
 const helpers = require('../../lib/helpers');
-const { parse, Parser } = require('json2csv');
+const { Parser } = require('json2csv');
 const JSZip = require('jszip');
-const { resolve } = require('bluebird');
 const { jsPDF } = require('jspdf');
-const autotable = require('jspdf-autotable');
+require('jspdf-autotable');
 
 //devuelve todas las peticiones de un alumno
 const getAllPeticionAlumno = async function (edupersonuniqueid) {
@@ -69,22 +68,22 @@ const updatePeticionAlumno = async function (id, paramsToUpdate) {
 const createPeticionAlumno = async function (edupersonuniqueid, mail, nombre, apellido, planCodigo, planNombre, asignaturaNombre, asignaturaCodigo, tipo, justificacion, dni) {
     try {
         let respuesta = {};
-            respuesta = await models.PeticionEvaluacionCurricular.create({
-                dni: dni,
-                edupersonuniqueid: edupersonuniqueid,
-                email: mail,
-                nombre: nombre,
-                apellido: apellido,
-                planCodigo: planCodigo,
-                planNombre: planNombre,
-                estadoPeticion: estadosEvaluacionCurricular.SOLICITUD_ENVIADA,
-                asignaturaNombre: asignaturaNombre,
-                asignaturaCodigo: asignaturaCodigo,
-                tipo: tipo,
-                justificacion: justificacion,
-                fecha: new Date(),
-                mostrar: true
-            })
+        respuesta = await models.PeticionEvaluacionCurricular.create({
+            dni: dni,
+            edupersonuniqueid: edupersonuniqueid,
+            email: mail,
+            nombre: nombre,
+            apellido: apellido,
+            planCodigo: planCodigo,
+            planNombre: planNombre,
+            estadoPeticion: estadosEvaluacionCurricular.SOLICITUD_ENVIADA,
+            asignaturaNombre: asignaturaNombre,
+            asignaturaCodigo: asignaturaCodigo,
+            tipo: tipo,
+            justificacion: justificacion,
+            fecha: new Date(),
+            mostrar: true
+        })
         return respuesta
     } catch (error) {
         //se propaga el error, se captura en el middleware
@@ -399,7 +398,7 @@ const getDataApiUpm = async function (mail, path, options) {
     }
 }
 
-
+// NOT USED: problema en el cambio de curso ya que no devuelve la matrícula del anterior
 const getInfoMatricula = async function (correo) {
     return new Promise((resolve) => {
         let planesAsignaturas = {};
@@ -450,10 +449,10 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
         if (process.env.DEV == 'true') {
             data = {
                 "report": "EVALUACION_CURRICULAR",
-                "plan": "09TT",
+                "plan": planCodigo,
                 "dni": "48225049",
-                "cursoAcademico": "2014-15",
-                "asignatura": 95000008,
+                "cursoAcademico": cursoAcademico,
+                "asignatura": asignaturaCodigo,
                 "anyoInicio": 2014,
                 "cursoAcademicoInicio": "2014-15",
                 "cursoUltimaMatricula": "2019-20",
@@ -470,25 +469,25 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 "notasAnteriores": [
                     {
                         "cursoAcademico": "2014-15",
-                        "asignatura": 95000008,
+                        "asignatura": asignaturaCodigo,
                         "convocatoria": "FEB",
                         "calificacionAlfa": "P"
                     },
                     {
                         "cursoAcademico": "2014-15",
-                        "asignatura": 95000008,
+                        "asignatura": asignaturaCodigo,
                         "convocatoria": "JUL",
                         "calificacionAlfa": "P"
                     }, {
                         "cursoAcademico": "2015-16",
-                        "asignatura": 95000008,
+                        "asignatura": asignaturaCodigo,
                         "convocatoria": "FEB",
                         "calificacion": 3.1,
                         "calificacionAlfa": "S"
                     },
                     {
                         "cursoAcademico": "2015-16",
-                        "asignatura": 95000008,
+                        "asignatura": asignaturaCodigo,
                         "convocatoria": "JUL",
                         "calificacion": 5.0,
                         "calificacionAlfa": "A"
@@ -496,7 +495,7 @@ const getDatosAlumno = async function (alumno, planCodigo, asignaturaCodigo, cur
                 ],
                 "aprobadoTFT": true,
                 "matriculadoTFT": false,
-                "matriculadoMaster" : true,
+                "matriculadoMaster": true,
                 "notaMediaCurso": 6.61,
                 "notaMedia": 6.67
             };
@@ -667,13 +666,13 @@ const createHistorico = async function (edupersonuniqueid, dni, nombre, apellido
     }
 }
 
-const recuperarPeticiones = async function (tipo){
+const recuperarPeticiones = async function (tipo) {
     try {
         const now = new Date();
         let mesActual = now.getMonth();
         let añoActual = now.getFullYear();
         let respuesta = {};
-        if(mesActual < 8){ //antes de septiembre
+        if (mesActual < 8) { //antes de septiembre
             respuesta = await models.PeticionEvaluacionCurricular.update(
                 {
                     mostrar: true
@@ -683,26 +682,26 @@ const recuperarPeticiones = async function (tipo){
                     fecha: {
                         [Op.and]: {
                             [Op.lte]: new Date(añoActual, 7, 31), //31 de agosto
-                            [Op.gte]: new Date(añoActual-1, 8, 1)
-                        } 
+                            [Op.gte]: new Date(añoActual - 1, 8, 1)
+                        }
                     },
-            },
+                },
                 returning: true,
-                raw:true
-                });
+                raw: true
+            });
         } else {
             respuesta = await models.PeticionEvaluacionCurricular.update(
                 {
                     mostrar: true
                 }, {
                 where: {
-                fecha: {
+                    fecha: {
                         [Op.gte]: new Date(añoActual, 8, 1)
-                     } 
+                    }
                 },
                 returning: true,
-                raw:true
-                });
+                raw: true
+            });
         }
         let peticion = await getAllPeticionPas(false, null, null, null);
         return peticion
@@ -712,11 +711,31 @@ const recuperarPeticiones = async function (tipo){
     }
 }
 
+// NOT USED respuesta.matricula: problema en el cambio de curso ya que no devuelve la matrícula del anterior
 exports.getInfoAllAlumno = async function (req, res, next) {
     try {
         let respuesta = {};
         respuesta.peticiones = await getAllPeticionAlumno(req.session.user.edupersonuniqueid);
-        respuesta.matricula = await getInfoMatricula(req.session.user.mail);
+        //respuesta.matricula = await getInfoMatricula(req.session.user.mail);
+        let planes = await planController.findAllPlans();
+        respuesta.planes = planes.map(plan => {
+            return { 'codigo': plan.id, 'nombre': plan.nombre }
+        })
+        res.json(respuesta);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+exports.getAsignaturasPlan = async function (req, res, next) {
+    try {
+        let planCodigo = req.params.plan;
+        let asignaturas = (await asignaturaController.getAsignaturasApiUpmAsArray(planCodigo, ["CODIGO", "NOMBRE"])).data;
+        let respuesta = {};
+        respuesta.asignaturas = asignaturas.map(asignatura => {
+            return {'asignaturaCodigo': asignatura.codigo, 'asignaturaNombre': asignatura.nombre}
+        })
         res.json(respuesta);
     } catch (error) {
         console.log(error)
@@ -946,7 +965,7 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    numero_veces_supsenso_superior_4 : report.numVecesSuspensoSobre4,
+                    numero_veces_supsenso_superior_4: report.numVecesSuspensoSobre4,
                     fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
                     penultima_calificacion: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
                     penultima_convocatoria: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,
@@ -978,7 +997,7 @@ exports.getInformes = async function (req, res, next) {
                     numero_veces_suspenso_asignatura_curso_anterior: report.numVecesSuspensoCursoAnterior,
                     numero_veces_suspenso_asignatura_curso_actual: report.numVecesSuspensoCursoActual,
                     numero_veces_suspenso_asginatura: report.numVecesSuspenso,
-                    numero_veces_supsenso_superior_4 : report.numVecesSuspensoSobre4,
+                    numero_veces_supsenso_superior_4: report.numVecesSuspensoSobre4,
                     fecha_ultima_convocatoria_asignatura: report.ultimaConvocatoria == undefined ? "-" : helpers.formatFecha(report.ultimaConvocatoria),
                     penultima_calificacion: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].calificacion || report.notasAnteriores[report.notasAnteriores.length - 2].calificacionAlfa,
                     penultima_convocatoria: report.notasAnteriores.length < 2 ? "-" : report.notasAnteriores[report.notasAnteriores.length - 2].convocatoria + ' ' + report.notasAnteriores[report.notasAnteriores.length - 2].cursoAcademico,

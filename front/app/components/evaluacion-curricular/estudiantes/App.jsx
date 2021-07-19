@@ -6,13 +6,11 @@ import axios from 'axios';
 
 const tramite = require('../../../../../back/enums').tramites.evaluacionCurricular;
 let urljoin = require('url-join');
-const service = process.env.SERVICE || 'http://localhost:3000';
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/estudiantes/gestion-tramites", tramite[0]) : window.location.href
+const apiBaseUrl = require('../../../../lib/apiBaseUrl').buildApiBaseUrl('estudiantes', tramite[0]);
 
 
 // Componentes
-import FormPeticionTitulacion from './FormPeticionTitulacion';
-import FormPeticionCurso from './FormPeticionCurso';
+import FormPeticion from './FormPeticion';
 import Evaluaciones from "./Evaluaciones";
 import { estadosEvaluacionCurricular } from '../../../../../back/enums';
 
@@ -21,7 +19,8 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       peticiones: [],
-      matricula: {},
+      //matricula: {},
+      planes: [],
       selected: null,
       info: null,
       loading: null,
@@ -82,7 +81,8 @@ export default class App extends React.Component {
        
         this.setState({
           peticiones: response.data.peticiones,
-          matricula: response.data.matricula,
+          //matricula: response.data.matricula,
+          planes: response.data.planes,
           loading: null
         })
       })
@@ -93,8 +93,6 @@ export default class App extends React.Component {
         alert(`Error en la conexión con el servidor. ${error.response && error.response.data ?
           error.response.data.error || '' : ''}`)
       })
-
-
   }
 
   cambioEstadoClick(index, paramsToUpdate) {
@@ -254,10 +252,12 @@ export default class App extends React.Component {
                     Solicitud de evaluación curricular por titulación
                   </Modal.Title>
                 </Modal.Header>
-                <FormPeticionTitulacion
+                <FormPeticion
                   handleClose={this.handleClose}
                   cambioEstadoClick={this.cambioEstadoClick}
-                  matricula={this.state.matricula}
+                  //matricula={this.state.matricula}
+                  planes={this.state.planes}
+                  tipo="titulación"
                 />
               </Modal >
             }
@@ -268,10 +268,12 @@ export default class App extends React.Component {
                     Solicitud de evaluación curricular por curso
                   </Modal.Title>
                 </Modal.Header>
-                <FormPeticionCurso
+                <FormPeticion
                   handleClose={this.handleClose}
                   cambioEstadoClick={this.cambioEstadoClick}
-                  matricula={this.state.matricula}
+                  //matricula={this.state.matricula}
+                  planes={this.state.planes}
+                  tipo="curso"
                 />
               </Modal >
             }

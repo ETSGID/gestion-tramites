@@ -7,9 +7,7 @@ import '../../../../assets/scss/main.scss';
 import LoadingOverlay from 'react-loading-overlay';
 const tramite = require('../../../../../back/enums').tramites.gestionTitulos;
 let urljoin = require('url-join');
-const service = process.env.SERVICE || 'http://localhost:3000';
-const apiBaseUrl = process.env.NODE_ENV === "development" ? urljoin(service, "/pas/gestion-tramites", tramite[0]) : window.location.href
-
+const apiBaseUrl = require('../../../../lib/apiBaseUrl').buildApiBaseUrl('pas', tramite[0]);
 
 export default class App extends React.Component {
 
