@@ -106,7 +106,7 @@ POSTGRES_PASSWORD=XXXX
  - No hace falta autenticación 
 - URL:  `https://www.upm.es/wapi_upm/academico/comun/index.upm/v2/` *(peticiones in code)*
 
-###### API UPM datos privados matricula:
+###### API UPM datos privados matricula (no usado actualmente por un fallo pero sí en el futuro):
 - [Ver información](https://git.etsit.upm.es/grupointegraciondigital/wiki/-/wikis/Servicios-externos/API-UPM#informaci%C3%B3n-de-matr%C3%ADcula-de-un-alumno)
 - PassPhrase:  Consultar GID o GICO *(variable de  entorno)*
 - Certificados: Montar un volumen definido en ``docker-composoe.override.yml`` que mapee internamente a ``/app/certificates`` resultando en los certificados:

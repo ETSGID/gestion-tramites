@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.0.8 - 2021-07-19
+### Changed
+- Forma de generar los bundle.js (más ligeros)
+### Fixed
+- Evaluación curricular: no consultar ultima matricula, dejar seleccionar todos los planes y asigntura. Problme de api upm matricula del estudiante, devuelve vacío en vez la del curso pasado. En el futuro si se arregla volver a cambiarlo.  
+
 ## v2.0.7 - 2021-05-03
 ### Added
 - Variable de entorno API_ETSIT_UPM_URL

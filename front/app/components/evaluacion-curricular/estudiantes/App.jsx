@@ -164,7 +164,7 @@ export default class App extends React.Component {
         this.setState({
           loading: null
         });
-        alert(`Error en la conexión con el servidor. ${error}`);
+        alert(`Error en la conexión con el servidor. Asegúrese de que ha seleccionado un plan y una asignatura en la que se haya matriculado previamente. ${error}`);
         console.log(error);
       })
 
